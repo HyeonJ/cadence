@@ -5,3 +5,8 @@ node_modules/
 *.tsbuildinfo
 playwright-report/
 test-results/
+
+# Serwist build outputs
+public/sw.js
+public/sw.js.map
+public/swe-worker-*.js

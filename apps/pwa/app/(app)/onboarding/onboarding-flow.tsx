@@ -12,7 +12,7 @@ import {
   completeOnboarding,
   type OnboardingInput,
 } from "./onboarding-actions";
-import { DEFAULT_NOTIFY_SCHEDULE } from "@/lib/queries/user-settings";
+import { DEFAULT_NOTIFY_SCHEDULE } from "@/lib/queries/user-settings-types";
 
 const TOTAL_STEPS = 4;
 

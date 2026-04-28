@@ -19,7 +19,7 @@ import {
   type SettingsInput,
   type SettingsResult,
 } from "./settings-actions";
-import type { UserSettings, NotifySlot } from "@/lib/queries/user-settings";
+import type { UserSettings, NotifySlot } from "@/lib/queries/user-settings-types";
 
 interface FormState {
   timezone: string;
