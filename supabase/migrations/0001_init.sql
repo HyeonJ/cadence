@@ -50,3 +50,43 @@ create policy user_settings_update_own on public.user_settings
   for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy user_settings_delete_own on public.user_settings
   for delete using (auth.uid() = user_id);
+
+-- ======================================================================
+-- sprints
+-- ======================================================================
+create table public.sprints (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  name text not null,
+  start_date_kst date not null,
+  end_date_kst date not null,
+  status text not null default 'active'
+    check (status in ('active','completed','aborted')),
+  source_md_path text,
+  evergreen_targets text[] not null default array[]::text[],
+  frontier_targets text[] not null default array[]::text[],
+  toy_project_repo text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint sprint_dates_ordered check (start_date_kst <= end_date_kst)
+);
+
+create trigger sprints_touch
+before update on public.sprints
+for each row execute function public.touch_updated_at();
+
+create unique index sprints_user_active_unique
+  on public.sprints (user_id) where status = 'active';
+-- 한 user당 active sprint 1개만
+
+alter table public.sprints enable row level security;
+
+create policy sprints_select_own on public.sprints
+  for select using (auth.uid() = user_id);
+create policy sprints_insert_own on public.sprints
+  for insert with check (auth.uid() = user_id);
+create policy sprints_update_own on public.sprints
+  for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy sprints_delete_own on public.sprints
+  for delete using (auth.uid() = user_id);
+
