@@ -90,3 +90,56 @@ create policy sprints_update_own on public.sprints
 create policy sprints_delete_own on public.sprints
   for delete using (auth.uid() = user_id);
 
+-- ======================================================================
+-- sprint_backbone_items
+-- ======================================================================
+create table public.sprint_backbone_items (
+  id uuid primary key default gen_random_uuid(),
+  sprint_id uuid not null references public.sprints (id) on delete cascade,
+  week_index int not null check (week_index between 1 and 4),
+  slot_key text not null check (slot_key in (
+    'weekday_morning_input','weekday_evening_build','weekend_deep','weekend_share'
+  )),
+  day_of_week_mask int not null check (day_of_week_mask between 1 and 127),
+  content jsonb not null,
+  order_in_week int not null default 0,
+  effective_from date not null,
+  effective_until date,
+  created_at timestamptz not null default now(),
+  constraint sbi_content_is_object check (jsonb_typeof(content) = 'object'),
+  constraint sbi_effective_range check (
+    effective_until is null or effective_until > effective_from
+  )
+);
+comment on column public.sprint_backbone_items.effective_from is 'KST calendar day. App-level enforcement.';
+comment on column public.sprint_backbone_items.effective_until is 'KST calendar day. NULL = open-ended.';
+
+create index sbi_sprint_week_slot
+  on public.sprint_backbone_items (sprint_id, week_index, slot_key);
+
+alter table public.sprint_backbone_items enable row level security;
+
+create policy sbi_select on public.sprint_backbone_items
+  for select using (
+    exists (select 1 from public.sprints s
+            where s.id = sprint_id and s.user_id = auth.uid())
+  );
+create policy sbi_insert on public.sprint_backbone_items
+  for insert with check (
+    exists (select 1 from public.sprints s
+            where s.id = sprint_id and s.user_id = auth.uid())
+  );
+create policy sbi_update on public.sprint_backbone_items
+  for update using (
+    exists (select 1 from public.sprints s
+            where s.id = sprint_id and s.user_id = auth.uid())
+  ) with check (
+    exists (select 1 from public.sprints s
+            where s.id = sprint_id and s.user_id = auth.uid())
+  );
+create policy sbi_delete on public.sprint_backbone_items
+  for delete using (
+    exists (select 1 from public.sprints s
+            where s.id = sprint_id and s.user_id = auth.uid())
+  );
+
