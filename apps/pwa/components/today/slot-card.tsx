@@ -33,9 +33,11 @@ type ItemKind = "manual_check" | "auto_signal";
 export function SlotCard({
   slotKey,
   items,
+  readOnly = false,
 }: {
   slotKey: string;
   items: TodayDataItem[];
+  readOnly?: boolean;
 }): React.JSX.Element {
   const meta = SLOT_LABEL[slotKey] ?? {
     label: slotKey,
@@ -76,6 +78,7 @@ export function SlotCard({
           durationLabel={it.estimated_minutes ? `${it.estimated_minutes}분` : "—"}
           kind={it.kind as ItemKind}
           isLast={idx === items.length - 1}
+          readOnly={readOnly}
         />
       ))}
     </div>
