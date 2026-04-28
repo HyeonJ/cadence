@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "cadence-supabase": {
+      "command": "pnpm",
+      "args": ["--filter", "@cadence/mcp-supabase", "start"],
+      "env": {
+        "SUPABASE_URL": "${SUPABASE_URL}",
+        "SUPABASE_SERVICE_ROLE_KEY": "${SUPABASE_SERVICE_ROLE_KEY}"
+      }
+    },
+    "cadence-github": {
+      "command": "pnpm",
+      "args": ["--filter", "@cadence/mcp-github", "start"],
+      "env": { "COACH_GITHUB_PAT": "${COACH_GITHUB_PAT}" }
+    },
+    "cadence-discord": {
+      "command": "pnpm",
+      "args": ["--filter", "@cadence/mcp-discord", "start"],
+      "env": { "DISCORD_ADMIN_WEBHOOK_URL": "${DISCORD_ADMIN_WEBHOOK_URL}" }
+    }
+  }
+}
