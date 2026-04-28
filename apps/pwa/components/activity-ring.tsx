@@ -43,7 +43,11 @@ export function ActivityRing({
       viewBox={`0 0 ${size} ${size}`}
       className={cn("block", className)}
       role="img"
-      aria-label={centerLabel ? `Activity ${centerLabel}` : "Activity ring"}
+      aria-label={
+        centerLabel
+          ? `Activity: ${centerLabel}${centerSub ? ", " + centerSub : ""}`
+          : "Activity ring"
+      }
     >
       {rings.map((ring, i) => (
         <circle

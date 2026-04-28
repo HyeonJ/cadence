@@ -38,7 +38,7 @@ export function MobileTabbar(): React.JSX.Element {
   return (
     <nav
       className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-hairline-strong h-14 flex items-stretch"
-      aria-label="Mobile navigation"
+      aria-label="기본 네비게이션"
     >
       {TABS.map((t) => {
         const active = pathname.startsWith(t.href);
@@ -46,6 +46,7 @@ export function MobileTabbar(): React.JSX.Element {
           <Link
             key={t.id}
             href={t.href}
+            aria-current={active ? "page" : undefined}
             className={cn(
               "flex-1 flex flex-col items-center justify-center gap-0.5",
               active ? "text-primary" : "text-muted"

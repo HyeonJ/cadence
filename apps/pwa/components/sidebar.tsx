@@ -45,7 +45,10 @@ export function Sidebar({
   sprintLabel?: string;
 }): React.JSX.Element {
   return (
-    <aside className="hidden lg:flex w-[220px] h-full bg-bg border-r border-hairline flex-col gap-1 px-3.5 py-6">
+    <aside
+      className="hidden lg:flex w-[220px] h-full bg-bg border-r border-hairline flex-col gap-1 px-3.5 py-6"
+      aria-label="기본 네비게이션"
+    >
       <div className="flex items-center gap-2.5 px-2 pb-5">
         <div className="w-[22px] h-[22px] rounded-[5px] bg-ink text-white font-display text-xs font-bold flex items-center justify-center">
           C
@@ -64,6 +67,7 @@ export function Sidebar({
           <Link
             key={it.id}
             href={it.href}
+            aria-current={selected ? "page" : undefined}
             className={cn(
               "flex items-center gap-2.5 px-2.5 py-1.5 rounded-md font-body text-[13.5px]",
               selected

@@ -16,7 +16,11 @@ export function AppShell({
   return (
     <div className="flex w-full min-h-screen bg-bg">
       <Sidebar active={active} />
-      <main className="flex-1 flex flex-col min-w-0 pb-14 lg:pb-0">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="flex-1 flex flex-col min-w-0 pb-14 lg:pb-0"
+      >
         {topBar && (
           <div className="h-14 border-b border-hairline flex items-center px-7 gap-3.5 bg-bg">
             {topBar}
