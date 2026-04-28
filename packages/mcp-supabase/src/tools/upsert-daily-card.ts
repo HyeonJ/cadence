@@ -1,6 +1,9 @@
 import { z } from "zod";
 import type { ToolDef } from "../tool-registry.ts";
+import type { Database } from "@cadence/db";
 import { getServiceClient } from "../client.ts";
+
+type Json = Database["public"]["Tables"]["daily_cards"]["Insert"]["card_raw"];
 
 const ItemSchema = z.object({
   slot_key: z.enum([
@@ -28,7 +31,9 @@ const InputSchema = z.object({
   card_raw: z.record(z.unknown()).optional(),
   items: z.array(ItemSchema),
 });
-type Input = z.infer<typeof InputSchema>;
+// 핸들러 외부 호출 시(예: 테스트) Zod default가 적용된 입력을 보장하기 위해
+// `z.input` 사용 — handler 내부에서 parse하여 default 적용.
+type Input = z.input<typeof InputSchema>;
 
 interface Output {
   daily_card_id: string;
@@ -58,8 +63,8 @@ export const upsertDailyCardTool: ToolDef<Input, Output> = {
         sprint_id: input.sprint_id,
         coach_comment: input.coach_comment ?? null,
         fallback_used: input.fallback_used,
-        generation_meta: input.generation_meta,
-        card_raw: input.card_raw ?? null,
+        generation_meta: input.generation_meta as Json,
+        card_raw: (input.card_raw ?? null) as Json,
       })
       .select("id")
       .single();
@@ -72,7 +77,7 @@ export const upsertDailyCardTool: ToolDef<Input, Output> = {
         title: it.title,
         url: it.url ?? null,
         kind: it.kind,
-        auto_target: it.auto_target ?? null,
+        auto_target: (it.auto_target ?? null) as Json,
         status: it.status,
         auto_detected: it.auto_detected,
         note: it.note ?? null,

@@ -4,8 +4,11 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 export interface ToolDef<I = unknown, O = unknown> {
   name: string;
   description: string;
-  inputSchema: z.ZodType<I>;
-  outputSchema?: z.ZodType<O>;
+  // ZodType<I> is too strict when schema uses .default() (input ≠ output type).
+  // Use ZodTypeAny so callers can type Input via z.input<schema> while the
+  // schema itself may have a different output type after parse.
+  inputSchema: z.ZodTypeAny;
+  outputSchema?: z.ZodTypeAny;
   handler: (input: I) => Promise<O>;
 }
 
