@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Cadence",
-  description: "Personal learning coach — Sprint backbone 기반 daily card",
+  description: "Personal learning coach",
 };
 
 export default function RootLayout({
@@ -13,7 +14,10 @@ export default function RootLayout({
 }): React.JSX.Element {
   return (
     <html lang="ko">
-      <body className="bg-bg text-ink antialiased">{children}</body>
+      <body className="bg-bg text-ink antialiased font-body">
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }
