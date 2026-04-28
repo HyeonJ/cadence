@@ -1,4 +1,5 @@
 import { ToolRegistry } from "../tool-registry.ts";
+import { addBackboneItemTool } from "./add-backbone-item.ts";
 import { getActiveSprintTool } from "./get-active-sprint.ts";
 import { getTodayBackboneTool } from "./get-today-backbone.ts";
 import { getYesterdaySignalsTool } from "./get-yesterday-signals.ts";
@@ -13,3 +14,4 @@ registry.register(getYesterdaySignalsTool);
 registry.register(upsertDailyCardTool);
 registry.register(upsertYesterdaySignalsTool);
 registry.register(listBackboneTool);
+registry.register(addBackboneItemTool);
