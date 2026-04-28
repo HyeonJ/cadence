@@ -228,3 +228,37 @@ create policy dci_delete on public.daily_card_items
             where c.id = daily_card_id and c.user_id = auth.uid())
   );
 
+-- ======================================================================
+-- yesterday_signals
+-- ======================================================================
+create table public.yesterday_signals (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  date_kst date not null,
+  github_events_count int not null default 0,
+  repo_commits jsonb not null default '{}'::jsonb,
+  -- { 'owner/repo': 3 }
+  blog_new_posts int not null default 0,
+  fetch_status text not null
+    check (fetch_status in ('ok','rate_limited','5xx','partial')),
+  fetch_error text,
+  rate_limit_remaining int,
+  raw jsonb,
+  fetched_at timestamptz not null default now(),
+  unique (user_id, date_kst)
+);
+comment on column public.yesterday_signals.date_kst is 'KST calendar day for which signals were collected.';
+
+create index yesterday_signals_user_date on public.yesterday_signals (user_id, date_kst desc);
+
+alter table public.yesterday_signals enable row level security;
+
+create policy ys_select_own on public.yesterday_signals
+  for select using (auth.uid() = user_id);
+create policy ys_insert_own on public.yesterday_signals
+  for insert with check (auth.uid() = user_id);
+create policy ys_update_own on public.yesterday_signals
+  for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy ys_delete_own on public.yesterday_signals
+  for delete using (auth.uid() = user_id);
+
