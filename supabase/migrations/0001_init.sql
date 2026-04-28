@@ -174,3 +174,57 @@ create policy daily_cards_update_own on public.daily_cards
 create policy daily_cards_delete_own on public.daily_cards
   for delete using (auth.uid() = user_id);
 
+-- ======================================================================
+-- daily_card_items
+-- ======================================================================
+create table public.daily_card_items (
+  id uuid primary key default gen_random_uuid(),
+  daily_card_id uuid not null references public.daily_cards (id) on delete cascade,
+  slot_key text not null check (slot_key in (
+    'weekday_morning_input','weekday_evening_build','weekend_deep','weekend_share'
+  )),
+  title text not null,
+  url text,
+  kind text not null check (kind in ('manual_check','auto_signal')),
+  auto_target jsonb,
+  -- {type:'commit_count', repo:'owner/name', min:1}
+  status text not null default 'pending'
+    check (status in ('pending','done','skipped','auto_done')),
+  status_changed_at timestamptz not null default now(),
+  auto_detected boolean not null default false,
+  note text,
+  constraint note_length check (note is null or char_length(note) <= 500),
+  constraint auto_target_required_for_auto check (
+    (kind = 'auto_signal' and auto_target is not null)
+    or (kind = 'manual_check')
+  )
+);
+
+create index daily_card_items_card on public.daily_card_items (daily_card_id);
+
+alter table public.daily_card_items enable row level security;
+
+create policy dci_select on public.daily_card_items
+  for select using (
+    exists (select 1 from public.daily_cards c
+            where c.id = daily_card_id and c.user_id = auth.uid())
+  );
+create policy dci_insert on public.daily_card_items
+  for insert with check (
+    exists (select 1 from public.daily_cards c
+            where c.id = daily_card_id and c.user_id = auth.uid())
+  );
+create policy dci_update on public.daily_card_items
+  for update using (
+    exists (select 1 from public.daily_cards c
+            where c.id = daily_card_id and c.user_id = auth.uid())
+  ) with check (
+    exists (select 1 from public.daily_cards c
+            where c.id = daily_card_id and c.user_id = auth.uid())
+  );
+create policy dci_delete on public.daily_card_items
+  for delete using (
+    exists (select 1 from public.daily_cards c
+            where c.id = daily_card_id and c.user_id = auth.uid())
+  );
+
