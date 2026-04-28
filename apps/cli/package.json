@@ -15,8 +15,9 @@
     "@cadence/db": "workspace:*",
     "@cadence/mcp-supabase": "workspace:*",
     "@cadence/routine": "workspace:*",
-    "commander": "^12.1.0",
     "@supabase/supabase-js": "^2.45.0",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {

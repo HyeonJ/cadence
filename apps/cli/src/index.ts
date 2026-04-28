@@ -1,4 +1,10 @@
 #!/usr/bin/env node
+import { config as loadEnv } from "dotenv";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+loadEnv({ path: join(__dirname, "..", "..", "..", ".env"), override: true });
+
 import { Command } from "commander";
 import { initSprintCommand } from "./commands/init-sprint.ts";
 import { previewCommand } from "./commands/preview.ts";

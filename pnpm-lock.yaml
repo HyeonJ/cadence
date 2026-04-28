@@ -32,6 +32,9 @@ importers:
       commander:
         specifier: ^12.1.0
         version: 12.1.0
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.6.1
       zod:
         specifier: ^3.23.8
         version: 3.25.76
@@ -63,6 +66,9 @@ importers:
       '@cadence/mcp-supabase':
         specifier: workspace:*
         version: link:../../packages/mcp-supabase
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.6.1
       zod:
         specifier: ^3.23.8
         version: 3.25.76
@@ -70,9 +76,6 @@ importers:
       '@types/node':
         specifier: ^20.16.0
         version: 20.19.39
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.6.1
       msw:
         specifier: ^2.4.0
         version: 2.13.6(@types/node@20.19.39)(typescript@5.9.3)
