@@ -3,6 +3,7 @@ import * as React from "react";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { SwRegister } from "@/components/sw-register";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -58,6 +59,7 @@ export default function RootLayout({
       <body className="bg-bg text-ink antialiased font-body">
         {children}
         <Toaster />
+        <SwRegister />
       </body>
     </html>
   );
