@@ -4,12 +4,12 @@
 
 ## 구조
 
-- `apps/routine` — Claude Code Routines가 호출하는 main 함수 (Plan 03)
-- `apps/pwa` — Next.js 14 PWA (Plan 04~05)
-- `packages/db` — Supabase 스키마·타입·시드 (Plan 01) ✅
-- `packages/mcp-supabase` — Supabase MCP 서버 (Plan 02)
-- `packages/mcp-github` — GitHub MCP 서버 (Plan 02)
-- `packages/mcp-discord` — Discord MCP 서버 (Plan 02)
+- `apps/routine` 🚧 Plan 03
+- `apps/pwa` 🚧 Plan 04~05
+- `packages/db` ✅ Plan 01 (Supabase 6 테이블 + RLS + types + seed)
+- `packages/mcp-supabase` ✅ Plan 02 (9 tools, L1 backbone CRUD 포함)
+- `packages/mcp-github` ✅ Plan 02 (2 tools, KST window + rate limit, msw mock)
+- `packages/mcp-discord` ✅ Plan 02 (2 tools, webhook + admin alert)
 
 ## 시작
 
