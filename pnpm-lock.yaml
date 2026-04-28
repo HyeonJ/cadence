@@ -15,6 +15,37 @@ importers:
         specifier: ^5.6.2
         version: 5.9.3
 
+  apps/cli:
+    dependencies:
+      '@cadence/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@cadence/mcp-supabase':
+        specifier: workspace:*
+        version: link:../../packages/mcp-supabase
+      '@cadence/routine':
+        specifier: workspace:*
+        version: link:../routine
+      '@supabase/supabase-js':
+        specifier: ^2.45.0
+        version: 2.105.0
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^20.16.0
+        version: 20.19.39
+      tsx:
+        specifier: ^4.19.0
+        version: 4.21.0
+      vitest:
+        specifier: ^2.0.5
+        version: 2.1.9(@types/node@20.19.39)(msw@2.13.6(@types/node@20.19.39)(typescript@5.9.3))
+
   apps/routine:
     dependencies:
       '@anthropic-ai/sdk':
@@ -861,6 +892,10 @@ packages:
   combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
+
+  commander@12.1.0:
+    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
+    engines: {node: '>=18'}
 
   content-type@1.0.5:
     resolution: {integrity: sha512-nTjqfcBFEipKdXCv4YDQWCfmcLZKm81ldF0pAopTvyrFGVbcR6P/VAAd5G7N+0tTr8QqiU0tFadD6FK4NtJwOA==}
@@ -1969,6 +2004,8 @@ snapshots:
   combined-stream@1.0.8:
     dependencies:
       delayed-stream: 1.0.0
+
+  commander@12.1.0: {}
 
   content-type@1.0.5: {}
 
