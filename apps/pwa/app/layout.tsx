@@ -10,7 +10,7 @@ export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
-}): JSX.Element {
+}): React.JSX.Element {
   return (
     <html lang="ko">
       <body className="bg-bg text-ink antialiased">{children}</body>

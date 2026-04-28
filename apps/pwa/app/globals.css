@@ -1,3 +1,69 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* Color — spec §6.2 + 시안 보강 (TOK 객체와 1:1) */
+  --bg:               #FAFAFA;
+  --surface:          #FFFFFF;
+  --ink:              #0A0A0A;
+  --ink-2:            #1F1F22;
+  --ink-secondary:    #535862;
+  --muted:            #5F6368;
+  --sub:              #8B8F94;
+  --hairline:         #E5E5E5;
+  --hairline-strong:  #DCE0E6;
+  --card-line:        #DCE0E6;
+
+  /* 강조 */
+  --primary:          #007AFF;   /* Apple System Blue */
+  --primary-soft:     #F0F7FF;   /* Coach Comment fill */
+  --cobalt:           #2563EB;
+  --sky-50:           #DBEAFE;
+  --sky-100:          #BFDBFE;
+  --sky-200:          #93C5FD;
+
+  /* Activity Ring (단방향) */
+  --ring-input:       #007AFF;
+  --ring-build:       #38BDF8;
+  --ring-share:       #7DD3FC;
+  --ring-track:       #EDEFF2;
+
+  /* 30일 캘린더 cell */
+  --cell-empty:       #F2F2F7;
+  --cell-1:           #DBEAFE;
+  --cell-2:           #BFDBFE;
+  --cell-3:           #93C5FD;
+
+  --danger:           #EF4444;
+
+  /* Typography stacks (Task 8에서 next/font가 var(--font-*) 채움) */
+  --font-display:     'Inter', 'Pretendard', sans-serif;
+  --font-body:        'Inter', 'Pretendard', sans-serif;
+  --font-mono:        'JetBrains Mono', monospace;
+}
+
+/* 기본 background + smoothing */
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* tabular-nums utility — 큰 숫자/시간 등 */
+.tab {
+  font-variant-numeric: tabular-nums;
+}
+
+/* uppercase pill 11px + tracking 0.06em (spec §6.2) */
+.pill-text {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
