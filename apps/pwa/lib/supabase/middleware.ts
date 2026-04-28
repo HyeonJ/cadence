@@ -44,5 +44,6 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
     return NextResponse.redirect(url);
   }
 
+  response.headers.set("x-pathname", request.nextUrl.pathname);
   return response;
 }
