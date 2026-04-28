@@ -143,3 +143,34 @@ create policy sbi_delete on public.sprint_backbone_items
             where s.id = sprint_id and s.user_id = auth.uid())
   );
 
+-- ======================================================================
+-- daily_cards
+-- ======================================================================
+create table public.daily_cards (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  date_kst date not null,
+  sprint_id uuid not null references public.sprints (id) on delete cascade,
+  generated_at timestamptz not null default now(),
+  coach_comment text,
+  fallback_used boolean not null default false,
+  generation_meta jsonb not null default '{}'::jsonb,
+  -- {llm_model, input_tokens, output_tokens, cache_read_tokens, fetch_status, prompt_hash}
+  card_raw jsonb,
+  unique (user_id, date_kst)
+);
+comment on column public.daily_cards.date_kst is 'KST calendar day. App-level TZ enforcement.';
+
+create index daily_cards_user_date on public.daily_cards (user_id, date_kst desc);
+
+alter table public.daily_cards enable row level security;
+
+create policy daily_cards_select_own on public.daily_cards
+  for select using (auth.uid() = user_id);
+create policy daily_cards_insert_own on public.daily_cards
+  for insert with check (auth.uid() = user_id);
+create policy daily_cards_update_own on public.daily_cards
+  for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy daily_cards_delete_own on public.daily_cards
+  for delete using (auth.uid() = user_id);
+
