@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>Coach Harness · Cobalt + Apple Health Hybrid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Pretendard', 'Inter', -apple-system, sans-serif;
+    background: #EEEEEE;
+    color: #0A0A0A;
+    -webkit-font-smoothing: antialiased;
+  }
+  .tab { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+
+<script type="text/babel" data-presets="env,react">
+/* ============================================================
+ * IosFrame (inline from huashu-design/assets/ios_frame.jsx)
+ * ============================================================ */
+const iosFrameStyles = {
+  wrapper: {
+    display: 'inline-block',
+    padding: 12,
+    background: '#000',
+    borderRadius: 60,
+    boxShadow: '0 0 0 2px #1f2937, 0 20px 60px rgba(0,0,0,0.3)',
+    position: 'relative',
+  },
+  screen: {
+    position: 'relative',
+    borderRadius: 48,
+    overflow: 'hidden',
+    background: '#fff',
+  },
+  statusBar: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0,
+    height: 54,
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '0 32px 0 32px',
+    fontSize: 16, fontWeight: 600,
+    fontFamily: '-apple-system, "SF Pro Text", sans-serif',
+    zIndex: 20,
+    pointerEvents: 'none',
+  },
+  dynamicIsland: {
+    position: 'absolute',
+    top: 12, left: '50%', transform: 'translateX(-50%)',
+    width: 124, height: 36,
+    background: '#000',
+    borderRadius: 999,
+    zIndex: 30,
+  },
+  statusIcons: { display: 'flex', alignItems: 'center', gap: 6 },
+  signalIcon: { display: 'flex', alignItems: 'flex-end', gap: 2, height: 12 },
+  signalBar: { width: 3, background: 'currentColor', borderRadius: 1 },
+  batteryIcon: {
+    width: 26, height: 12,
+    border: '1.5px solid currentColor',
+    borderRadius: 3, padding: 1,
+    position: 'relative', opacity: 0.8,
+  },
+  batteryCap: {
+    position: 'absolute', top: 3, right: -3,
+    width: 2, height: 6,
+    background: 'currentColor',
+    borderRadius: '0 1px 1px 0',
+  },
+  content: {
+    position: 'absolute',
+    top: 54, left: 0, right: 0, bottom: 34,
+    overflow: 'auto',
+  },
+  homeIndicator: {
+    position: 'absolute',
+    bottom: 10, left: '50%', transform: 'translateX(-50%)',
+    width: 140, height: 5,
+    background: 'rgba(0,0,0,0.3)',
+    borderRadius: 999,
+    zIndex: 10,
+  },
+  homeIndicatorDark: { background: 'rgba(255,255,255,0.5)' },
+};
+
+function IosFrame({
+  children,
+  width = 393, height = 852,
+  time = '9:41', battery = 100,
+  darkMode = false,
+  showStatusBar = true,
+  showDynamicIsland = true,
+  showHomeIndicator = true,
+}) {
+  const textColor = darkMode ? '#fff' : '#000';
+  return (
+    <div style={iosFrameStyles.wrapper}>
+      <div style={{ ...iosFrameStyles.screen, width, height, background: darkMode ? '#000' : '#fff' }}>
+        {showStatusBar && (
+          <div style={{ ...iosFrameStyles.statusBar, color: textColor }}>
+            <span>{time}</span>
+            <div style={iosFrameStyles.statusIcons}>
+              <div style={iosFrameStyles.signalIcon}>
+                <div style={{ ...iosFrameStyles.signalBar, height: 4 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 6 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 9 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 11 }} />
+              </div>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" style={{ color: textColor }}>
+                <path d="M8 11.5a1 1 0 100-2 1 1 0 000 2z" fill="currentColor" />
+                <path d="M3 7.5a7 7 0 0110 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+                <path d="M1 4.5a11 11 0 0114 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" opacity="0.7" />
+              </svg>
+              <div style={iosFrameStyles.batteryIcon}>
+                <div style={{ width: `${battery}%`, height: '100%', background: 'currentColor', borderRadius: 1, opacity: 0.9 }} />
+                <div style={iosFrameStyles.batteryCap} />
+              </div>
+            </div>
+          </div>
+        )}
+        {showDynamicIsland && <div style={iosFrameStyles.dynamicIsland} />}
+        <div style={iosFrameStyles.content}>{children}</div>
+        {showHomeIndicator && (
+          <div style={{ ...iosFrameStyles.homeIndicator, ...(darkMode ? iosFrameStyles.homeIndicatorDark : {}) }} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * BrowserWindow (inline from huashu-design/assets/browser_window.jsx)
+ * ============================================================ */
+const browserWindowStyles = {
+  window: {
+    display: 'inline-block',
+    background: '#fff',
+    borderRadius: 10,
+    overflow: 'hidden',
+    boxShadow: '0 30px 80px rgba(0,0,0,0.25), 0 0 0 0.5px rgba(0,0,0,0.15)',
+  },
+  chrome: {
+    background: '#dee1e6',
+    paddingTop: 10, paddingLeft: 10, paddingRight: 10,
+    userSelect: 'none',
+  },
+  tabRow: { display: 'flex', alignItems: 'flex-end', gap: 6, position: 'relative' },
+  trafficLights: {
+    display: 'flex', gap: 8, alignItems: 'center',
+    paddingBottom: 10, marginRight: 8,
+  },
+  light: { width: 12, height: 12, borderRadius: '50%', border: '0.5px solid rgba(0,0,0,0.15)' },
+  close: { background: '#ff5f57' },
+  minimize: { background: '#febc2e' },
+  maximize: { background: '#28c840' },
+  tab: {
+    background: '#fff',
+    padding: '8px 30px 8px 14px',
+    borderTopLeftRadius: 10, borderTopRightRadius: 10,
+    fontSize: 12, color: '#222',
+    fontFamily: '-apple-system, sans-serif',
+    maxWidth: 220,
+    display: 'flex', alignItems: 'center', gap: 8,
+    position: 'relative',
+    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+  },
+  favicon: { width: 14, height: 14, borderRadius: 2, background: '#999', flexShrink: 0 },
+  navBar: {
+    background: '#fff',
+    padding: '8px 14px',
+    display: 'flex', alignItems: 'center', gap: 10,
+    borderBottom: '1px solid #e5e7eb',
+  },
+  navButtons: { display: 'flex', gap: 4, color: '#5f6368', fontSize: 16 },
+  navButton: {
+    width: 28, height: 28,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    borderRadius: '50%', cursor: 'pointer',
+  },
+  urlBar: {
+    flex: 1, background: '#f1f3f4',
+    borderRadius: 999, padding: '7px 14px',
+    fontSize: 13, color: '#333',
+    display: 'flex', alignItems: 'center', gap: 8,
+    fontFamily: '-apple-system, sans-serif',
+  },
+  lockIcon: { color: '#5f6368', fontSize: 12 },
+  content: { position: 'relative', overflow: 'auto', background: '#fff' },
+};
+
+function BrowserWindow({
+  title = 'New Tab',
+  url = 'https://example.com',
+  width = 1200, height = 800,
+  showTrafficLights = true,
+  children,
+}) {
+  return (
+    <div style={browserWindowStyles.window}>
+      <div style={browserWindowStyles.chrome}>
+        <div style={browserWindowStyles.tabRow}>
+          {showTrafficLights && (
+            <div style={browserWindowStyles.trafficLights}>
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.close }} />
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.minimize }} />
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.maximize }} />
+            </div>
+          )}
+          <div style={browserWindowStyles.tab}>
+            <div style={browserWindowStyles.favicon} />
+            <span>{title}</span>
+          </div>
+        </div>
+      </div>
+      <div style={browserWindowStyles.navBar}>
+        <div style={browserWindowStyles.navButtons}>
+          <div style={browserWindowStyles.navButton}>←</div>
+          <div style={browserWindowStyles.navButton}>→</div>
+          <div style={browserWindowStyles.navButton}>↻</div>
+        </div>
+        <div style={browserWindowStyles.urlBar}>
+          <span style={browserWindowStyles.lockIcon}>🔒</span>
+          <span>{url}</span>
+        </div>
+      </div>
+      <div style={{ ...browserWindowStyles.content, width, height }}>{children}</div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * Tokens
+ * ============================================================ */
+const TOK = {
+  base: '#FAFAFA',
+  surface: '#FFFFFF',
+  ink: '#0A0A0A',
+  ink2: '#1F1F22',
+  muted: '#5F6368',
+  sub: '#8B8F94',
+  hairline: '#E5E5E5',
+  cardLine: '#DCE0E6',
+  blue: '#007AFF',           // Apple System Blue (= main accent)
+  cobalt: '#2563EB',          // Linear cobalt (use for darker emphasis)
+  blueSoft: '#F0F7FF',        // Linear-style sky tint for Coach Comment
+  ringInput: '#007AFF',
+  ringBuild: '#38BDF8',
+  ringShare: '#7DD3FC',
+  ringTrack: '#EDEFF2',
+  cellEmpty: '#F2F2F7',
+  cell1: '#DBEAFE',
+  cell2: '#BFDBFE',
+  cell3: '#93C5FD',
+};
+
+/* ============================================================
+ * Activity Ring (SVG, stroke-dasharray)
+ * ============================================================ */
+function ActivityRing({
+  size = 280,
+  stroke = 22,
+  gap = 6,
+  values = [0.16, 0.0, 0.0],
+  colors = [TOK.ringInput, TOK.ringBuild, TOK.ringShare],
+  centerLabel,
+  centerSub,
+}) {
+  const cx = size / 2;
+  const cy = size / 2;
+  const rings = values.map((v, i) => {
+    const r = cx - stroke / 2 - i * (stroke + gap);
+    const C = 2 * Math.PI * r;
+    const dash = Math.max(C * v, v > 0 ? 2 : 0);
+    return { r, C, dash, color: colors[i] };
+  });
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: 'block' }}>
+      {rings.map((ring, i) => (
+        <circle
+          key={`bg-${i}`}
+          cx={cx} cy={cy} r={ring.r}
+          fill="none"
+          stroke={TOK.ringTrack}
+          strokeWidth={stroke}
+        />
+      ))}
+      {rings.map((ring, i) => (
+        <circle
+          key={`fg-${i}`}
+          cx={cx} cy={cy} r={ring.r}
+          fill="none"
+          stroke={ring.color}
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={`${ring.dash} ${ring.C}`}
+          transform={`rotate(-90 ${cx} ${cy})`}
+        />
+      ))}
+      {centerLabel && (
+        <g>
+          <text
+            x={cx} y={cy + (centerSub ? 2 : 8)}
+            textAnchor="middle"
+            fontFamily="Inter, sans-serif"
+            fontWeight={800}
+            fontSize={size * 0.26}
+            fill={TOK.ink}
+            style={{ letterSpacing: '-0.04em', fontVariantNumeric: 'tabular-nums' }}
+          >{centerLabel}</text>
+          {centerSub && (
+            <text
+              x={cx} y={cy + size * 0.18}
+              textAnchor="middle"
+              fontFamily="Inter, sans-serif"
+              fontWeight={600}
+              fontSize={size * 0.05}
+              fill={TOK.muted}
+              style={{ letterSpacing: '0.14em', textTransform: 'uppercase' }}
+            >{centerSub}</text>
+          )}
+        </g>
+      )}
+    </svg>
+  );
+}
+
+/* ============================================================
+ * Sidebar (Linear style) — desktop
+ * ============================================================ */
+function Sidebar({ active = 'today' }) {
+  const items = [
+    { id: 'today', label: 'Today', icon: 'today' },
+    { id: 'sprint', label: 'Sprint Progress', icon: 'sprint' },
+    { id: 'history', label: 'History', icon: 'history' },
+    { id: 'settings', label: 'Settings', icon: 'settings' },
+  ];
+  const sb = {
+    width: 220,
+    background: TOK.base,
+    borderRight: `1px solid ${TOK.hairline}`,
+    padding: '24px 14px',
+    display: 'flex', flexDirection: 'column', gap: 4,
+    height: '100%',
+  };
+  const logoRow = { display: 'flex', alignItems: 'center', gap: 10, padding: '0 8px 22px 8px' };
+  const logoMark = {
+    width: 22, height: 22,
+    borderRadius: 5,
+    background: TOK.ink,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    color: '#fff',
+    fontFamily: 'Inter, sans-serif',
+    fontWeight: 700, fontSize: 12,
+  };
+  const navItem = (selected) => ({
+    display: 'flex', alignItems: 'center', gap: 10,
+    padding: '7px 10px',
+    borderRadius: 6,
+    fontSize: 13.5,
+    color: selected ? TOK.ink : TOK.ink2,
+    background: selected ? '#EFF1F4' : 'transparent',
+    fontWeight: selected ? 600 : 500,
+    cursor: 'pointer',
+    fontFamily: 'Inter, Pretendard, sans-serif',
+  });
+  const sectionLabel = {
+    fontSize: 11, color: TOK.sub,
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+    padding: '14px 10px 6px 10px',
+    fontFamily: 'Inter, sans-serif',
+    fontWeight: 600,
+  };
+  const Icon = ({ kind }) => {
+    const s = { width: 16, height: 16, color: TOK.muted, flexShrink: 0 };
+    if (kind === 'today') return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={s}>
+        <rect x="3" y="5" width="18" height="16" rx="2" />
+        <path d="M3 9h18" /><path d="M8 3v4" /><path d="M16 3v4" />
+      </svg>
+    );
+    if (kind === 'sprint') return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={s}>
+        <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+      </svg>
+    );
+    if (kind === 'history') return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={s}>
+        <path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /><path d="M12 8v5l3 2" />
+      </svg>
+    );
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={s}>
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.4.9a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-.9-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.4-.9a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4.9 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z" />
+      </svg>
+    );
+  };
+  return (
+    <div style={sb}>
+      <div style={logoRow}>
+        <div style={logoMark}>C</div>
+        <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em' }}>Coach</span>
+        <span style={{
+          marginLeft: 'auto',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: 9.5, fontWeight: 700,
+          color: TOK.blue,
+          background: TOK.blueSoft,
+          border: `1px solid #D6E6FB`,
+          padding: '2px 6px',
+          borderRadius: 3,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+        }}>Active</span>
+      </div>
+      <div style={sectionLabel}>Workspace</div>
+      {items.map((it) => (
+        <div key={it.id} style={navItem(active === it.id)}>
+          <Icon kind={it.icon} />
+          <span>{it.label}</span>
+        </div>
+      ))}
+      <div style={{ flex: 1 }} />
+      <div style={{
+        borderTop: `1px solid ${TOK.hairline}`,
+        marginTop: 12, paddingTop: 12,
+        display: 'flex', alignItems: 'center', gap: 10,
+        padding: '12px 8px 0 8px',
+      }}>
+        <div style={{
+          width: 26, height: 26, borderRadius: '50%',
+          background: '#0A0A0A', color: '#fff',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 700,
+        }}>HJ</div>
+        <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+          <span style={{ fontSize: 12.5, fontWeight: 600, color: TOK.ink }}>HyeonJ</span>
+          <span style={{ fontSize: 11, color: TOK.sub }}>Sprint 1 · Day 3</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * Shared atoms
+ * ============================================================ */
+function Pill({ children, variant = 'default' }) {
+  const base = {
+    display: 'inline-flex', alignItems: 'center', gap: 4,
+    fontFamily: 'Inter, sans-serif',
+    fontSize: 10, fontWeight: 700,
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
+    padding: '3px 7px',
+    borderRadius: 3,
+    lineHeight: 1.2,
+  };
+  const variants = {
+    default: { color: TOK.ink2, background: '#EFF1F4', border: `1px solid ${TOK.hairline}` },
+    blue:    { color: '#fff',    background: TOK.blue, border: `1px solid ${TOK.blue}` },
+    soft:    { color: TOK.blue,  background: TOK.blueSoft, border: `1px solid #D6E6FB` },
+    outline: { color: TOK.ink2,  background: TOK.surface, border: `1px solid ${TOK.cardLine}` },
+  };
+  return <span style={{ ...base, ...variants[variant] }}>{children}</span>;
+}
+
+function Hairline({ vertical, style }) {
+  return <div style={{
+    background: TOK.hairline,
+    ...(vertical ? { width: 1, alignSelf: 'stretch' } : { height: 1, width: '100%' }),
+    ...style,
+  }} />;
+}
+
+function Checkbox({ checked }) {
+  return (
+    <div style={{
+      width: 18, height: 18,
+      borderRadius: 5,
+      border: `1.5px solid ${checked ? TOK.blue : '#C7CCD1'}`,
+      background: checked ? TOK.blue : '#fff',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      flexShrink: 0,
+    }}>
+      {checked && (
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      )}
+    </div>
+  );
+}
+
+function ProgressBar({ value = 0, color = TOK.blue, height = 3, width = 80 }) {
+  return (
+    <div style={{ width, height, background: '#EDEFF2', borderRadius: 999, overflow: 'hidden' }}>
+      <div style={{ width: `${value * 100}%`, height: '100%', background: color, borderRadius: 999 }} />
+    </div>
+  );
+}
+
+/* ============================================================
+ * Today — Desktop
+ * ============================================================ */
+const todayDesktopStyles = {
+  root: { display: 'flex', width: '100%', height: '100%', background: TOK.base, fontFamily: 'Pretendard, Inter, sans-serif' },
+  main: { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' },
+  topBar: {
+    height: 56,
+    borderBottom: `1px solid ${TOK.hairline}`,
+    display: 'flex', alignItems: 'center',
+    padding: '0 28px',
+    gap: 14,
+    background: TOK.base,
+  },
+  body: { padding: '28px 36px 36px 36px', overflow: 'auto', flex: 1 },
+  card: {
+    background: TOK.surface,
+    border: `1px solid ${TOK.cardLine}`,
+    borderRadius: 6,
+  },
+  slotHeader: {
+    display: 'flex', alignItems: 'center', gap: 10,
+    padding: '14px 18px',
+    borderBottom: `1px solid ${TOK.hairline}`,
+  },
+  slotLabel: {
+    fontFamily: 'Inter, sans-serif',
+    fontSize: 11, fontWeight: 700,
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase',
+    color: TOK.muted,
+  },
+  taskRow: {
+    display: 'flex', alignItems: 'center', gap: 14,
+    padding: '14px 18px',
+    borderBottom: `1px solid ${TOK.hairline}`,
+  },
+};
+
+function TodayDesktop() {
+  return (
+    <div style={todayDesktopStyles.root}>
+      <Sidebar active="today" />
+      <div style={todayDesktopStyles.main}>
+        <div style={todayDesktopStyles.topBar}>
+          <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 13, fontWeight: 600, color: TOK.muted }}>Workspace</span>
+          <span style={{ color: TOK.sub }}>/</span>
+          <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 13, fontWeight: 600, color: TOK.ink }}>Today</span>
+          <div style={{ flex: 1 }} />
+          <Pill variant="default">Day 3 · Week 1</Pill>
+          <Pill variant="soft">4 / 25</Pill>
+        </div>
+
+        <div style={todayDesktopStyles.body}>
+          {/* Header row */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 24, marginBottom: 22 }}>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 600, color: TOK.muted, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 8 }}>
+                FRI · MAY 1, 2026
+              </div>
+              <h1 style={{
+                margin: 0,
+                fontFamily: 'Inter, Pretendard, sans-serif',
+                fontWeight: 700,
+                fontSize: 32,
+                letterSpacing: '-0.025em',
+                color: TOK.ink,
+              }}>2026년 5월 1일 금요일</h1>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
+                <Pill variant="blue">Active</Pill>
+                <span style={{ fontSize: 13, color: TOK.muted }}>Sprint 1 · Agent SDK + MCP</span>
+              </div>
+            </div>
+
+            {/* Mini Activity Ring */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 14,
+              padding: '12px 16px',
+              border: `1px solid ${TOK.cardLine}`,
+              borderRadius: 6,
+              background: TOK.surface,
+            }}>
+              <ActivityRing
+                size={92} stroke={9} gap={3}
+                values={[0.5, 0.0, 0.0]}
+              />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontFamily: 'Inter, sans-serif' }}>
+                <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: TOK.sub }}>오늘의 진행</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: TOK.ringInput }} />
+                  <span style={{ color: TOK.ink, fontWeight: 600 }} className="tab">정독 1/2</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: TOK.ringBuild }} />
+                  <span style={{ color: TOK.ink, fontWeight: 600 }} className="tab">빌드 0/1</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: TOK.ringShare }} />
+                  <span style={{ color: TOK.muted, fontWeight: 500 }} className="tab">공유 0/0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Coach Comment — Linear style: left hairline + sky tint, no gradient */}
+          <div style={{
+            display: 'flex',
+            background: TOK.blueSoft,
+            borderLeft: `1.5px solid ${TOK.blue}`,
+            border: `1px solid #DCE8F8`,
+            borderLeftWidth: 1.5,
+            borderLeftColor: TOK.blue,
+            borderRadius: 4,
+            padding: '14px 18px',
+            marginBottom: 24,
+            gap: 14,
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
+              <div style={{
+                fontFamily: 'Inter, sans-serif',
+                fontSize: 10, fontWeight: 700,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: TOK.blue,
+              }}>Coach</div>
+              <p style={{
+                margin: 0,
+                fontSize: 14.5, lineHeight: 1.6,
+                color: TOK.ink,
+                fontFamily: 'Pretendard, Inter, sans-serif',
+              }}>
+                <span style={{ color: TOK.blue, fontWeight: 700, marginRight: 4 }}>「</span>
+                어제 commit 0건. 오늘은 빌드 1h 우선, 정독은 30분만 권장.
+                <span style={{ color: TOK.blue, fontWeight: 700, marginLeft: 4 }}>」</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Slots */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            {/* Slot 1 — 정독 */}
+            <div style={todayDesktopStyles.card}>
+              <div style={todayDesktopStyles.slotHeader}>
+                <div style={{ width: 6, height: 6, borderRadius: '50%', background: TOK.ringInput }} />
+                <span style={todayDesktopStyles.slotLabel}>Slot 1 · 평일 아침 30분 · 정독</span>
+                <div style={{ flex: 1 }} />
+                <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, fontWeight: 600, color: TOK.ink }}>1 / 2</span>
+                <ProgressBar value={0.5} color={TOK.blue} width={64} />
+              </div>
+              <div style={todayDesktopStyles.taskRow}>
+                <Checkbox checked={true} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: TOK.ink, textDecoration: 'line-through', textDecorationColor: TOK.sub }}>
+                    Agent SDK Quickstart
+                  </div>
+                  <div style={{ fontSize: 12, color: TOK.muted, marginTop: 2, fontFamily: 'Inter, sans-serif' }}>
+                    anthropic.com/agent-sdk
+                  </div>
+                </div>
+                <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, color: TOK.muted }}>30분</span>
+              </div>
+              <div style={{ ...todayDesktopStyles.taskRow, borderBottom: 'none' }}>
+                <Checkbox checked={false} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: TOK.ink }}>
+                    Building Agents — Engineering Blog
+                  </div>
+                  <div style={{ fontSize: 12, color: TOK.muted, marginTop: 2, fontFamily: 'Inter, sans-serif' }}>
+                    anthropic.com/engineering
+                  </div>
+                </div>
+                <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, color: TOK.muted }}>30분</span>
+              </div>
+            </div>
+
+            {/* Slot 2 — 빌드 */}
+            <div style={todayDesktopStyles.card}>
+              <div style={todayDesktopStyles.slotHeader}>
+                <div style={{ width: 6, height: 6, borderRadius: '50%', background: TOK.ringBuild }} />
+                <span style={todayDesktopStyles.slotLabel}>Slot 2 · 평일 저녁 1h · 빌드</span>
+                <Pill variant="blue">AUTO · commit ≥ 1 추적</Pill>
+                <div style={{ flex: 1 }} />
+                <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, fontWeight: 600, color: TOK.ink }}>0 / 1</span>
+                <ProgressBar value={0} color={TOK.ringBuild} width={64} />
+              </div>
+              <div style={{ ...todayDesktopStyles.taskRow, borderBottom: 'none' }}>
+                <Checkbox checked={false} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: TOK.ink }}>
+                    사내 플러그인 → MCP 서버 wrapping
+                  </div>
+                  <div style={{ fontSize: 12, color: TOK.muted, marginTop: 2, fontFamily: 'Inter, "JetBrains Mono", monospace' }}>
+                    me/sprint1-mcp-wrap
+                  </div>
+                </div>
+                <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, color: TOK.muted }}>60분</span>
+              </div>
+            </div>
+
+            {/* Yesterday signals */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 16,
+              padding: '12px 18px',
+              borderTop: `1px solid ${TOK.hairline}`,
+              borderBottom: `1px solid ${TOK.hairline}`,
+              fontFamily: 'Inter, sans-serif',
+              fontSize: 12.5,
+            }}>
+              <span style={{ color: TOK.sub, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', fontSize: 10.5 }}>
+                어제 신호
+              </span>
+              <Hairline vertical />
+              <span className="tab" style={{ color: TOK.ink2 }}>GitHub commits <strong style={{ color: TOK.ink }}>0</strong></span>
+              <Hairline vertical />
+              <span className="tab" style={{ color: TOK.ink2 }}>정독 <strong style={{ color: TOK.ink }}>2/2</strong>
+                <span style={{ color: '#22A06B', marginLeft: 4 }}>✓</span>
+              </span>
+              <Hairline vertical />
+              <span className="tab" style={{ color: TOK.ink2 }}>빌드 <strong style={{ color: TOK.ink }}>0</strong></span>
+            </div>
+
+            {/* Footer text links */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 18,
+              fontSize: 13, fontFamily: 'Inter, Pretendard, sans-serif',
+              color: TOK.muted,
+              marginTop: 4,
+            }}>
+              <span style={{ cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3, textDecorationColor: '#C7CCD1' }}>오늘 쉬기</span>
+              <span style={{ cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3, textDecorationColor: '#C7CCD1' }}>Settings</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * Sprint Progress — Desktop
+ * ============================================================ */
+const sprintDesktopStyles = {
+  root: { display: 'flex', width: '100%', height: '100%', background: TOK.base, fontFamily: 'Pretendard, Inter, sans-serif' },
+  main: { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' },
+  topBar: {
+    height: 56, borderBottom: `1px solid ${TOK.hairline}`,
+    display: 'flex', alignItems: 'center', padding: '0 28px', gap: 14,
+    background: TOK.base,
+  },
+  body: { padding: '28px 36px 36px 36px', overflow: 'auto', flex: 1 },
+  hero: {
+    display: 'flex', gap: 32, alignItems: 'stretch',
+    border: `1px solid ${TOK.cardLine}`,
+    borderRadius: 6,
+    padding: 28,
+    background: TOK.surface,
+    marginBottom: 24,
+  },
+  metricCard: {
+    flex: 1,
+    border: `1px solid ${TOK.cardLine}`,
+    borderRadius: 14,
+    padding: '18px 18px',
+    display: 'flex', flexDirection: 'column', gap: 10,
+    background: TOK.surface,
+  },
+};
+
+function SprintDesktop() {
+  // 30-day calendar values (0..3) — Day 3 = today (idx 2)
+  const cells = [
+    2, 3, 1,  // W1: D1=2, D2=3 (어제 정독 완료), D3=오늘
+    -1, -1, 0, 0, // D4-D7
+    0, 0, 0, 0, 0, 0, 0, // W2 (7)
+    0, 0, 0, 0, 0, 0, 0, // W3
+    0, 0, 0, 0, 0, 0, 0, // W4
+    0, 0, // D29-30
+  ];
+  const todayIdx = 2;
+  const cellColor = (v) => {
+    if (v === 1) return TOK.cell1;
+    if (v === 2) return TOK.cell2;
+    if (v === 3) return TOK.cell3;
+    return TOK.cellEmpty;
+  };
+
+  return (
+    <div style={sprintDesktopStyles.root}>
+      <Sidebar active="sprint" />
+      <div style={sprintDesktopStyles.main}>
+        <div style={sprintDesktopStyles.topBar}>
+          <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 13, fontWeight: 600, color: TOK.muted }}>Workspace</span>
+          <span style={{ color: TOK.sub }}>/</span>
+          <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 13, fontWeight: 600, color: TOK.ink }}>Sprint Progress</span>
+          <div style={{ flex: 1 }} />
+          <Pill variant="blue">Active</Pill>
+          <Pill variant="default">Day 3 / 30</Pill>
+        </div>
+
+        <div style={sprintDesktopStyles.body}>
+          {/* Header */}
+          <div style={{ marginBottom: 22 }}>
+            <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 600, color: TOK.muted, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 8 }}>
+              SPRINT 01
+            </div>
+            <h1 style={{ margin: 0, fontFamily: 'Inter, Pretendard, sans-serif', fontWeight: 700, fontSize: 32, letterSpacing: '-0.025em', color: TOK.ink }}>
+              Sprint 1 · Agent SDK + MCP
+            </h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 8, fontSize: 13, color: TOK.muted, fontFamily: 'Inter, sans-serif' }}>
+              <span className="tab">2026-04-29 → 2026-05-28</span>
+              <Hairline vertical style={{ height: 12 }} />
+              <span>30일 스프린트</span>
+            </div>
+          </div>
+
+          {/* HERO: Activity Ring + metric cards */}
+          <div style={sprintDesktopStyles.hero}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 280 }}>
+              <ActivityRing
+                size={280} stroke={26} gap={6}
+                values={[0.16, 0.0, 0.0]}
+                centerLabel="16%"
+                centerSub="OVERALL"
+              />
+            </div>
+
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14, justifyContent: 'center' }}>
+              <div style={sprintDesktopStyles.metricCard}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ width: 10, height: 10, borderRadius: '50%', background: TOK.ringInput }} />
+                  <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 700, color: TOK.muted, letterSpacing: '0.14em', textTransform: 'uppercase' }}>인풋 · 정독</span>
+                  <div style={{ flex: 1 }} />
+                  <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, fontWeight: 600, color: TOK.blue }}>16%</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                  <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, fontSize: 32, color: TOK.ink, letterSpacing: '-0.025em' }}>4</span>
+                  <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 16, color: TOK.sub }}>/ 25</span>
+                </div>
+                <ProgressBar value={0.16} color={TOK.ringInput} width="100%" />
+              </div>
+
+              <div style={sprintDesktopStyles.metricCard}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ width: 10, height: 10, borderRadius: '50%', background: TOK.ringBuild }} />
+                  <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 700, color: TOK.muted, letterSpacing: '0.14em', textTransform: 'uppercase' }}>빌드 · commit</span>
+                  <div style={{ flex: 1 }} />
+                  <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, fontWeight: 600, color: TOK.ringBuild }}>0%</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                  <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, fontSize: 32, color: TOK.ink, letterSpacing: '-0.025em' }}>0</span>
+                  <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 16, color: TOK.sub }}>/ 16</span>
+                </div>
+                <ProgressBar value={0} color={TOK.ringBuild} width="100%" />
+              </div>
+
+              <div style={sprintDesktopStyles.metricCard}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ width: 10, height: 10, borderRadius: '50%', background: TOK.ringShare }} />
+                  <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 700, color: TOK.muted, letterSpacing: '0.14em', textTransform: 'uppercase' }}>공유 · post</span>
+                  <div style={{ flex: 1 }} />
+                  <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, fontWeight: 600, color: TOK.ringShare }}>0%</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                  <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, fontSize: 32, color: TOK.ink, letterSpacing: '-0.025em' }}>0</span>
+                  <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 16, color: TOK.sub }}>/ 4</span>
+                </div>
+                <ProgressBar value={0} color={TOK.ringShare} width="100%" />
+              </div>
+            </div>
+          </div>
+
+          {/* 30-day calendar */}
+          <div style={{
+            border: `1px solid ${TOK.cardLine}`,
+            borderRadius: 6,
+            padding: 24,
+            background: TOK.surface,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+              <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 700, color: TOK.muted, letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+                30일 진행 · Daily activity
+              </span>
+              <div style={{ flex: 1 }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Inter, sans-serif', fontSize: 11, color: TOK.muted }}>
+                <span>적음</span>
+                <div style={{ width: 12, height: 12, background: TOK.cellEmpty, borderRadius: 3 }} />
+                <div style={{ width: 12, height: 12, background: TOK.cell1, borderRadius: 3 }} />
+                <div style={{ width: 12, height: 12, background: TOK.cell2, borderRadius: 3 }} />
+                <div style={{ width: 12, height: 12, background: TOK.cell3, borderRadius: 3 }} />
+                <span>많음</span>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingTop: 6 }}>
+                {['W1', 'W2', 'W3', 'W4', 'W5'].slice(0, 5).map((w) => (
+                  <div key={w} style={{
+                    height: 40,
+                    display: 'flex', alignItems: 'center',
+                    fontFamily: 'Inter, sans-serif', fontSize: 10.5, fontWeight: 700,
+                    color: TOK.sub, letterSpacing: '0.14em',
+                  }}>{w}</div>
+                ))}
+              </div>
+              <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gridTemplateRows: 'auto repeat(5, 40px)', gap: 8 }}>
+                {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map((d) => (
+                  <div key={d} style={{
+                    fontFamily: 'Inter, sans-serif', fontSize: 10, fontWeight: 600,
+                    color: TOK.sub, letterSpacing: '0.1em', textTransform: 'uppercase',
+                    textAlign: 'center',
+                    paddingBottom: 2,
+                  }}>{d}</div>
+                ))}
+                {Array.from({ length: 35 }).map((_, idx) => {
+                  const i = idx;
+                  if (i >= 30) {
+                    // empty trailing cells (light grey, half opacity)
+                    return <div key={i} style={{
+                      borderRadius: 9,
+                      background: TOK.cellEmpty,
+                      opacity: 0.4,
+                    }} />;
+                  }
+                  const v = cells[i] ?? 0;
+                  const isToday = i === todayIdx;
+                  const isFuture = v === -1;
+                  return (
+                    <div key={i} style={{
+                      borderRadius: 9,
+                      background: isFuture ? TOK.cellEmpty : cellColor(v),
+                      ...(isToday ? {
+                        background: '#fff',
+                        boxShadow: `inset 0 0 0 1.5px ${TOK.blue}`,
+                        position: 'relative',
+                      } : {}),
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: 11, fontWeight: 600,
+                      color: isToday ? TOK.blue : (v >= 2 ? TOK.ink : (v === 1 ? TOK.ink2 : TOK.sub)),
+                    }} className="tab">
+                      {i + 1}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div style={{
+              marginTop: 16,
+              paddingTop: 14,
+              borderTop: `1px solid ${TOK.hairline}`,
+              display: 'flex', alignItems: 'center', gap: 14,
+              fontFamily: 'Inter, sans-serif', fontSize: 12, color: TOK.muted,
+            }}>
+              <span><span style={{ color: TOK.blue, fontWeight: 700 }} className="tab">3</span>일차 · <span style={{ color: TOK.ink, fontWeight: 600 }}>5월 1일</span></span>
+              <Hairline vertical />
+              <span className="tab">남은 일수 <strong style={{ color: TOK.ink }}>27</strong></span>
+              <Hairline vertical />
+              <span className="tab">현재 페이스 <strong style={{ color: TOK.ink }}>+0.6일</strong> 앞</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * Today — iPhone (393 × 852)
+ * ============================================================ */
+function TodayMobile() {
+  return (
+    <div style={{
+      width: '100%', height: '100%',
+      background: TOK.base,
+      fontFamily: 'Pretendard, Inter, sans-serif',
+      padding: '8px 18px 24px 18px',
+      overflow: 'hidden',
+    }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 10, fontWeight: 600, color: TOK.muted, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 6 }}>
+            FRI · MAY 1
+          </div>
+          <h1 style={{
+            margin: 0,
+            fontFamily: 'Inter, Pretendard, sans-serif',
+            fontWeight: 700,
+            fontSize: 22,
+            letterSpacing: '-0.022em',
+            lineHeight: 1.2,
+            color: TOK.ink,
+          }}>
+            5월 1일<br/>금요일
+          </h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }}>
+            <Pill variant="blue">Active</Pill>
+            <Pill variant="default">D3 · W1</Pill>
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+          <ActivityRing size={84} stroke={8} gap={3} values={[0.5, 0.0, 0.0]} />
+          <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 9.5, color: TOK.sub, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>오늘</div>
+        </div>
+      </div>
+
+      {/* Coach Comment */}
+      <div style={{
+        background: TOK.blueSoft,
+        border: `1px solid #DCE8F8`,
+        borderLeft: `1.5px solid ${TOK.blue}`,
+        borderRadius: 4,
+        padding: '11px 13px',
+        marginBottom: 16,
+      }}>
+        <div style={{
+          fontFamily: 'Inter, sans-serif',
+          fontSize: 9.5, fontWeight: 700,
+          letterSpacing: '0.14em', textTransform: 'uppercase',
+          color: TOK.blue, marginBottom: 4,
+        }}>Coach</div>
+        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, color: TOK.ink }}>
+          <span style={{ color: TOK.blue, fontWeight: 700 }}>「</span>
+          어제 commit 0건. 오늘은 빌드 1h 우선, 정독은 30분만 권장.
+          <span style={{ color: TOK.blue, fontWeight: 700 }}>」</span>
+        </p>
+      </div>
+
+      {/* Slot 1 */}
+      <div style={{ background: TOK.surface, border: `1px solid ${TOK.cardLine}`, borderRadius: 5, marginBottom: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 13px', borderBottom: `1px solid ${TOK.hairline}` }}>
+          <div style={{ width: 5, height: 5, borderRadius: '50%', background: TOK.ringInput }} />
+          <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 9.5, fontWeight: 700, color: TOK.muted, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+            아침 30분 · 정독
+          </span>
+          <div style={{ flex: 1 }} />
+          <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 600, color: TOK.ink }}>1/2</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 13px', borderBottom: `1px solid ${TOK.hairline}` }}>
+          <Checkbox checked={true} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: TOK.ink, textDecoration: 'line-through', textDecorationColor: TOK.sub, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              Agent SDK Quickstart
+            </div>
+            <div style={{ fontSize: 10.5, color: TOK.muted, marginTop: 1, fontFamily: 'Inter, sans-serif' }}>anthropic.com/agent-sdk</div>
+          </div>
+          <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: TOK.muted }}>30분</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 13px' }}>
+          <Checkbox checked={false} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: TOK.ink, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              Building Agents — Engineering
+            </div>
+            <div style={{ fontSize: 10.5, color: TOK.muted, marginTop: 1, fontFamily: 'Inter, sans-serif' }}>anthropic.com/engineering</div>
+          </div>
+          <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: TOK.muted }}>30분</span>
+        </div>
+      </div>
+
+      {/* Slot 2 */}
+      <div style={{ background: TOK.surface, border: `1px solid ${TOK.cardLine}`, borderRadius: 5, marginBottom: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 13px', borderBottom: `1px solid ${TOK.hairline}` }}>
+          <div style={{ width: 5, height: 5, borderRadius: '50%', background: TOK.ringBuild }} />
+          <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 9.5, fontWeight: 700, color: TOK.muted, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+            저녁 1h · 빌드
+          </span>
+          <div style={{ flex: 1 }} />
+          <Pill variant="blue">AUTO</Pill>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 13px' }}>
+          <Checkbox checked={false} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: TOK.ink, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              MCP 서버 wrapping
+            </div>
+            <div style={{ fontSize: 10.5, color: TOK.muted, marginTop: 1, fontFamily: 'Inter, "JetBrains Mono", monospace' }}>
+              me/sprint1-mcp-wrap
+            </div>
+          </div>
+          <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: TOK.muted }}>60분</span>
+        </div>
+      </div>
+
+      {/* Yesterday signals */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '11px 13px',
+        borderTop: `1px solid ${TOK.hairline}`,
+        borderBottom: `1px solid ${TOK.hairline}`,
+        fontFamily: 'Inter, sans-serif', fontSize: 11,
+        marginBottom: 14,
+      }}>
+        <span style={{ color: TOK.sub, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', fontSize: 9.5 }}>어제</span>
+        <span className="tab" style={{ color: TOK.ink2 }}>commit <strong style={{ color: TOK.ink }}>0</strong></span>
+        <span className="tab" style={{ color: TOK.ink2 }}>정독 <strong style={{ color: TOK.ink }}>2/2</strong> <span style={{ color: '#22A06B' }}>✓</span></span>
+        <span className="tab" style={{ color: TOK.ink2 }}>빌드 <strong style={{ color: TOK.ink }}>0</strong></span>
+      </div>
+
+      {/* Footer text links */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12, fontFamily: 'Inter, Pretendard, sans-serif', color: TOK.muted }}>
+        <span style={{ textDecoration: 'underline', textUnderlineOffset: 3, textDecorationColor: '#C7CCD1' }}>오늘 쉬기</span>
+        <span style={{ textDecoration: 'underline', textUnderlineOffset: 3, textDecorationColor: '#C7CCD1' }}>Settings</span>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * Sprint Progress — iPhone
+ * ============================================================ */
+function SprintMobile() {
+  const cells = [
+    2, 3, 1,
+    -1, -1, 0, 0,
+    0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0,
+    0, 0,
+  ];
+  const todayIdx = 2;
+  const cellColor = (v) => {
+    if (v === 1) return TOK.cell1;
+    if (v === 2) return TOK.cell2;
+    if (v === 3) return TOK.cell3;
+    return TOK.cellEmpty;
+  };
+
+  return (
+    <div style={{
+      width: '100%', height: '100%',
+      background: TOK.base,
+      fontFamily: 'Pretendard, Inter, sans-serif',
+      padding: '8px 16px 24px 16px',
+      overflow: 'hidden',
+    }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div>
+          <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 10, fontWeight: 600, color: TOK.muted, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 4 }}>
+            SPRINT 01
+          </div>
+          <h1 style={{ margin: 0, fontFamily: 'Inter, Pretendard, sans-serif', fontWeight: 700, fontSize: 19, letterSpacing: '-0.02em', color: TOK.ink, lineHeight: 1.2 }}>
+            Agent SDK + MCP
+          </h1>
+          <div className="tab" style={{ fontFamily: 'Inter, sans-serif', fontSize: 10.5, color: TOK.muted, marginTop: 4 }}>
+            04-29 → 05-28
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}>
+          <Pill variant="blue">Active</Pill>
+          <Pill variant="default">D3 / 30</Pill>
+        </div>
+      </div>
+
+      {/* HERO Activity Ring */}
+      <div style={{
+        border: `1px solid ${TOK.cardLine}`, borderRadius: 6,
+        background: TOK.surface,
+        padding: '16px 12px 12px 12px',
+        marginBottom: 14,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12,
+      }}>
+        <ActivityRing
+          size={210} stroke={20} gap={5}
+          values={[0.16, 0.0, 0.0]}
+          centerLabel="16%"
+          centerSub="OVERALL"
+        />
+        {/* 3-up legend grid */}
+        <div style={{
+          width: '100%',
+          display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
+          paddingTop: 10,
+          borderTop: `1px solid ${TOK.hairline}`,
+        }}>
+          {[
+            { c: TOK.ringInput, label: '인풋', n: '4', d: '25', p: 0.16 },
+            { c: TOK.ringBuild, label: '빌드', n: '0', d: '16', p: 0 },
+            { c: TOK.ringShare, label: '공유', n: '0', d: '4',  p: 0 },
+          ].map((m, i) => (
+            <div key={i} style={{
+              padding: '4px 8px',
+              borderRight: i < 2 ? `1px solid ${TOK.hairline}` : 'none',
+              display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-start',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <span style={{ width: 7, height: 7, borderRadius: '50%', background: m.c }} />
+                <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 9.5, fontWeight: 700, color: TOK.muted, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{m.label}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
+                <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, fontSize: 18, color: TOK.ink, letterSpacing: '-0.02em' }}>{m.n}</span>
+                <span className="tab" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 11, color: TOK.sub }}>/{m.d}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 30-day calendar */}
+      <div style={{
+        border: `1px solid ${TOK.cardLine}`, borderRadius: 6,
+        background: TOK.surface,
+        padding: '12px 12px 14px 12px',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
+          <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 9.5, fontWeight: 700, color: TOK.muted, letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+            30일 · daily
+          </span>
+          <div style={{ flex: 1 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ width: 9, height: 9, background: TOK.cellEmpty, borderRadius: 2 }} />
+            <div style={{ width: 9, height: 9, background: TOK.cell1, borderRadius: 2 }} />
+            <div style={{ width: 9, height: 9, background: TOK.cell2, borderRadius: 2 }} />
+            <div style={{ width: 9, height: 9, background: TOK.cell3, borderRadius: 2 }} />
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 5 }}>
+          {['M','T','W','T','F','S','S'].map((d, i) => (
+            <div key={i} style={{
+              fontFamily: 'Inter, sans-serif', fontSize: 9, fontWeight: 600,
+              color: TOK.sub, textAlign: 'center', paddingBottom: 2,
+            }}>{d}</div>
+          ))}
+          {Array.from({ length: 35 }).map((_, idx) => {
+            const i = idx;
+            if (i >= 30) {
+              return <div key={i} style={{ aspectRatio: '1', borderRadius: 7, background: TOK.cellEmpty, opacity: 0.4 }} />;
+            }
+            const v = cells[i] ?? 0;
+            const isToday = i === todayIdx;
+            const isFuture = v === -1;
+            return (
+              <div key={i} style={{
+                aspectRatio: '1',
+                borderRadius: 7,
+                background: isFuture ? TOK.cellEmpty : cellColor(v),
+                ...(isToday ? {
+                  background: '#fff',
+                  boxShadow: `inset 0 0 0 1.5px ${TOK.blue}`,
+                } : {}),
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: 10, fontWeight: 600,
+                color: isToday ? TOK.blue : (v >= 2 ? TOK.ink : (v === 1 ? TOK.ink2 : TOK.sub)),
+              }} className="tab">
+                {i + 1}
+              </div>
+            );
+          })}
+        </div>
+        <div style={{
+          marginTop: 12, paddingTop: 10,
+          borderTop: `1px solid ${TOK.hairline}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          fontFamily: 'Inter, sans-serif', fontSize: 11, color: TOK.muted,
+        }}>
+          <span><span style={{ color: TOK.blue, fontWeight: 700 }} className="tab">D3</span> · 5/1</span>
+          <span className="tab">남은 <strong style={{ color: TOK.ink }}>27</strong>일</span>
+          <span className="tab">페이스 <strong style={{ color: TOK.ink }}>+0.6</strong></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * Page composition
+ * ============================================================ */
+const pageStyles = {
+  page: {
+    background: '#EEEEEE',
+    minHeight: '100vh',
+    padding: 64,
+    boxSizing: 'border-box',
+  },
+  title: {
+    fontFamily: 'Inter, Pretendard, sans-serif',
+    fontWeight: 700,
+    fontSize: 22,
+    letterSpacing: '-0.02em',
+    color: '#0A0A0A',
+    margin: '0 0 6px 0',
+  },
+  subtitle: {
+    fontFamily: 'Inter, sans-serif',
+    fontSize: 12,
+    color: '#6B6F75',
+    margin: '0 0 32px 0',
+    fontStyle: 'italic',
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'auto auto',
+    gap: 48,
+    justifyContent: 'center',
+    alignItems: 'start',
+  },
+  cell: { display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'flex-start' },
+  label: { fontStyle: 'italic', color: '#888', fontSize: 13, fontFamily: 'Inter, sans-serif' },
+};
+
+function App() {
+  return (
+    <div style={pageStyles.page}>
+      <h1 style={pageStyles.title}>Coach Harness — Cobalt × Apple Health Hybrid</h1>
+      <p style={pageStyles.subtitle}>Linear 토대 (구조 · 톤) + Apple Health 차용 (Activity Ring · 시스템 컬러)</p>
+
+      <div style={pageStyles.grid}>
+        <div style={pageStyles.cell}>
+          <span style={pageStyles.label}>데스크톱 · Today</span>
+          <BrowserWindow
+            title="Today · Coach"
+            url="https://coach.app/today"
+            width={1440}
+            height={900}
+          >
+            <TodayDesktop />
+          </BrowserWindow>
+        </div>
+
+        <div style={pageStyles.cell}>
+          <span style={pageStyles.label}>데스크톱 · Sprint Progress</span>
+          <BrowserWindow
+            title="Sprint Progress · Coach"
+            url="https://coach.app/sprint"
+            width={1440}
+            height={900}
+          >
+            <SprintDesktop />
+          </BrowserWindow>
+        </div>
+
+        <div style={pageStyles.cell}>
+          <span style={pageStyles.label}>iPhone 15 Pro · Today</span>
+          <IosFrame width={393} height={852} time="9:41" battery={92}>
+            <TodayMobile />
+          </IosFrame>
+        </div>
+
+        <div style={pageStyles.cell}>
+          <span style={pageStyles.label}>iPhone 15 Pro · Sprint Progress</span>
+          <IosFrame width={393} height={852} time="9:41" battery={92}>
+            <SprintMobile />
+          </IosFrame>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

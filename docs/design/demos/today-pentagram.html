@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Coach Harness · Pentagram Mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: #F2F2F2;
+    font-family: 'Pretendard', 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #0A0A0A;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .page {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    padding: 64px;
+    align-items: start;
+    justify-items: center;
+  }
+  .cell { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .cell-label {
+    font-style: italic;
+    color: #666;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    align-self: flex-start;
+    font-family: 'Inter', sans-serif;
+  }
+  .cell-label strong {
+    font-style: normal;
+    font-weight: 700;
+    color: #0A0A0A;
+    margin-right: 8px;
+  }
+  /* selection */
+  ::selection { background: #E63946; color: #fff; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+
+<script type="text/babel">
+/* =========================================================
+   IosFrame (inlined from huashu-design assets)
+   ========================================================= */
+const iosFrameStyles = {
+  wrapper: {
+    display: 'inline-block',
+    padding: 12,
+    background: '#000',
+    borderRadius: 60,
+    boxShadow: '0 0 0 2px #1f2937, 0 20px 60px rgba(0,0,0,0.3)',
+    position: 'relative',
+  },
+  screen: {
+    position: 'relative',
+    borderRadius: 48,
+    overflow: 'hidden',
+    background: '#fff',
+  },
+  statusBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 54,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 32px 0 32px',
+    fontSize: 16,
+    fontWeight: 600,
+    fontFamily: '-apple-system, "SF Pro Text", sans-serif',
+    zIndex: 20,
+    pointerEvents: 'none',
+  },
+  dynamicIsland: {
+    position: 'absolute',
+    top: 12,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 124,
+    height: 36,
+    background: '#000',
+    borderRadius: 999,
+    zIndex: 30,
+  },
+  statusIcons: { display: 'flex', alignItems: 'center', gap: 6 },
+  signalIcon: { display: 'flex', alignItems: 'flex-end', gap: 2, height: 12 },
+  signalBar: { width: 3, background: 'currentColor', borderRadius: 1 },
+  batteryIcon: {
+    width: 26, height: 12,
+    border: '1.5px solid currentColor',
+    borderRadius: 3, padding: 1, position: 'relative', opacity: 0.8,
+  },
+  batteryCap: {
+    position: 'absolute', top: 3, right: -3, width: 2, height: 6,
+    background: 'currentColor', borderRadius: '0 1px 1px 0',
+  },
+  content: {
+    position: 'absolute', top: 54, left: 0, right: 0, bottom: 34, overflow: 'auto',
+  },
+  homeIndicator: {
+    position: 'absolute', bottom: 10, left: '50%', transform: 'translateX(-50%)',
+    width: 140, height: 5, background: 'rgba(0,0,0,0.3)', borderRadius: 999, zIndex: 10,
+  },
+  homeIndicatorDark: { background: 'rgba(255,255,255,0.5)' },
+};
+
+function IosFrame({
+  children,
+  width = 393,
+  height = 852,
+  time = '9:41',
+  battery = 100,
+  darkMode = false,
+  showStatusBar = true,
+  showDynamicIsland = true,
+  showHomeIndicator = true,
+}) {
+  const textColor = darkMode ? '#fff' : '#000';
+  return (
+    <div style={iosFrameStyles.wrapper}>
+      <div style={{ ...iosFrameStyles.screen, width, height, background: darkMode ? '#000' : '#fff' }}>
+        {showStatusBar && (
+          <div style={{ ...iosFrameStyles.statusBar, color: textColor }}>
+            <span>{time}</span>
+            <div style={iosFrameStyles.statusIcons}>
+              <div style={iosFrameStyles.signalIcon}>
+                <div style={{ ...iosFrameStyles.signalBar, height: 4 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 6 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 9 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 11 }} />
+              </div>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" style={{ color: textColor }}>
+                <path d="M8 11.5a1 1 0 100-2 1 1 0 000 2z" fill="currentColor" />
+                <path d="M3 7.5a7 7 0 0110 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+                <path d="M1 4.5a11 11 0 0114 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" opacity="0.7" />
+              </svg>
+              <div style={iosFrameStyles.batteryIcon}>
+                <div style={{ width: `${battery}%`, height: '100%', background: 'currentColor', borderRadius: 1, opacity: 0.9 }} />
+                <div style={iosFrameStyles.batteryCap} />
+              </div>
+            </div>
+          </div>
+        )}
+        {showDynamicIsland && <div style={iosFrameStyles.dynamicIsland} />}
+        <div style={iosFrameStyles.content}>{children}</div>
+        {showHomeIndicator && (
+          <div style={{ ...iosFrameStyles.homeIndicator, ...(darkMode ? iosFrameStyles.homeIndicatorDark : {}) }} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   BrowserWindow (inlined from huashu-design assets)
+   ========================================================= */
+const browserWindowStyles = {
+  window: {
+    display: 'inline-block',
+    background: '#fff',
+    borderRadius: 10,
+    overflow: 'hidden',
+    boxShadow: '0 30px 80px rgba(0,0,0,0.25), 0 0 0 0.5px rgba(0,0,0,0.15)',
+  },
+  chrome: { background: '#dee1e6', paddingTop: 10, paddingLeft: 10, paddingRight: 10, userSelect: 'none' },
+  tabRow: { display: 'flex', alignItems: 'flex-end', gap: 6, position: 'relative' },
+  trafficLights: { display: 'flex', gap: 8, alignItems: 'center', paddingBottom: 10, marginRight: 8 },
+  light: { width: 12, height: 12, borderRadius: '50%', border: '0.5px solid rgba(0,0,0,0.15)' },
+  close: { background: '#ff5f57' },
+  minimize: { background: '#febc2e' },
+  maximize: { background: '#28c840' },
+  tab: {
+    background: '#fff', padding: '8px 30px 8px 14px',
+    borderTopLeftRadius: 10, borderTopRightRadius: 10,
+    fontSize: 12, color: '#222',
+    fontFamily: '-apple-system, sans-serif',
+    maxWidth: 220, display: 'flex', alignItems: 'center', gap: 8,
+    position: 'relative', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+  },
+  favicon: { width: 14, height: 14, borderRadius: 2, background: '#999', flexShrink: 0 },
+  navBar: {
+    background: '#fff', padding: '8px 14px',
+    display: 'flex', alignItems: 'center', gap: 10,
+    borderBottom: '1px solid #e5e7eb',
+  },
+  navButtons: { display: 'flex', gap: 4, color: '#5f6368', fontSize: 16 },
+  navButton: { width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', cursor: 'pointer' },
+  urlBar: {
+    flex: 1, background: '#f1f3f4', borderRadius: 999,
+    padding: '7px 14px', fontSize: 13, color: '#333',
+    display: 'flex', alignItems: 'center', gap: 8,
+    fontFamily: '-apple-system, sans-serif',
+  },
+  lockIcon: { color: '#5f6368', fontSize: 12 },
+  content: { position: 'relative', overflow: 'auto', background: '#fff' },
+};
+
+function BrowserWindow({
+  title = 'New Tab',
+  url = 'https://example.com',
+  width = 1200,
+  height = 800,
+  showTrafficLights = true,
+  children,
+}) {
+  return (
+    <div style={browserWindowStyles.window}>
+      <div style={browserWindowStyles.chrome}>
+        <div style={browserWindowStyles.tabRow}>
+          {showTrafficLights && (
+            <div style={browserWindowStyles.trafficLights}>
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.close }} />
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.minimize }} />
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.maximize }} />
+            </div>
+          )}
+          <div style={browserWindowStyles.tab}>
+            <div style={browserWindowStyles.favicon} />
+            <span>{title}</span>
+          </div>
+        </div>
+      </div>
+      <div style={browserWindowStyles.navBar}>
+        <div style={browserWindowStyles.navButtons}>
+          <div style={browserWindowStyles.navButton}>{'←'}</div>
+          <div style={browserWindowStyles.navButton}>{'→'}</div>
+          <div style={browserWindowStyles.navButton}>{'↻'}</div>
+        </div>
+        <div style={browserWindowStyles.urlBar}>
+          <span style={browserWindowStyles.lockIcon}>{'■'}</span>
+          <span>{url}</span>
+        </div>
+      </div>
+      <div style={{ ...browserWindowStyles.content, width, height }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   Pentagram tokens
+   ========================================================= */
+const PENTA = {
+  white: '#FFFFFF',
+  black: '#0A0A0A',
+  red: '#E63946',
+  ink70: '#3A3A3A',
+  ink50: '#666666',
+  ink30: '#A8A8A8',
+  ink15: '#D9D9D9',
+  ink08: '#E5E5E5',
+  paper: '#F7F7F5',
+  display: '"Inter", "Helvetica Neue", Helvetica, Arial, sans-serif',
+  body: '"Pretendard", "Inter", "Helvetica Neue", sans-serif',
+  mono: '"JetBrains Mono", "SFMono-Regular", Menlo, monospace',
+};
+
+/* =========================================================
+   Tiny atoms (Pentagram-flavored)
+   ========================================================= */
+function Hairline({ color = PENTA.black, height = 1, style }) {
+  return <div style={{ height, background: color, width: '100%', ...style }} />;
+}
+
+function Checkbox({ checked = false, size = 16 }) {
+  return (
+    <div style={{
+      width: size, height: size,
+      border: `1.5px solid ${PENTA.black}`,
+      background: checked ? PENTA.black : 'transparent',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      flexShrink: 0,
+    }}>
+      {checked && (
+        <svg width={size - 6} height={size - 6} viewBox="0 0 10 10" fill="none">
+          <path d="M1 5 L4 8 L9 2" stroke="#fff" strokeWidth="1.6" strokeLinecap="square" />
+        </svg>
+      )}
+    </div>
+  );
+}
+
+function NumberMark({ n, color = PENTA.black, size = 11 }) {
+  return (
+    <span style={{
+      fontFamily: PENTA.display,
+      fontSize: size, fontWeight: 700,
+      letterSpacing: '0.06em',
+      color,
+    }}>
+      {String(n).padStart(2, '0')}
+    </span>
+  );
+}
+
+/* =========================================================
+   TODAY — DESKTOP
+   ========================================================= */
+const todayDesktopStyles = {
+  page: {
+    width: 1440, height: 900,
+    background: PENTA.white,
+    color: PENTA.black,
+    fontFamily: PENTA.body,
+    display: 'grid',
+    gridTemplateColumns: '64px 1fr 1fr 1fr 1fr 64px',
+    gridTemplateRows: '88px 1fr 56px',
+    position: 'relative',
+  },
+  topbar: {
+    gridColumn: '1 / -1', gridRow: '1 / 2',
+    display: 'grid', gridTemplateColumns: '64px 1fr 1fr 1fr 1fr 64px',
+    alignItems: 'center',
+    borderBottom: `1px solid ${PENTA.black}`,
+  },
+  brand: {
+    gridColumn: '2 / 3',
+    fontFamily: PENTA.display,
+    fontWeight: 900, fontSize: 18, letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+  },
+  topNav: {
+    gridColumn: '3 / 6',
+    display: 'flex', gap: 32, alignItems: 'center',
+    fontFamily: PENTA.display,
+    fontSize: 12, fontWeight: 600, letterSpacing: '0.12em',
+    textTransform: 'uppercase',
+  },
+  topNavItem: { color: PENTA.ink50 },
+  topNavActive: { color: PENTA.black, borderBottom: `2px solid ${PENTA.black}`, paddingBottom: 4 },
+  topMeta: {
+    gridColumn: '6 / 7',
+    justifySelf: 'end',
+    fontFamily: PENTA.mono,
+    fontSize: 11, color: PENTA.ink50, letterSpacing: '0.08em',
+    paddingRight: 8,
+  },
+  body: {
+    gridColumn: '2 / 6', gridRow: '2 / 3',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(12, 1fr)',
+    columnGap: 24, rowGap: 0,
+    paddingTop: 32,
+  },
+  // Big eyebrow date / sprint meta
+  eyebrowBlock: {
+    gridColumn: '1 / 13',
+    display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
+    paddingBottom: 24,
+    borderBottom: `1px solid ${PENTA.ink08}`,
+  },
+  eyebrowDate: {
+    fontFamily: PENTA.display,
+    fontSize: 11, fontWeight: 700, letterSpacing: '0.18em',
+    textTransform: 'uppercase',
+    color: PENTA.black,
+  },
+  eyebrowSprint: {
+    fontFamily: PENTA.mono,
+    fontSize: 11, color: PENTA.ink50, letterSpacing: '0.06em',
+  },
+  // Display row: huge "Day 03" + coach quote
+  displayRow: {
+    gridColumn: '1 / 13',
+    display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', columnGap: 24,
+    paddingTop: 36, paddingBottom: 36,
+    borderBottom: `1px solid ${PENTA.black}`,
+  },
+  dayBlock: {
+    gridColumn: '1 / 5',
+    display: 'flex', flexDirection: 'column', gap: 6,
+  },
+  dayLabel: {
+    fontFamily: PENTA.display,
+    fontSize: 10, fontWeight: 700, letterSpacing: '0.2em',
+    textTransform: 'uppercase',
+    color: PENTA.ink50,
+  },
+  dayHuge: {
+    fontFamily: PENTA.display,
+    fontSize: 168, fontWeight: 900,
+    lineHeight: 0.85,
+    letterSpacing: '-0.05em',
+    color: PENTA.black,
+  },
+  dayHugeRed: { color: PENTA.red },
+  daySub: {
+    fontFamily: PENTA.display,
+    fontSize: 13, fontWeight: 600, letterSpacing: '0.04em',
+    color: PENTA.ink50,
+    marginTop: 4,
+  },
+  quoteBlock: {
+    gridColumn: '6 / 13',
+    display: 'flex', flexDirection: 'column', gap: 16,
+    paddingLeft: 24,
+    borderLeft: `1px solid ${PENTA.ink08}`,
+  },
+  quoteEyebrow: {
+    fontFamily: PENTA.display,
+    fontSize: 10, fontWeight: 700, letterSpacing: '0.2em',
+    textTransform: 'uppercase',
+    color: PENTA.ink50,
+    display: 'flex', alignItems: 'center', gap: 10,
+  },
+  quoteDot: { width: 6, height: 6, background: PENTA.red, borderRadius: 0 },
+  quote: {
+    fontFamily: PENTA.body,
+    fontSize: 30, fontWeight: 700, lineHeight: 1.25,
+    letterSpacing: '-0.01em',
+    color: PENTA.black,
+  },
+  quoteAccent: { color: PENTA.red, fontWeight: 800 },
+  // Slots row
+  slotsRow: {
+    gridColumn: '1 / 13',
+    display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', columnGap: 24,
+    paddingTop: 36,
+  },
+  slot: { display: 'flex', flexDirection: 'column', gap: 12 },
+  slotIndex: {
+    fontFamily: PENTA.display,
+    fontSize: 11, fontWeight: 700, letterSpacing: '0.2em',
+    color: PENTA.ink50,
+  },
+  slotTitle: {
+    fontFamily: PENTA.body,
+    fontSize: 22, fontWeight: 800, letterSpacing: '-0.01em',
+    color: PENTA.black,
+    paddingBottom: 12,
+    borderBottom: `1px solid ${PENTA.black}`,
+  },
+  slotMeta: {
+    fontFamily: PENTA.display,
+    fontSize: 11, fontWeight: 600, letterSpacing: '0.08em',
+    color: PENTA.ink50,
+    display: 'flex', gap: 16,
+    paddingTop: 4,
+  },
+  slotItem: {
+    display: 'grid',
+    gridTemplateColumns: '20px 1fr auto',
+    columnGap: 14,
+    alignItems: 'flex-start',
+    paddingTop: 16, paddingBottom: 16,
+    borderBottom: `1px solid ${PENTA.ink08}`,
+  },
+  slotItemTitle: {
+    fontFamily: PENTA.body,
+    fontSize: 15, fontWeight: 600,
+    color: PENTA.black,
+    lineHeight: 1.3,
+  },
+  slotItemMeta: {
+    fontFamily: PENTA.mono,
+    fontSize: 11, color: PENTA.ink50,
+    marginTop: 4,
+    letterSpacing: '0.02em',
+  },
+  slotItemDuration: {
+    fontFamily: PENTA.display,
+    fontSize: 12, fontWeight: 700,
+    color: PENTA.black,
+    letterSpacing: '0.04em',
+  },
+  autoBadge: {
+    fontFamily: PENTA.display,
+    fontSize: 10, fontWeight: 700, letterSpacing: '0.18em',
+    color: PENTA.red,
+    textTransform: 'uppercase',
+    border: `1px solid ${PENTA.red}`,
+    padding: '3px 8px',
+    display: 'inline-block',
+    marginTop: 10,
+  },
+  // Right rail: yesterday signals
+  signalsCol: {
+    gridColumn: '9 / 13',
+    paddingLeft: 24,
+    borderLeft: `1px solid ${PENTA.ink08}`,
+  },
+  signalEyebrow: {
+    fontFamily: PENTA.display,
+    fontSize: 10, fontWeight: 700, letterSpacing: '0.2em',
+    color: PENTA.ink50, textTransform: 'uppercase',
+    marginBottom: 16,
+  },
+  signalRow: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+    paddingTop: 12, paddingBottom: 12,
+    borderBottom: `1px solid ${PENTA.ink08}`,
+  },
+  signalLabel: {
+    fontFamily: PENTA.body,
+    fontSize: 13, fontWeight: 500,
+    color: PENTA.black,
+  },
+  signalValue: {
+    fontFamily: PENTA.display,
+    fontSize: 22, fontWeight: 800,
+    letterSpacing: '-0.02em',
+  },
+  // footer
+  footer: {
+    gridColumn: '1 / -1', gridRow: '3 / 4',
+    display: 'grid',
+    gridTemplateColumns: '64px 1fr 1fr 64px',
+    alignItems: 'center',
+    borderTop: `1px solid ${PENTA.black}`,
+    fontFamily: PENTA.display,
+    fontSize: 11, fontWeight: 700, letterSpacing: '0.18em',
+    textTransform: 'uppercase',
+  },
+  footerLeft: { gridColumn: '2 / 3', color: PENTA.ink50 },
+  footerRight: { gridColumn: '3 / 4', justifySelf: 'end', display: 'flex', gap: 32 },
+};
+
+function TodayDesktop() {
+  return (
+    <div style={todayDesktopStyles.page}>
+      {/* TOP BAR */}
+      <div style={todayDesktopStyles.topbar}>
+        <div style={todayDesktopStyles.brand}>COACH<span style={{ color: PENTA.red }}>/</span>HARNESS</div>
+        <div style={todayDesktopStyles.topNav}>
+          <span style={todayDesktopStyles.topNavActive}>Today</span>
+          <span style={todayDesktopStyles.topNavItem}>Sprint</span>
+          <span style={todayDesktopStyles.topNavItem}>Inputs</span>
+          <span style={todayDesktopStyles.topNavItem}>Build</span>
+          <span style={todayDesktopStyles.topNavItem}>Share</span>
+        </div>
+        <div style={todayDesktopStyles.topMeta}>S01 · D03 / D30 · 2026·05·01</div>
+      </div>
+
+      {/* MAIN BODY GRID */}
+      <div style={todayDesktopStyles.body}>
+        {/* Eyebrow */}
+        <div style={todayDesktopStyles.eyebrowBlock}>
+          <div style={todayDesktopStyles.eyebrowDate}>2026 / 05 / 01 — Friday</div>
+          <div style={todayDesktopStyles.eyebrowSprint}>Sprint 1 · Agent SDK + MCP · Week 1 of 4</div>
+        </div>
+
+        {/* Display row */}
+        <div style={todayDesktopStyles.displayRow}>
+          <div style={todayDesktopStyles.dayBlock}>
+            <div style={todayDesktopStyles.dayLabel}>Today</div>
+            <div style={todayDesktopStyles.dayHuge}>
+              Day<span style={{ ...todayDesktopStyles.dayHugeRed }}>03</span>
+            </div>
+            <div style={todayDesktopStyles.daySub}>of 30 — 27 days remain</div>
+          </div>
+
+          <div style={todayDesktopStyles.quoteBlock}>
+            <div style={todayDesktopStyles.quoteEyebrow}>
+              <div style={todayDesktopStyles.quoteDot} /> Coach · 0901
+            </div>
+            <div style={todayDesktopStyles.quote}>
+              {'“'}어제 commit <span style={todayDesktopStyles.quoteAccent}>0건</span>.<br/>
+              오늘은 <span style={todayDesktopStyles.quoteAccent}>빌드 1h를 우선</span>으로,<br/>
+              정독은 30분만 권장.{'”'}
+            </div>
+            <div style={{ display: 'flex', gap: 24, paddingTop: 8 }}>
+              <div style={{ fontFamily: PENTA.mono, fontSize: 11, color: PENTA.ink50, letterSpacing: '0.04em' }}>
+                Signal · GitHub commits = 0 (24h)
+              </div>
+              <div style={{ fontFamily: PENTA.mono, fontSize: 11, color: PENTA.ink50, letterSpacing: '0.04em' }}>
+                Bias · build &gt; read
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Slots row */}
+        <div style={todayDesktopStyles.slotsRow}>
+          {/* Slot 1 */}
+          <div style={{ ...todayDesktopStyles.slot, gridColumn: '1 / 5' }}>
+            <div style={todayDesktopStyles.slotIndex}>01 — INPUT</div>
+            <div style={todayDesktopStyles.slotTitle}>평일 아침 / 30분 / 정독</div>
+            <div style={todayDesktopStyles.slotMeta}>
+              <span>07:30 — 08:00</span><span>·</span><span>READ TIGHTLY</span>
+            </div>
+
+            <div style={todayDesktopStyles.slotItem}>
+              <Checkbox checked={false} />
+              <div>
+                <div style={todayDesktopStyles.slotItemTitle}>Agent SDK Quickstart</div>
+                <div style={todayDesktopStyles.slotItemMeta}>anthropic.com / agent-sdk</div>
+              </div>
+              <div style={todayDesktopStyles.slotItemDuration}>30 MIN</div>
+            </div>
+
+            <div style={{ ...todayDesktopStyles.slotItem, borderBottom: 'none' }}>
+              <Checkbox checked={false} />
+              <div>
+                <div style={todayDesktopStyles.slotItemTitle}>Building Agents — Engineering Blog</div>
+                <div style={todayDesktopStyles.slotItemMeta}>anthropic.com / engineering</div>
+              </div>
+              <div style={todayDesktopStyles.slotItemDuration}>30 MIN</div>
+            </div>
+          </div>
+
+          {/* Slot 2 (highlighted by coach) */}
+          <div style={{ ...todayDesktopStyles.slot, gridColumn: '5 / 9', position: 'relative' }}>
+            <div style={{ ...todayDesktopStyles.slotIndex, color: PENTA.red }}>02 — BUILD · PRIORITY</div>
+            <div style={{ ...todayDesktopStyles.slotTitle, borderBottom: `2px solid ${PENTA.red}` }}>
+              평일 저녁 / 1h / 빌드
+            </div>
+            <div style={todayDesktopStyles.slotMeta}>
+              <span>20:00 — 21:00</span><span>·</span><span>SHIP CODE</span>
+            </div>
+
+            <div style={{ ...todayDesktopStyles.slotItem, borderBottom: 'none', paddingBottom: 8 }}>
+              <Checkbox checked={false} />
+              <div>
+                <div style={todayDesktopStyles.slotItemTitle}>
+                  사내 플러그인 → MCP 서버 wrapping
+                </div>
+                <div style={{ ...todayDesktopStyles.slotItemMeta, fontFamily: PENTA.mono }}>
+                  github.com / me / sprint1-mcp-wrap
+                </div>
+                <div style={todayDesktopStyles.autoBadge}>
+                  Commit ≥ 1 → 자동 완료
+                </div>
+              </div>
+              <div style={{ ...todayDesktopStyles.slotItemDuration, color: PENTA.red }}>60 MIN</div>
+            </div>
+          </div>
+
+          {/* Right rail: yesterday signals */}
+          <div style={todayDesktopStyles.signalsCol}>
+            <div style={todayDesktopStyles.signalEyebrow}>Yesterday · Signals</div>
+            <div style={todayDesktopStyles.signalRow}>
+              <span style={todayDesktopStyles.signalLabel}>GitHub commits</span>
+              <span style={{ ...todayDesktopStyles.signalValue, color: PENTA.red }}>0</span>
+            </div>
+            <div style={todayDesktopStyles.signalRow}>
+              <span style={todayDesktopStyles.signalLabel}>정독 완료</span>
+              <span style={todayDesktopStyles.signalValue}>2<span style={{ color: PENTA.ink30 }}>/2</span></span>
+            </div>
+            <div style={todayDesktopStyles.signalRow}>
+              <span style={todayDesktopStyles.signalLabel}>Build hours</span>
+              <span style={{ ...todayDesktopStyles.signalValue, color: PENTA.red }}>0.0<span style={{ color: PENTA.ink30, fontSize: 14 }}>h</span></span>
+            </div>
+            <div style={{ ...todayDesktopStyles.signalRow, borderBottom: 'none' }}>
+              <span style={todayDesktopStyles.signalLabel}>Streak</span>
+              <span style={todayDesktopStyles.signalValue}>D02</span>
+            </div>
+
+            {/* Sparkline-ish 3-day mark */}
+            <div style={{ marginTop: 24, display: 'flex', gap: 8, alignItems: 'flex-end', height: 60 }}>
+              <div style={{ flex: 1, background: PENTA.black, height: '60%' }} title="D01" />
+              <div style={{ flex: 1, background: PENTA.black, height: '90%' }} title="D02 read 2/2" />
+              <div style={{ flex: 1, background: PENTA.red, height: '30%' }} title="D02 build 0" />
+              <div style={{ flex: 1, background: PENTA.ink15, height: '20%' }} />
+              <div style={{ flex: 1, background: PENTA.ink15, height: '20%' }} />
+              <div style={{ flex: 1, background: PENTA.ink15, height: '20%' }} />
+              <div style={{ flex: 1, background: PENTA.ink15, height: '20%' }} />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: PENTA.display, fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', color: PENTA.ink50, marginTop: 6 }}>
+              <span>D01</span><span>D02 R</span><span>D02 B</span><span>D03</span><span>D04</span><span>D05</span><span>D06</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* FOOTER */}
+      <div style={todayDesktopStyles.footer}>
+        <div style={todayDesktopStyles.footerLeft}>오늘 쉬기</div>
+        <div style={todayDesktopStyles.footerRight}>
+          <span style={{ color: PENTA.ink50 }}>Settings</span>
+          <span style={{ color: PENTA.ink50 }}>Sprint Log</span>
+          <span style={{ color: PENTA.black }}>v0.1 · Pentagram</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   SPRINT PROGRESS — DESKTOP
+   ========================================================= */
+const sprintProgressStyles = {
+  page: {
+    width: 1440, height: 900,
+    background: PENTA.white,
+    color: PENTA.black,
+    fontFamily: PENTA.body,
+    display: 'grid',
+    gridTemplateColumns: '64px 1fr 1fr 1fr 1fr 64px',
+    gridTemplateRows: '88px 1fr 56px',
+    position: 'relative',
+  },
+  topbar: {
+    gridColumn: '1 / -1', gridRow: '1 / 2',
+    display: 'grid', gridTemplateColumns: '64px 1fr 1fr 1fr 1fr 64px',
+    alignItems: 'center',
+    borderBottom: `1px solid ${PENTA.black}`,
+  },
+  brand: { gridColumn: '2 / 3', fontFamily: PENTA.display, fontWeight: 900, fontSize: 18, letterSpacing: '0.04em', textTransform: 'uppercase' },
+  topNav: { gridColumn: '3 / 6', display: 'flex', gap: 32, alignItems: 'center', fontFamily: PENTA.display, fontSize: 12, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' },
+  topNavItem: { color: PENTA.ink50 },
+  topNavActive: { color: PENTA.black, borderBottom: `2px solid ${PENTA.black}`, paddingBottom: 4 },
+  topMeta: { gridColumn: '6 / 7', justifySelf: 'end', fontFamily: PENTA.mono, fontSize: 11, color: PENTA.ink50, letterSpacing: '0.08em', paddingRight: 8 },
+  body: {
+    gridColumn: '2 / 6', gridRow: '2 / 3',
+    display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)',
+    columnGap: 24, paddingTop: 32,
+  },
+  eyebrowBlock: {
+    gridColumn: '1 / 13',
+    display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
+    paddingBottom: 24,
+    borderBottom: `1px solid ${PENTA.ink08}`,
+  },
+  title: { fontFamily: PENTA.display, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' },
+  range: { fontFamily: PENTA.mono, fontSize: 11, color: PENTA.ink50, letterSpacing: '0.06em' },
+  // Three big metric cards
+  metricRow: {
+    gridColumn: '1 / 13',
+    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', columnGap: 0,
+    borderBottom: `1px solid ${PENTA.black}`,
+  },
+  metric: {
+    padding: '36px 32px',
+    borderRight: `1px solid ${PENTA.ink08}`,
+    display: 'flex', flexDirection: 'column', gap: 8,
+  },
+  metricLast: { borderRight: 'none' },
+  metricLabel: {
+    fontFamily: PENTA.display, fontSize: 10, fontWeight: 700, letterSpacing: '0.22em',
+    textTransform: 'uppercase', color: PENTA.ink50,
+  },
+  metricNumber: {
+    fontFamily: PENTA.display,
+    fontSize: 96, fontWeight: 900, lineHeight: 0.9,
+    letterSpacing: '-0.05em',
+    display: 'flex', alignItems: 'baseline', gap: 12,
+  },
+  metricDenominator: {
+    fontFamily: PENTA.display, fontSize: 22, fontWeight: 700,
+    color: PENTA.ink30, letterSpacing: '-0.02em',
+  },
+  metricFooter: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    paddingTop: 12,
+    fontFamily: PENTA.display, fontSize: 11, fontWeight: 700, letterSpacing: '0.1em',
+  },
+  metricBar: { height: 4, background: PENTA.ink08, position: 'relative', marginTop: 12 },
+  metricBarFill: { height: 4, background: PENTA.black, position: 'absolute', left: 0, top: 0 },
+  metricBarFillRed: { background: PENTA.red },
+  // Calendar block
+  calendarBlock: {
+    gridColumn: '1 / 13',
+    paddingTop: 28,
+  },
+  calendarLabel: {
+    fontFamily: PENTA.display, fontSize: 10, fontWeight: 700, letterSpacing: '0.22em',
+    textTransform: 'uppercase', color: PENTA.ink50,
+    paddingBottom: 12,
+  },
+  calendarHeader: {
+    display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)',
+    columnGap: 8,
+    fontFamily: PENTA.display, fontSize: 10, fontWeight: 700, letterSpacing: '0.18em',
+    color: PENTA.ink50, textTransform: 'uppercase',
+    paddingBottom: 8,
+    borderBottom: `1px solid ${PENTA.black}`,
+  },
+  weekRow: {
+    display: 'grid',
+    gridTemplateColumns: '60px 1fr',
+    columnGap: 24,
+    alignItems: 'stretch',
+    paddingTop: 16, paddingBottom: 16,
+    borderBottom: `1px solid ${PENTA.ink08}`,
+  },
+  weekLabel: {
+    fontFamily: PENTA.display, fontSize: 11, fontWeight: 800, letterSpacing: '0.12em',
+    color: PENTA.black,
+    display: 'flex', flexDirection: 'column', gap: 4,
+    paddingTop: 4,
+  },
+  weekTheme: {
+    fontFamily: PENTA.body, fontSize: 11, fontWeight: 500,
+    color: PENTA.ink50,
+    letterSpacing: 0,
+    textTransform: 'none',
+  },
+  daysGrid: {
+    display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', columnGap: 8,
+  },
+  dayCell: {
+    height: 78,
+    border: `1px solid ${PENTA.ink08}`,
+    padding: '8px 10px',
+    display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+    position: 'relative',
+  },
+  dayCellPast: { background: PENTA.paper },
+  dayCellToday: { border: `2px solid ${PENTA.red}`, background: PENTA.white },
+  dayCellFuture: { background: PENTA.white },
+  dayNumber: {
+    fontFamily: PENTA.display, fontSize: 11, fontWeight: 700, letterSpacing: '0.04em',
+    color: PENTA.ink70,
+  },
+  dayNumberToday: { color: PENTA.red },
+  dayNumberFuture: { color: PENTA.ink30 },
+  // sliver indicators
+  sliverRow: { display: 'flex', gap: 2, alignItems: 'flex-end', height: 16 },
+  sliver: { width: 5, background: PENTA.black },
+  sliverRed: { background: PENTA.red },
+  sliverEmpty: { background: PENTA.ink15 },
+};
+
+function DayCell({ d, kind, sliverRead = 0, sliverBuild = 0, sliverShare = 0, isToday = false }) {
+  const cellStyle = {
+    ...sprintProgressStyles.dayCell,
+    ...(kind === 'past' ? sprintProgressStyles.dayCellPast : {}),
+    ...(kind === 'future' ? sprintProgressStyles.dayCellFuture : {}),
+    ...(isToday ? sprintProgressStyles.dayCellToday : {}),
+  };
+  const numStyle = {
+    ...sprintProgressStyles.dayNumber,
+    ...(kind === 'future' ? sprintProgressStyles.dayNumberFuture : {}),
+    ...(isToday ? sprintProgressStyles.dayNumberToday : {}),
+  };
+  return (
+    <div style={cellStyle}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <span style={numStyle}>D{String(d).padStart(2, '0')}</span>
+        {isToday && <span style={{ width: 6, height: 6, background: PENTA.red }} />}
+      </div>
+      {kind !== 'future' && (
+        <div style={sprintProgressStyles.sliverRow}>
+          <div style={{ ...sprintProgressStyles.sliver, height: sliverRead ? `${sliverRead * 100}%` : '8%', ...(sliverRead ? {} : sprintProgressStyles.sliverEmpty) }} />
+          <div style={{ ...sprintProgressStyles.sliver, height: sliverBuild ? `${sliverBuild * 100}%` : '8%', ...(sliverBuild ? sprintProgressStyles.sliverRed : sprintProgressStyles.sliverEmpty) }} />
+          <div style={{ ...sprintProgressStyles.sliver, height: sliverShare ? `${sliverShare * 100}%` : '8%', ...(sliverShare ? {} : sprintProgressStyles.sliverEmpty) }} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SprintProgressDesktop() {
+  // Construct 30 days. Sprint starts 2026-04-29 (Wed).
+  // W1: 4/29 Wed, 4/30 Thu, 5/1 Fri (today, Day 3), 5/2 Sat, 5/3 Sun, 5/4 Mon, 5/5 Tue
+  // Week rows are 7 cells each. Day 1..30, week 1 has 7, etc., week 4 has 9 we'll show 30.
+  // Simpler: 4 rows × 7 = 28; we'll use 4 rows × 7 with day numbers 1..28; squeeze 29-30 onto W4 cells 8-9? Spec says 4 weeks × 7 days. We'll show 28 in calendar grid + small note for D29-30.
+  // Actually 30 days = 4w + 2d. We'll use 4 weeks × 7 + tail of 2 days in W5 mini-row.
+
+  const weeks = [
+    { label: 'W1', theme: '정독', days: [1,2,3,4,5,6,7] },
+    { label: 'W2', theme: '빌드 본격', days: [8,9,10,11,12,13,14] },
+    { label: 'W3', theme: '정독 + 빌드', days: [15,16,17,18,19,20,21] },
+    { label: 'W4', theme: '공유', days: [22,23,24,25,26,27,28] },
+  ];
+
+  const todayD = 3;
+
+  const dayMeta = (d) => {
+    if (d < todayD) return { kind: 'past',
+      sliverRead: d === 1 ? 1 : d === 2 ? 1 : 0,
+      sliverBuild: 0,
+      sliverShare: 0 };
+    if (d === todayD) return { kind: 'today', sliverRead: 0, sliverBuild: 0, sliverShare: 0 };
+    return { kind: 'future', sliverRead: 0, sliverBuild: 0, sliverShare: 0 };
+  };
+
+  return (
+    <div style={sprintProgressStyles.page}>
+      <div style={sprintProgressStyles.topbar}>
+        <div style={sprintProgressStyles.brand}>COACH<span style={{ color: PENTA.red }}>/</span>HARNESS</div>
+        <div style={sprintProgressStyles.topNav}>
+          <span style={sprintProgressStyles.topNavItem}>Today</span>
+          <span style={sprintProgressStyles.topNavActive}>Sprint</span>
+          <span style={sprintProgressStyles.topNavItem}>Inputs</span>
+          <span style={sprintProgressStyles.topNavItem}>Build</span>
+          <span style={sprintProgressStyles.topNavItem}>Share</span>
+        </div>
+        <div style={sprintProgressStyles.topMeta}>S01 · D03 / D30 · 2026·05·01</div>
+      </div>
+
+      <div style={sprintProgressStyles.body}>
+        <div style={sprintProgressStyles.eyebrowBlock}>
+          <div style={sprintProgressStyles.title}>Sprint 01 — Agent SDK + MCP</div>
+          <div style={sprintProgressStyles.range}>2026 · 04 · 29 → 2026 · 05 · 28</div>
+        </div>
+
+        {/* Three metric cards */}
+        <div style={sprintProgressStyles.metricRow}>
+          <div style={sprintProgressStyles.metric}>
+            <div style={sprintProgressStyles.metricLabel}>01 — Inputs · 정독</div>
+            <div style={sprintProgressStyles.metricNumber}>
+              4 <span style={sprintProgressStyles.metricDenominator}>/ 25</span>
+            </div>
+            <div style={sprintProgressStyles.metricFooter}>
+              <span style={{ color: PENTA.black }}>16<span style={{ fontSize: 11, color: PENTA.ink50 }}>%</span></span>
+              <span style={{ color: PENTA.ink50, fontFamily: PENTA.mono, fontSize: 10, fontWeight: 600 }}>on track</span>
+            </div>
+            <div style={sprintProgressStyles.metricBar}>
+              <div style={{ ...sprintProgressStyles.metricBarFill, width: '16%' }} />
+            </div>
+          </div>
+
+          <div style={sprintProgressStyles.metric}>
+            <div style={{ ...sprintProgressStyles.metricLabel, color: PENTA.red }}>02 — Builds · 빌드</div>
+            <div style={{ ...sprintProgressStyles.metricNumber, color: PENTA.red }}>
+              0 <span style={sprintProgressStyles.metricDenominator}>/ 16</span>
+            </div>
+            <div style={sprintProgressStyles.metricFooter}>
+              <span style={{ color: PENTA.red }}>0<span style={{ fontSize: 11, color: PENTA.ink50 }}>%</span></span>
+              <span style={{ color: PENTA.red, fontFamily: PENTA.mono, fontSize: 10, fontWeight: 700, letterSpacing: '0.1em' }}>BEHIND · TODAY</span>
+            </div>
+            <div style={sprintProgressStyles.metricBar}>
+              <div style={{ ...sprintProgressStyles.metricBarFill, ...sprintProgressStyles.metricBarFillRed, width: '2%' }} />
+            </div>
+          </div>
+
+          <div style={{ ...sprintProgressStyles.metric, ...sprintProgressStyles.metricLast }}>
+            <div style={sprintProgressStyles.metricLabel}>03 — Share · 공유</div>
+            <div style={sprintProgressStyles.metricNumber}>
+              0 <span style={sprintProgressStyles.metricDenominator}>/ 4</span>
+            </div>
+            <div style={sprintProgressStyles.metricFooter}>
+              <span>0<span style={{ fontSize: 11, color: PENTA.ink50 }}>%</span></span>
+              <span style={{ color: PENTA.ink50, fontFamily: PENTA.mono, fontSize: 10, fontWeight: 600 }}>scheduled · W4</span>
+            </div>
+            <div style={sprintProgressStyles.metricBar}>
+              <div style={{ ...sprintProgressStyles.metricBarFill, width: '0%' }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Calendar */}
+        <div style={{ ...sprintProgressStyles.calendarBlock, display: 'block' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '60px 1fr', columnGap: 24, alignItems: 'end', paddingBottom: 8, borderBottom: `1px solid ${PENTA.black}` }}>
+            <div style={sprintProgressStyles.calendarLabel}>30 Days</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', columnGap: 8, fontFamily: PENTA.display, fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', color: PENTA.ink50, textTransform: 'uppercase' }}>
+              <span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span>Mon</span><span>Tue</span>
+            </div>
+          </div>
+
+          {weeks.map((w) => (
+            <React.Fragment key={w.label}>
+              <div style={{ ...sprintProgressStyles.weekRow, gridTemplateColumns: '60px 1fr' }}>
+                <div style={sprintProgressStyles.weekLabel}>
+                  <span>{w.label}</span>
+                  <span style={sprintProgressStyles.weekTheme}>{w.theme}</span>
+                </div>
+                <div style={sprintProgressStyles.daysGrid}>
+                  {w.days.map((d) => {
+                    const m = dayMeta(d);
+                    return (
+                      <DayCell
+                        key={d}
+                        d={d}
+                        kind={m.kind}
+                        sliverRead={m.sliverRead}
+                        sliverBuild={m.sliverBuild}
+                        sliverShare={m.sliverShare}
+                        isToday={d === todayD}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </React.Fragment>
+          ))}
+
+          {/* Tail D29-D30 */}
+          <div style={{ ...sprintProgressStyles.weekRow, gridTemplateColumns: '60px 1fr', borderBottom: 'none' }}>
+            <div style={sprintProgressStyles.weekLabel}>
+              <span>W5</span>
+              <span style={sprintProgressStyles.weekTheme}>마감 / 회고</span>
+            </div>
+            <div style={sprintProgressStyles.daysGrid}>
+              <DayCell d={29} kind="future" />
+              <DayCell d={30} kind="future" />
+              <div /><div /><div /><div /><div />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ ...sprintProgressStyles.topbar, gridRow: '3 / 4', borderTop: `1px solid ${PENTA.black}`, borderBottom: 'none' }}>
+        <div style={{ gridColumn: '2 / 3', fontFamily: PENTA.display, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', color: PENTA.ink50 }}>
+          Legend ─ <span style={{ color: PENTA.black }}>■ Read</span> <span style={{ color: PENTA.red }}>■ Build</span> <span style={{ color: PENTA.ink30 }}>■ Share</span>
+        </div>
+        <div style={{ gridColumn: '6 / 7', justifySelf: 'end', fontFamily: PENTA.mono, fontSize: 11, color: PENTA.ink50, paddingRight: 8 }}>
+          updated 2026·05·01 · 09:01 KST
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   TODAY — MOBILE
+   ========================================================= */
+const todayMobileStyles = {
+  page: {
+    width: '100%', minHeight: '100%',
+    background: PENTA.white, color: PENTA.black,
+    fontFamily: PENTA.body,
+    paddingBottom: 40,
+  },
+  header: {
+    padding: '24px 24px 16px 24px',
+    borderBottom: `1px solid ${PENTA.black}`,
+  },
+  topRow: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    fontFamily: PENTA.display, fontSize: 10, fontWeight: 700, letterSpacing: '0.2em',
+    textTransform: 'uppercase',
+    color: PENTA.ink50,
+  },
+  brandSmall: { color: PENTA.black, fontWeight: 900 },
+  date: {
+    fontFamily: PENTA.display, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em',
+    textTransform: 'uppercase', color: PENTA.black,
+    marginTop: 16,
+  },
+  sprintMeta: {
+    fontFamily: PENTA.mono, fontSize: 10, color: PENTA.ink50, letterSpacing: '0.05em',
+    marginTop: 4,
+  },
+  // big day display
+  hero: {
+    padding: '20px 24px 24px 24px',
+    display: 'flex', flexDirection: 'column', gap: 4,
+    borderBottom: `1px solid ${PENTA.black}`,
+  },
+  heroLabel: {
+    fontFamily: PENTA.display, fontSize: 9, fontWeight: 700, letterSpacing: '0.22em',
+    textTransform: 'uppercase', color: PENTA.ink50,
+  },
+  heroNumber: {
+    fontFamily: PENTA.display, fontSize: 120, fontWeight: 900, lineHeight: 0.85,
+    letterSpacing: '-0.05em',
+    display: 'flex', alignItems: 'baseline',
+  },
+  heroSub: {
+    fontFamily: PENTA.display, fontSize: 12, fontWeight: 600, color: PENTA.ink50,
+    marginTop: 6,
+  },
+  // quote
+  quoteBlock: {
+    padding: '20px 24px',
+    borderBottom: `1px solid ${PENTA.ink08}`,
+  },
+  quoteEyebrow: {
+    fontFamily: PENTA.display, fontSize: 9, fontWeight: 700, letterSpacing: '0.22em',
+    color: PENTA.ink50, textTransform: 'uppercase',
+    display: 'flex', alignItems: 'center', gap: 8,
+    marginBottom: 12,
+  },
+  quoteDot: { width: 5, height: 5, background: PENTA.red },
+  quote: {
+    fontFamily: PENTA.body, fontSize: 18, fontWeight: 700, lineHeight: 1.3,
+    letterSpacing: '-0.005em',
+  },
+  quoteAccent: { color: PENTA.red, fontWeight: 800 },
+  // slot
+  slot: { padding: '20px 24px', borderBottom: `1px solid ${PENTA.ink08}` },
+  slotIndex: { fontFamily: PENTA.display, fontSize: 9, fontWeight: 700, letterSpacing: '0.22em', color: PENTA.ink50, textTransform: 'uppercase', marginBottom: 6 },
+  slotIndexRed: { color: PENTA.red },
+  slotTitle: { fontFamily: PENTA.body, fontSize: 17, fontWeight: 800, marginBottom: 8 },
+  slotMeta: { fontFamily: PENTA.mono, fontSize: 10, color: PENTA.ink50, letterSpacing: '0.04em', marginBottom: 16 },
+  slotItem: {
+    display: 'grid', gridTemplateColumns: '18px 1fr auto',
+    columnGap: 12, alignItems: 'flex-start',
+    paddingTop: 12, paddingBottom: 12,
+    borderTop: `1px solid ${PENTA.ink08}`,
+  },
+  slotItemTitle: { fontFamily: PENTA.body, fontSize: 14, fontWeight: 600, lineHeight: 1.3 },
+  slotItemMeta: { fontFamily: PENTA.mono, fontSize: 9, color: PENTA.ink50, marginTop: 4, letterSpacing: '0.02em' },
+  slotItemDuration: { fontFamily: PENTA.display, fontSize: 11, fontWeight: 700, letterSpacing: '0.04em' },
+  autoBadge: {
+    fontFamily: PENTA.display, fontSize: 8, fontWeight: 700, letterSpacing: '0.18em',
+    color: PENTA.red, textTransform: 'uppercase',
+    border: `1px solid ${PENTA.red}`, padding: '3px 6px',
+    display: 'inline-block', marginTop: 8,
+  },
+  // signals
+  signals: { padding: '20px 24px', borderBottom: `1px solid ${PENTA.black}` },
+  signalRow: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+    paddingTop: 10, paddingBottom: 10,
+    borderBottom: `1px solid ${PENTA.ink08}`,
+  },
+  signalLabel: { fontFamily: PENTA.body, fontSize: 12, fontWeight: 500 },
+  signalValue: { fontFamily: PENTA.display, fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' },
+  // footer
+  footerLinks: {
+    padding: '16px 24px',
+    display: 'flex', justifyContent: 'space-between',
+    fontFamily: PENTA.display, fontSize: 10, fontWeight: 700, letterSpacing: '0.2em',
+    textTransform: 'uppercase',
+  },
+};
+
+function TodayMobile() {
+  return (
+    <div style={todayMobileStyles.page}>
+      <div style={todayMobileStyles.header}>
+        <div style={todayMobileStyles.topRow}>
+          <span style={todayMobileStyles.brandSmall}>COACH<span style={{ color: PENTA.red }}>/</span>HARNESS</span>
+          <span>Today</span>
+        </div>
+        <div style={todayMobileStyles.date}>2026 / 05 / 01 — FRI</div>
+        <div style={todayMobileStyles.sprintMeta}>Sprint 01 · Day 03 / 30 · Week 1</div>
+      </div>
+
+      <div style={todayMobileStyles.hero}>
+        <div style={todayMobileStyles.heroLabel}>Today</div>
+        <div style={todayMobileStyles.heroNumber}>
+          Day<span style={{ color: PENTA.red }}>03</span>
+        </div>
+        <div style={todayMobileStyles.heroSub}>of 30 — 27 days remain</div>
+      </div>
+
+      <div style={todayMobileStyles.quoteBlock}>
+        <div style={todayMobileStyles.quoteEyebrow}>
+          <div style={todayMobileStyles.quoteDot} /> Coach · 0901
+        </div>
+        <div style={todayMobileStyles.quote}>
+          {'“'}어제 commit <span style={todayMobileStyles.quoteAccent}>0건</span>.<br/>
+          오늘은 <span style={todayMobileStyles.quoteAccent}>빌드 1h</span>를 우선,<br/>
+          정독은 30분만 권장.{'”'}
+        </div>
+      </div>
+
+      {/* Slot 1 */}
+      <div style={todayMobileStyles.slot}>
+        <div style={todayMobileStyles.slotIndex}>01 — INPUT</div>
+        <div style={todayMobileStyles.slotTitle}>평일 아침 / 30분 / 정독</div>
+        <div style={todayMobileStyles.slotMeta}>07:30 — 08:00 · READ TIGHTLY</div>
+
+        <div style={todayMobileStyles.slotItem}>
+          <Checkbox checked={false} size={14} />
+          <div>
+            <div style={todayMobileStyles.slotItemTitle}>Agent SDK Quickstart</div>
+            <div style={todayMobileStyles.slotItemMeta}>anthropic.com / agent-sdk</div>
+          </div>
+          <div style={todayMobileStyles.slotItemDuration}>30 MIN</div>
+        </div>
+
+        <div style={todayMobileStyles.slotItem}>
+          <Checkbox checked={false} size={14} />
+          <div>
+            <div style={todayMobileStyles.slotItemTitle}>Building Agents — Engineering Blog</div>
+            <div style={todayMobileStyles.slotItemMeta}>anthropic.com / engineering</div>
+          </div>
+          <div style={todayMobileStyles.slotItemDuration}>30 MIN</div>
+        </div>
+      </div>
+
+      {/* Slot 2 */}
+      <div style={todayMobileStyles.slot}>
+        <div style={{ ...todayMobileStyles.slotIndex, ...todayMobileStyles.slotIndexRed }}>02 — BUILD · PRIORITY</div>
+        <div style={{ ...todayMobileStyles.slotTitle, paddingBottom: 8, borderBottom: `2px solid ${PENTA.red}`, display: 'inline-block' }}>
+          평일 저녁 / 1h / 빌드
+        </div>
+        <div style={{ ...todayMobileStyles.slotMeta, marginTop: 8 }}>20:00 — 21:00 · SHIP CODE</div>
+
+        <div style={{ ...todayMobileStyles.slotItem, borderTop: `1px solid ${PENTA.ink08}` }}>
+          <Checkbox checked={false} size={14} />
+          <div>
+            <div style={todayMobileStyles.slotItemTitle}>
+              사내 플러그인 → MCP 서버 wrapping
+            </div>
+            <div style={todayMobileStyles.slotItemMeta}>github.com / me / sprint1-mcp-wrap</div>
+            <div style={todayMobileStyles.autoBadge}>Commit ≥ 1 → 자동 완료</div>
+          </div>
+          <div style={{ ...todayMobileStyles.slotItemDuration, color: PENTA.red }}>60 MIN</div>
+        </div>
+      </div>
+
+      {/* Yesterday signals */}
+      <div style={todayMobileStyles.signals}>
+        <div style={{ ...todayMobileStyles.slotIndex, marginBottom: 0 }}>YESTERDAY · SIGNALS</div>
+        <div style={todayMobileStyles.signalRow}>
+          <span style={todayMobileStyles.signalLabel}>GitHub commits</span>
+          <span style={{ ...todayMobileStyles.signalValue, color: PENTA.red }}>0</span>
+        </div>
+        <div style={todayMobileStyles.signalRow}>
+          <span style={todayMobileStyles.signalLabel}>정독 완료</span>
+          <span style={todayMobileStyles.signalValue}>2<span style={{ color: PENTA.ink30 }}>/2</span></span>
+        </div>
+        <div style={{ ...todayMobileStyles.signalRow, borderBottom: 'none' }}>
+          <span style={todayMobileStyles.signalLabel}>Streak</span>
+          <span style={todayMobileStyles.signalValue}>D02</span>
+        </div>
+      </div>
+
+      <div style={todayMobileStyles.footerLinks}>
+        <span style={{ color: PENTA.ink50 }}>오늘 쉬기</span>
+        <span style={{ color: PENTA.black }}>Settings</span>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   SPRINT PROGRESS — MOBILE
+   ========================================================= */
+const sprintMobileStyles = {
+  page: { width: '100%', minHeight: '100%', background: PENTA.white, color: PENTA.black, fontFamily: PENTA.body, paddingBottom: 40 },
+  header: { padding: '24px 24px 16px 24px', borderBottom: `1px solid ${PENTA.black}` },
+  topRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: PENTA.display, fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: PENTA.ink50 },
+  title: { fontFamily: PENTA.display, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', marginTop: 16 },
+  range: { fontFamily: PENTA.mono, fontSize: 10, color: PENTA.ink50, letterSpacing: '0.05em', marginTop: 4 },
+  metricCol: { display: 'flex', flexDirection: 'column' },
+  metric: { padding: '20px 24px', borderBottom: `1px solid ${PENTA.ink08}` },
+  metricRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' },
+  metricLabel: { fontFamily: PENTA.display, fontSize: 9, fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: PENTA.ink50 },
+  metricNumber: { fontFamily: PENTA.display, fontSize: 56, fontWeight: 900, lineHeight: 0.9, letterSpacing: '-0.04em' },
+  metricDenom: { fontFamily: PENTA.display, fontSize: 14, fontWeight: 700, color: PENTA.ink30, marginLeft: 4 },
+  metricBar: { height: 3, background: PENTA.ink08, marginTop: 12, position: 'relative' },
+  metricFill: { height: 3, background: PENTA.black, position: 'absolute', left: 0, top: 0 },
+  metricFillRed: { background: PENTA.red },
+  metricFooter: { display: 'flex', justifyContent: 'space-between', marginTop: 8, fontFamily: PENTA.mono, fontSize: 10, color: PENTA.ink50, letterSpacing: '0.06em' },
+  // calendar
+  calBlock: { padding: '20px 24px 24px 24px', borderBottom: `1px solid ${PENTA.black}` },
+  calLabel: { fontFamily: PENTA.display, fontSize: 9, fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: PENTA.ink50, marginBottom: 12 },
+  calHeader: {
+    display: 'grid', gridTemplateColumns: '32px repeat(7, 1fr)', columnGap: 4,
+    fontFamily: PENTA.display, fontSize: 8, fontWeight: 700, letterSpacing: '0.16em',
+    color: PENTA.ink50, textTransform: 'uppercase',
+    paddingBottom: 8, borderBottom: `1px solid ${PENTA.black}`,
+  },
+  weekRowMobile: {
+    display: 'grid', gridTemplateColumns: '32px repeat(7, 1fr)', columnGap: 4,
+    paddingTop: 8, paddingBottom: 8,
+    borderBottom: `1px solid ${PENTA.ink08}`,
+    alignItems: 'stretch',
+  },
+  weekLabelMobile: {
+    fontFamily: PENTA.display, fontSize: 10, fontWeight: 800, letterSpacing: '0.1em',
+    paddingTop: 6,
+  },
+  cellMobile: {
+    aspectRatio: '1 / 1',
+    border: `1px solid ${PENTA.ink08}`,
+    fontFamily: PENTA.display, fontSize: 8, fontWeight: 700, color: PENTA.ink50,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    position: 'relative',
+  },
+  cellPast: { background: PENTA.paper },
+  cellToday: { border: `2px solid ${PENTA.red}`, color: PENTA.red, background: PENTA.white },
+  cellEmpty: { border: 'none' },
+  // legend
+  themesBlock: { padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 6 },
+  themeRow: {
+    display: 'flex', justifyContent: 'space-between',
+    fontFamily: PENTA.display, fontSize: 10, fontWeight: 700, letterSpacing: '0.12em',
+    color: PENTA.ink70,
+  },
+  themeWeek: { fontWeight: 800, color: PENTA.black },
+};
+
+function MobileCell({ d, kind, isToday }) {
+  const style = {
+    ...sprintMobileStyles.cellMobile,
+    ...(kind === 'past' ? sprintMobileStyles.cellPast : {}),
+    ...(isToday ? sprintMobileStyles.cellToday : {}),
+    ...(d == null ? sprintMobileStyles.cellEmpty : {}),
+  };
+  if (d == null) return <div style={style} />;
+  return (
+    <div style={style}>
+      {d}
+      {kind === 'past' && (
+        <div style={{ position: 'absolute', bottom: 2, left: '50%', transform: 'translateX(-50%)', width: 4, height: 4, background: PENTA.black }} />
+      )}
+      {isToday && (
+        <div style={{ position: 'absolute', bottom: 2, left: '50%', transform: 'translateX(-50%)', width: 4, height: 4, background: PENTA.red }} />
+      )}
+    </div>
+  );
+}
+
+function SprintProgressMobile() {
+  const todayD = 3;
+  const weeks = [
+    { label: 'W1', days: [1,2,3,4,5,6,7] },
+    { label: 'W2', days: [8,9,10,11,12,13,14] },
+    { label: 'W3', days: [15,16,17,18,19,20,21] },
+    { label: 'W4', days: [22,23,24,25,26,27,28] },
+    { label: 'W5', days: [29,30,null,null,null,null,null] },
+  ];
+  return (
+    <div style={sprintMobileStyles.page}>
+      <div style={sprintMobileStyles.header}>
+        <div style={sprintMobileStyles.topRow}>
+          <span style={{ color: PENTA.black, fontWeight: 900 }}>COACH<span style={{ color: PENTA.red }}>/</span>HARNESS</span>
+          <span>Sprint</span>
+        </div>
+        <div style={sprintMobileStyles.title}>Sprint 01 — Agent SDK + MCP</div>
+        <div style={sprintMobileStyles.range}>2026·04·29 → 2026·05·28</div>
+      </div>
+
+      <div style={sprintMobileStyles.metricCol}>
+        <div style={sprintMobileStyles.metric}>
+          <div style={sprintMobileStyles.metricRow}>
+            <div>
+              <div style={sprintMobileStyles.metricLabel}>01 — Inputs · 정독</div>
+              <div style={sprintMobileStyles.metricNumber}>4<span style={sprintMobileStyles.metricDenom}>/ 25</span></div>
+            </div>
+            <div style={{ fontFamily: PENTA.display, fontSize: 28, fontWeight: 900, letterSpacing: '-0.04em' }}>
+              16<span style={{ fontSize: 11, color: PENTA.ink50 }}>%</span>
+            </div>
+          </div>
+          <div style={sprintMobileStyles.metricBar}>
+            <div style={{ ...sprintMobileStyles.metricFill, width: '16%' }} />
+          </div>
+          <div style={sprintMobileStyles.metricFooter}>
+            <span>읽기</span><span>on track</span>
+          </div>
+        </div>
+
+        <div style={sprintMobileStyles.metric}>
+          <div style={sprintMobileStyles.metricRow}>
+            <div>
+              <div style={{ ...sprintMobileStyles.metricLabel, color: PENTA.red }}>02 — Builds · 빌드</div>
+              <div style={{ ...sprintMobileStyles.metricNumber, color: PENTA.red }}>0<span style={sprintMobileStyles.metricDenom}>/ 16</span></div>
+            </div>
+            <div style={{ fontFamily: PENTA.display, fontSize: 28, fontWeight: 900, letterSpacing: '-0.04em', color: PENTA.red }}>
+              0<span style={{ fontSize: 11, color: PENTA.ink50 }}>%</span>
+            </div>
+          </div>
+          <div style={sprintMobileStyles.metricBar}>
+            <div style={{ ...sprintMobileStyles.metricFill, ...sprintMobileStyles.metricFillRed, width: '2%' }} />
+          </div>
+          <div style={{ ...sprintMobileStyles.metricFooter, color: PENTA.red, fontWeight: 700 }}>
+            <span>커밋 기반</span><span>BEHIND · TODAY</span>
+          </div>
+        </div>
+
+        <div style={sprintMobileStyles.metric}>
+          <div style={sprintMobileStyles.metricRow}>
+            <div>
+              <div style={sprintMobileStyles.metricLabel}>03 — Share · 공유</div>
+              <div style={sprintMobileStyles.metricNumber}>0<span style={sprintMobileStyles.metricDenom}>/ 4</span></div>
+            </div>
+            <div style={{ fontFamily: PENTA.display, fontSize: 28, fontWeight: 900, letterSpacing: '-0.04em' }}>
+              0<span style={{ fontSize: 11, color: PENTA.ink50 }}>%</span>
+            </div>
+          </div>
+          <div style={sprintMobileStyles.metricBar}>
+            <div style={{ ...sprintMobileStyles.metricFill, width: '0%' }} />
+          </div>
+          <div style={sprintMobileStyles.metricFooter}>
+            <span>발행</span><span>scheduled · W4</span>
+          </div>
+        </div>
+      </div>
+
+      <div style={sprintMobileStyles.calBlock}>
+        <div style={sprintMobileStyles.calLabel}>30-Day Calendar</div>
+        <div style={sprintMobileStyles.calHeader}>
+          <span></span>
+          <span>W</span><span>T</span><span>F</span><span>S</span><span>S</span><span>M</span><span>T</span>
+        </div>
+        {weeks.map((w) => (
+          <div key={w.label} style={sprintMobileStyles.weekRowMobile}>
+            <div style={sprintMobileStyles.weekLabelMobile}>{w.label}</div>
+            {w.days.map((d, i) => {
+              if (d == null) return <MobileCell key={i} d={null} />;
+              const kind = d < todayD ? 'past' : d === todayD ? 'today' : 'future';
+              return <MobileCell key={i} d={d} kind={kind} isToday={d === todayD} />;
+            })}
+          </div>
+        ))}
+      </div>
+
+      <div style={sprintMobileStyles.themesBlock}>
+        <div style={sprintMobileStyles.themeRow}>
+          <span><span style={sprintMobileStyles.themeWeek}>W1</span> · 정독</span>
+          <span style={{ color: PENTA.ink50 }}>4 / 7 read days</span>
+        </div>
+        <div style={sprintMobileStyles.themeRow}>
+          <span><span style={sprintMobileStyles.themeWeek}>W2</span> · 빌드 본격</span>
+          <span style={{ color: PENTA.red }}>0 / 5 build days</span>
+        </div>
+        <div style={sprintMobileStyles.themeRow}>
+          <span><span style={sprintMobileStyles.themeWeek}>W3</span> · 정독 + 빌드</span>
+          <span style={{ color: PENTA.ink50 }}>scheduled</span>
+        </div>
+        <div style={sprintMobileStyles.themeRow}>
+          <span><span style={sprintMobileStyles.themeWeek}>W4</span> · 공유</span>
+          <span style={{ color: PENTA.ink50 }}>scheduled</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   APP — composes the 4 mockups
+   ========================================================= */
+function App() {
+  return (
+    <div className="page">
+      {/* DESKTOP TODAY */}
+      <div className="cell">
+        <div className="cell-label"><strong>데스크톱</strong> · Today</div>
+        <BrowserWindow
+          title="Coach Harness — Today"
+          url="coach-harness.app/today"
+          width={1440}
+          height={900}
+        >
+          <TodayDesktop />
+        </BrowserWindow>
+      </div>
+
+      {/* DESKTOP SPRINT */}
+      <div className="cell">
+        <div className="cell-label"><strong>데스크톱</strong> · Sprint Progress</div>
+        <BrowserWindow
+          title="Coach Harness — Sprint 01"
+          url="coach-harness.app/sprint/01"
+          width={1440}
+          height={900}
+        >
+          <SprintProgressDesktop />
+        </BrowserWindow>
+      </div>
+
+      {/* MOBILE TODAY */}
+      <div className="cell">
+        <div className="cell-label"><strong>모바일</strong> · Today</div>
+        <IosFrame width={393} height={852} time="9:01" battery={62}>
+          <TodayMobile />
+        </IosFrame>
+      </div>
+
+      {/* MOBILE SPRINT */}
+      <div className="cell">
+        <div className="cell-label"><strong>모바일</strong> · Sprint Progress</div>
+        <IosFrame width={393} height={852} time="9:01" battery={62}>
+          <SprintProgressMobile />
+        </IosFrame>
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+
+Object.assign(window, { TodayDesktop, SprintProgressDesktop, TodayMobile, SprintProgressMobile });
+</script>
+</body>
+</html>

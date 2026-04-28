@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>Coach Harness — Build Studio (Today + Sprint Progress)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background: #F1EEE6;
+      font-family: 'Inter', 'Pretendard', -apple-system, sans-serif;
+      font-weight: 300;
+      color: #1A1A1A;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .page {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      padding: 64px;
+    }
+    .cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+    .label {
+      font-style: italic;
+      color: #999;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      font-family: 'EB Garamond', 'Pretendard', serif;
+      align-self: flex-start;
+      margin-left: 4px;
+    }
+    .label .sep { margin: 0 8px; opacity: 0.5; }
+
+    /* App content base */
+    .app {
+      width: 100%;
+      height: 100%;
+      background: #FAFAF7;
+      color: #1A1A1A;
+      font-family: 'Inter', 'Pretendard', sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      position: relative;
+    }
+    .hairline { border-top: 1px solid #E8E5DD; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .serif-it { font-family: 'EB Garamond', serif; font-style: italic; }
+
+    /* Subtle scrollbars */
+    ::-webkit-scrollbar { width: 0; height: 0; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    /* ---------- iosFrameStyles + IosFrame (inlined from huashu-design) ---------- */
+    const iosFrameStyles = {
+      wrapper: {
+        display: 'inline-block',
+        padding: 12,
+        background: '#000',
+        borderRadius: 60,
+        boxShadow: '0 0 0 2px #1f2937, 0 20px 60px rgba(0,0,0,0.3)',
+        position: 'relative',
+      },
+      screen: {
+        position: 'relative',
+        borderRadius: 48,
+        overflow: 'hidden',
+        background: '#fff',
+      },
+      statusBar: {
+        position: 'absolute', top: 0, left: 0, right: 0,
+        height: 54,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 32px 0 32px',
+        fontSize: 16, fontWeight: 600,
+        fontFamily: '-apple-system, "SF Pro Text", sans-serif',
+        zIndex: 20, pointerEvents: 'none',
+      },
+      dynamicIsland: {
+        position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
+        width: 124, height: 36, background: '#000', borderRadius: 999, zIndex: 30,
+      },
+      statusIcons: { display: 'flex', alignItems: 'center', gap: 6 },
+      signalIcon: { display: 'flex', alignItems: 'flex-end', gap: 2, height: 12 },
+      signalBar: { width: 3, background: 'currentColor', borderRadius: 1 },
+      batteryIcon: {
+        width: 26, height: 12, border: '1.5px solid currentColor',
+        borderRadius: 3, padding: 1, position: 'relative', opacity: 0.8,
+      },
+      batteryCap: {
+        position: 'absolute', top: 3, right: -3, width: 2, height: 6,
+        background: 'currentColor', borderRadius: '0 1px 1px 0',
+      },
+      content: {
+        position: 'absolute', top: 54, left: 0, right: 0, bottom: 34, overflow: 'auto',
+      },
+      homeIndicator: {
+        position: 'absolute', bottom: 10, left: '50%', transform: 'translateX(-50%)',
+        width: 140, height: 5, background: 'rgba(0,0,0,0.3)', borderRadius: 999, zIndex: 10,
+      },
+      homeIndicatorDark: { background: 'rgba(255,255,255,0.5)' },
+    };
+
+    function IosFrame({
+      children, width = 393, height = 852, time = '9:41', battery = 100,
+      darkMode = false, showStatusBar = true, showDynamicIsland = true, showHomeIndicator = true,
+    }) {
+      const textColor = darkMode ? '#fff' : '#000';
+      return (
+        <div style={iosFrameStyles.wrapper}>
+          <div style={{ ...iosFrameStyles.screen, width, height, background: darkMode ? '#000' : '#fff' }}>
+            {showStatusBar && (
+              <div style={{ ...iosFrameStyles.statusBar, color: textColor }}>
+                <span>{time}</span>
+                <div style={iosFrameStyles.statusIcons}>
+                  <div style={iosFrameStyles.signalIcon}>
+                    <div style={{ ...iosFrameStyles.signalBar, height: 4 }} />
+                    <div style={{ ...iosFrameStyles.signalBar, height: 6 }} />
+                    <div style={{ ...iosFrameStyles.signalBar, height: 9 }} />
+                    <div style={{ ...iosFrameStyles.signalBar, height: 11 }} />
+                  </div>
+                  <svg width="16" height="12" viewBox="0 0 16 12" fill="none" style={{ color: textColor }}>
+                    <path d="M8 11.5a1 1 0 100-2 1 1 0 000 2z" fill="currentColor" />
+                    <path d="M3 7.5a7 7 0 0110 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+                    <path d="M1 4.5a11 11 0 0114 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" opacity="0.7" />
+                  </svg>
+                  <div style={iosFrameStyles.batteryIcon}>
+                    <div style={{ width: `${battery}%`, height: '100%', background: 'currentColor', borderRadius: 1, opacity: 0.9 }} />
+                    <div style={iosFrameStyles.batteryCap} />
+                  </div>
+                </div>
+              </div>
+            )}
+            {showDynamicIsland && <div style={iosFrameStyles.dynamicIsland} />}
+            <div style={iosFrameStyles.content}>{children}</div>
+            {showHomeIndicator && (
+              <div style={{ ...iosFrameStyles.homeIndicator, ...(darkMode ? iosFrameStyles.homeIndicatorDark : {}) }} />
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    /* ---------- browserWindowStyles + BrowserWindow (inlined) ---------- */
+    const browserWindowStyles = {
+      window: {
+        display: 'inline-block', background: '#fff', borderRadius: 10, overflow: 'hidden',
+        boxShadow: '0 30px 80px rgba(0,0,0,0.25), 0 0 0 0.5px rgba(0,0,0,0.15)',
+      },
+      chrome: { background: '#dee1e6', paddingTop: 10, paddingLeft: 10, paddingRight: 10, userSelect: 'none' },
+      tabRow: { display: 'flex', alignItems: 'flex-end', gap: 6, position: 'relative' },
+      trafficLights: { display: 'flex', gap: 8, alignItems: 'center', paddingBottom: 10, marginRight: 8 },
+      light: { width: 12, height: 12, borderRadius: '50%', border: '0.5px solid rgba(0,0,0,0.15)' },
+      close: { background: '#ff5f57' },
+      minimize: { background: '#febc2e' },
+      maximize: { background: '#28c840' },
+      tab: {
+        background: '#fff', padding: '8px 30px 8px 14px',
+        borderTopLeftRadius: 10, borderTopRightRadius: 10,
+        fontSize: 12, color: '#222', fontFamily: '-apple-system, sans-serif',
+        maxWidth: 240, display: 'flex', alignItems: 'center', gap: 8,
+        position: 'relative', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+      },
+      favicon: { width: 14, height: 14, borderRadius: 2, background: '#999', flexShrink: 0 },
+      navBar: { background: '#fff', padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 10, borderBottom: '1px solid #e5e7eb' },
+      navButtons: { display: 'flex', gap: 4, color: '#5f6368', fontSize: 16 },
+      navButton: { width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', cursor: 'pointer' },
+      urlBar: { flex: 1, background: '#f1f3f4', borderRadius: 999, padding: '7px 14px', fontSize: 13, color: '#333', display: 'flex', alignItems: 'center', gap: 8, fontFamily: '-apple-system, sans-serif' },
+      lockIcon: { color: '#5f6368', fontSize: 12 },
+      content: { position: 'relative', overflow: 'auto', background: '#fff' },
+    };
+
+    function BrowserWindow({ title = 'New Tab', url = 'https://example.com', width = 1200, height = 800, showTrafficLights = true, children }) {
+      return (
+        <div style={browserWindowStyles.window}>
+          <div style={browserWindowStyles.chrome}>
+            <div style={browserWindowStyles.tabRow}>
+              {showTrafficLights && (
+                <div style={browserWindowStyles.trafficLights}>
+                  <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.close }} />
+                  <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.minimize }} />
+                  <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.maximize }} />
+                </div>
+              )}
+              <div style={browserWindowStyles.tab}>
+                <div style={browserWindowStyles.favicon} />
+                <span>{title}</span>
+              </div>
+            </div>
+          </div>
+          <div style={browserWindowStyles.navBar}>
+            <div style={browserWindowStyles.navButtons}>
+              <div style={browserWindowStyles.navButton}>{'←'}</div>
+              <div style={browserWindowStyles.navButton}>{'→'}</div>
+              <div style={browserWindowStyles.navButton}>{'↻'}</div>
+            </div>
+            <div style={browserWindowStyles.urlBar}>
+              <span style={browserWindowStyles.lockIcon}>{'\u{1F512}'}</span>
+              <span>{url}</span>
+            </div>
+          </div>
+          <div style={{ ...browserWindowStyles.content, width, height }}>{children}</div>
+        </div>
+      );
+    }
+
+    /* ---------- 공유 토큰 ---------- */
+    const TOKENS = {
+      bg: '#FAFAF7',
+      ink: '#1A1A1A',
+      hair: '#E8E5DD',
+      muted: '#9A958A',
+      faint: '#C7C2B6',
+      gold: '#D4A574',
+    };
+
+    /* ---------- 공유 atoms ---------- */
+    function Checkbox({ checked }) {
+      return (
+        <span style={{
+          display: 'inline-block', width: 14, height: 14, border: `1px solid ${TOKENS.ink}`,
+          borderRadius: 3, position: 'relative', flexShrink: 0,
+          background: checked ? TOKENS.ink : 'transparent',
+          marginTop: 4,
+        }}>
+          {checked && (
+            <span style={{
+              position: 'absolute', top: 2, left: 4, width: 4, height: 8,
+              borderRight: '1.5px solid #FAFAF7', borderBottom: '1.5px solid #FAFAF7',
+              transform: 'rotate(45deg)',
+            }} />
+          )}
+        </span>
+      );
+    }
+
+    function GoldDot({ size = 6 }) {
+      return <span style={{ display: 'inline-block', width: size, height: size, borderRadius: '50%', background: TOKENS.gold }} />;
+    }
+
+    /* ---------- TODAY 화면 (공통 콘텐츠) ---------- */
+    /* density: 'desktop' | 'mobile' */
+    function TodayScreen({ density }) {
+      const isDesk = density === 'desktop';
+      const padX = isDesk ? 140 : 32;
+      const padTop = isDesk ? 96 : 24;
+      const titleSize = isDesk ? 56 : 32;
+      const sectionGap = isDesk ? 96 : 56;
+
+      const todayStyles = {
+        root: {
+          padding: `${padTop}px ${padX}px ${isDesk ? 80 : 48}px`,
+          minHeight: '100%',
+          display: 'flex', flexDirection: 'column', gap: sectionGap,
+          background: TOKENS.bg,
+        },
+        eyebrow: {
+          fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
+          color: TOKENS.muted, fontWeight: 400, marginBottom: 18,
+        },
+        title: {
+          fontFamily: "'EB Garamond', 'Pretendard', serif",
+          fontWeight: 400,
+          fontSize: titleSize,
+          letterSpacing: '-0.01em',
+          lineHeight: 1.05,
+          color: TOKENS.ink,
+        },
+        meta: {
+          marginTop: 14,
+          fontSize: isDesk ? 13 : 12,
+          color: TOKENS.muted,
+          fontWeight: 300,
+          letterSpacing: '0.02em',
+        },
+        coachQuote: {
+          fontFamily: "'EB Garamond', serif",
+          fontStyle: 'italic',
+          fontWeight: 400,
+          fontSize: isDesk ? 22 : 17,
+          lineHeight: 1.5,
+          color: '#3a3a3a',
+          maxWidth: isDesk ? 560 : '100%',
+          paddingLeft: isDesk ? 22 : 18,
+          borderLeft: `1px solid ${TOKENS.gold}`,
+        },
+        coachLabel: {
+          fontFamily: 'Inter, sans-serif',
+          fontStyle: 'normal',
+          fontSize: 10,
+          letterSpacing: '0.22em',
+          textTransform: 'uppercase',
+          color: TOKENS.gold,
+          display: 'block',
+          marginBottom: 14,
+          fontWeight: 400,
+        },
+        slotHead: {
+          display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
+          paddingBottom: 18, borderBottom: `1px solid ${TOKENS.hair}`,
+        },
+        slotKicker: {
+          fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase',
+          color: TOKENS.muted, fontWeight: 400,
+        },
+        slotTitle: {
+          fontFamily: "'EB Garamond', 'Pretendard', serif",
+          fontWeight: 300,
+          fontSize: isDesk ? 26 : 19,
+          letterSpacing: '-0.005em',
+          color: TOKENS.ink,
+          marginTop: 8,
+        },
+        slotMeta: {
+          fontSize: 11, color: TOKENS.muted, fontWeight: 300, letterSpacing: '0.04em',
+        },
+        item: {
+          display: 'grid',
+          gridTemplateColumns: '24px 1fr auto',
+          gap: isDesk ? 20 : 14,
+          padding: isDesk ? '22px 0' : '18px 0',
+          borderBottom: `1px solid ${TOKENS.hair}`,
+          alignItems: 'flex-start',
+        },
+        itemTitle: {
+          fontSize: isDesk ? 16 : 14, fontWeight: 400, color: TOKENS.ink, lineHeight: 1.4,
+        },
+        itemUrl: {
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: isDesk ? 11 : 10, color: TOKENS.muted,
+          marginTop: 6, letterSpacing: '0.01em',
+        },
+        itemRight: {
+          fontSize: 11, color: TOKENS.muted, fontWeight: 300,
+          letterSpacing: '0.04em', whiteSpace: 'nowrap',
+        },
+        autoNote: {
+          marginTop: isDesk ? 24 : 18,
+          fontSize: 11, color: TOKENS.muted, fontWeight: 300,
+          letterSpacing: '0.02em', display: 'flex', alignItems: 'center', gap: 8,
+        },
+        signalsRow: {
+          display: 'flex', gap: isDesk ? 56 : 28,
+          fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase',
+          color: TOKENS.faint, fontWeight: 400,
+        },
+        signalKey: { color: TOKENS.faint },
+        signalVal: { color: TOKENS.muted, marginLeft: 8 },
+        footer: {
+          marginTop: 'auto',
+          paddingTop: isDesk ? 56 : 32,
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          borderTop: `1px solid ${TOKENS.hair}`,
+        },
+        footLink: {
+          fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase',
+          color: TOKENS.muted, fontWeight: 400,
+        },
+      };
+
+      const slot1 = [
+        { title: 'Agent SDK Quickstart', dur: '30분', url: 'anthropic.com/agent-sdk' },
+        { title: 'Building Agents — Engineering Blog', dur: '30분', url: 'anthropic.com/engineering' },
+      ];
+      const slot2 = [
+        { title: '사내 플러그인 → MCP 서버 wrapping', dur: '60분', url: 'me/sprint1-mcp-wrap' },
+      ];
+
+      return (
+        <div style={todayStyles.root}>
+          {/* Header */}
+          <div>
+            <div style={todayStyles.eyebrow}>Today</div>
+            <div style={todayStyles.title}>
+              {isDesk ? (<><span>2026년 5월 1일</span><br/><em style={{fontStyle:'italic', color:TOKENS.muted, fontWeight:400}}>금요일</em></>) : '2026년 5월 1일 금요일'}
+            </div>
+            <div style={todayStyles.meta}>Sprint 1  ·  Day 3 / 30  ·  Week 1</div>
+          </div>
+
+          {/* Coach quote */}
+          <div>
+            <span style={todayStyles.coachLabel}>Coach</span>
+            <div style={todayStyles.coachQuote}>
+              「어제 commit 0건. 오늘은 빌드 1h 우선,<br/>정독은 30분만 권장.」
+            </div>
+          </div>
+
+          {/* Slot 1 */}
+          <div>
+            <div style={todayStyles.slotHead}>
+              <div>
+                <div style={todayStyles.slotKicker}>Slot 1  ·  평일 아침</div>
+                <div style={todayStyles.slotTitle}>30분 정독</div>
+              </div>
+              <div style={todayStyles.slotMeta}>2 / 2 권장</div>
+            </div>
+            <div>
+              {slot1.map((it, i) => (
+                <div key={i} style={todayStyles.item}>
+                  <Checkbox />
+                  <div>
+                    <div style={todayStyles.itemTitle}>{it.title}</div>
+                    <div style={todayStyles.itemUrl}>{it.url}</div>
+                  </div>
+                  <div style={todayStyles.itemRight}>{it.dur}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Slot 2 */}
+          <div>
+            <div style={todayStyles.slotHead}>
+              <div>
+                <div style={todayStyles.slotKicker}>Slot 2  ·  평일 저녁</div>
+                <div style={todayStyles.slotTitle}>1h 빌드</div>
+              </div>
+              <div style={todayStyles.slotMeta}>자동 신호</div>
+            </div>
+            <div>
+              {slot2.map((it, i) => (
+                <div key={i} style={todayStyles.item}>
+                  <Checkbox />
+                  <div>
+                    <div style={todayStyles.itemTitle}>{it.title}</div>
+                    <div style={todayStyles.itemUrl}>{it.url}</div>
+                  </div>
+                  <div style={todayStyles.itemRight}>{it.dur}</div>
+                </div>
+              ))}
+            </div>
+            <div style={todayStyles.autoNote}>
+              <GoldDot size={5} />
+              <span style={{ fontFamily: "'EB Garamond', serif", fontStyle: 'italic', fontSize: isDesk ? 14 : 12, color: '#555' }}>
+                commit ≥ 1로 자동 완료
+              </span>
+            </div>
+          </div>
+
+          {/* Yesterday signals */}
+          <div style={todayStyles.signalsRow}>
+            <div>
+              <span style={todayStyles.signalKey}>Yest. commits</span>
+              <span style={todayStyles.signalVal}>0</span>
+            </div>
+            <div>
+              <span style={todayStyles.signalKey}>정독</span>
+              <span style={todayStyles.signalVal}>2 / 2</span>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div style={todayStyles.footer}>
+            <span style={todayStyles.footLink}>오늘 쉬기</span>
+            <span style={todayStyles.footLink}>Settings</span>
+          </div>
+        </div>
+      );
+    }
+
+    /* ---------- SPRINT PROGRESS 화면 ---------- */
+    function SprintProgressScreen({ density }) {
+      const isDesk = density === 'desktop';
+      const padX = isDesk ? 130 : 30;
+      const padTop = isDesk ? 96 : 24;
+
+      const sp = {
+        root: {
+          padding: `${padTop}px ${padX}px ${isDesk ? 80 : 48}px`,
+          minHeight: '100%',
+          background: TOKENS.bg,
+          display: 'flex', flexDirection: 'column', gap: isDesk ? 88 : 48,
+        },
+        eyebrow: {
+          fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
+          color: TOKENS.muted, fontWeight: 400, marginBottom: 18,
+        },
+        h1: {
+          fontFamily: "'EB Garamond', serif",
+          fontWeight: 300,
+          fontSize: isDesk ? 56 : 32,
+          letterSpacing: '-0.01em',
+          lineHeight: 1.05,
+        },
+        sub: {
+          marginTop: 14, fontSize: isDesk ? 13 : 12, color: TOKENS.muted, fontWeight: 300, letterSpacing: '0.02em',
+        },
+        kpiRow: {
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: isDesk ? 1 : 1,
+          background: TOKENS.hair,
+          border: `1px solid ${TOKENS.hair}`,
+        },
+        kpi: {
+          background: TOKENS.bg,
+          padding: isDesk ? '48px 24px 40px' : '28px 14px 24px',
+          textAlign: 'center',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: isDesk ? 18 : 10,
+        },
+        kpiLabel: {
+          fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase',
+          color: TOKENS.muted, fontWeight: 400,
+        },
+        kpiNum: {
+          fontFamily: "'EB Garamond', serif",
+          fontWeight: 300,
+          fontSize: isDesk ? 72 : 42,
+          letterSpacing: '-0.02em',
+          lineHeight: 1,
+          color: TOKENS.ink,
+        },
+        kpiNumGold: { color: TOKENS.gold },
+        kpiPct: {
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: isDesk ? 11 : 10,
+          color: TOKENS.muted, letterSpacing: '0.04em',
+        },
+        kpiDenom: {
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: isDesk ? 11 : 9, color: TOKENS.faint, letterSpacing: '0.06em',
+        },
+        calWrap: { display: 'flex', flexDirection: 'column', gap: isDesk ? 24 : 16 },
+        calHeadRow: {
+          display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+          paddingBottom: 18, borderBottom: `1px solid ${TOKENS.hair}`,
+        },
+        calTitle: {
+          fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
+          color: TOKENS.muted, fontWeight: 400,
+        },
+        calRange: {
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: isDesk ? 11 : 10, color: TOKENS.muted, letterSpacing: '0.04em',
+        },
+        weeks: { display: 'flex', flexDirection: 'column' },
+        weekRow: {
+          display: 'grid',
+          gridTemplateColumns: `${isDesk ? 36 : 24}px repeat(7, 1fr)`,
+          gap: isDesk ? 10 : 6,
+          alignItems: 'stretch',
+          padding: isDesk ? '14px 0' : '10px 0',
+          borderBottom: `1px solid ${TOKENS.hair}`,
+        },
+        weekLabel: {
+          fontSize: 10, color: TOKENS.faint,
+          letterSpacing: '0.18em', textTransform: 'uppercase',
+          alignSelf: 'center', fontWeight: 400,
+        },
+        cell: {
+          aspectRatio: '1.1 / 1',
+          minHeight: isDesk ? 56 : 38,
+          border: `1px solid ${TOKENS.hair}`,
+          padding: isDesk ? '8px 8px' : '6px 6px',
+          display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+          background: TOKENS.bg,
+          position: 'relative',
+        },
+        cellNum: {
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: isDesk ? 10 : 9,
+          color: TOKENS.faint, letterSpacing: '0.04em',
+        },
+        cellNumActive: { color: TOKENS.ink },
+        slivers: { display: 'flex', gap: 3, alignItems: 'flex-end' },
+        sliver: { width: isDesk ? 6 : 4, background: TOKENS.ink, opacity: 0.85 },
+        slotMini: {
+          marginTop: isDesk ? 36 : 20,
+          display: 'flex', flexDirection: 'column', gap: isDesk ? 22 : 14,
+        },
+        slotMiniRow: {
+          display: 'grid',
+          gridTemplateColumns: isDesk ? '180px 1fr 64px' : '110px 1fr 44px',
+          gap: isDesk ? 24 : 12, alignItems: 'center',
+        },
+        slotMiniLabel: {
+          fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
+          color: TOKENS.muted, fontWeight: 400,
+        },
+        bar: { height: 1, background: TOKENS.hair, position: 'relative' },
+        barFill: { position: 'absolute', top: 0, left: 0, height: 1, background: TOKENS.ink },
+        barFillGold: { background: TOKENS.gold },
+        ratio: {
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 11, color: TOKENS.muted, letterSpacing: '0.04em', textAlign: 'right',
+        },
+      };
+
+      // 30-day grid as 5 rows × 7 cols (Day 1..30, last row last 2 cells empty)
+      const today = 3;
+      const weeks = [];
+      for (let w = 0; w < 5; w++) {
+        const row = [];
+        for (let d = 0; d < 7; d++) {
+          const day = w * 7 + d + 1;
+          if (day > 30) row.push(null);
+          else row.push(day);
+        }
+        weeks.push(row);
+      }
+
+      // intensity per day (0..3): build slivers count
+      const intensity = (day) => {
+        if (day === 1) return [1, 0]; // 정독1
+        if (day === 2) return [1, 0];
+        if (day === 3) return [0, 0]; // today empty
+        return [0, 0];
+      };
+
+      const labels = ['W1', 'W2', 'W3', 'W4', 'W5'];
+
+      return (
+        <div style={sp.root}>
+          {/* Header */}
+          <div>
+            <div style={sp.eyebrow}>Sprint Progress</div>
+            <div style={sp.h1}>
+              Sprint 1<br/>
+              <span style={{ fontStyle: 'italic', color: TOKENS.muted, fontSize: isDesk ? 28 : 18, fontWeight: 300 }}>Agent SDK + MCP</span>
+            </div>
+            <div style={sp.sub} className="mono">2026-04-29  →  2026-05-28</div>
+          </div>
+
+          {/* KPI row */}
+          <div style={sp.kpiRow}>
+            <div style={sp.kpi}>
+              <div style={sp.kpiLabel}>인풋 · 정독</div>
+              <div style={sp.kpiNum}>4<span style={{ color: TOKENS.faint, fontSize: '0.5em' }}> / 25</span></div>
+              <div style={sp.kpiPct}>16%</div>
+            </div>
+            <div style={sp.kpi}>
+              <div style={sp.kpiLabel}>빌드</div>
+              <div style={{ ...sp.kpiNum, ...sp.kpiNumGold }}>0<span style={{ color: TOKENS.faint, fontSize: '0.5em' }}> / 16</span></div>
+              <div style={sp.kpiPct}>0%</div>
+            </div>
+            <div style={sp.kpi}>
+              <div style={sp.kpiLabel}>공유</div>
+              <div style={sp.kpiNum}>0<span style={{ color: TOKENS.faint, fontSize: '0.5em' }}> / 4</span></div>
+              <div style={sp.kpiPct}>0%</div>
+            </div>
+          </div>
+
+          {/* Calendar */}
+          <div style={sp.calWrap}>
+            <div style={sp.calHeadRow}>
+              <div style={sp.calTitle}>30 Days</div>
+              <div style={sp.calRange}>Day 3 / 30</div>
+            </div>
+            <div style={sp.weeks}>
+              {weeks.map((row, wi) => (
+                <div key={wi} style={sp.weekRow}>
+                  <div style={sp.weekLabel}>{labels[wi]}</div>
+                  {row.map((day, di) => {
+                    if (day === null) {
+                      return <div key={di} style={{ ...sp.cell, opacity: 0.35, background: 'transparent', border: `1px dashed ${TOKENS.hair}` }} />;
+                    }
+                    const isToday = day === today;
+                    const [r, b] = intensity(day);
+                    return (
+                      <div key={di} style={sp.cell}>
+                        <div style={{ ...sp.cellNum, ...(isToday ? sp.cellNumActive : {}) }}>
+                          {String(day).padStart(2, '0')}
+                        </div>
+                        <div style={sp.slivers}>
+                          {Array.from({ length: r }).map((_, k) => (
+                            <div key={'r'+k} style={{ ...sp.sliver, height: isDesk ? 14 : 10, opacity: 0.85 }} />
+                          ))}
+                          {Array.from({ length: b }).map((_, k) => (
+                            <div key={'b'+k} style={{ ...sp.sliver, height: isDesk ? 18 : 12, background: TOKENS.gold, opacity: 1 }} />
+                          ))}
+                          {isToday && (
+                            <span style={{ marginLeft: 'auto' }}>
+                              <GoldDot size={isDesk ? 7 : 5} />
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Slot mini bars */}
+          <div style={sp.slotMini}>
+            <div style={sp.slotMiniRow}>
+              <div style={sp.slotMiniLabel}>Slot 1 · 정독</div>
+              <div style={sp.bar}>
+                <div style={{ ...sp.barFill, width: '16%' }} />
+              </div>
+              <div style={sp.ratio}>4 / 25</div>
+            </div>
+            <div style={sp.slotMiniRow}>
+              <div style={sp.slotMiniLabel}>Slot 2 · 빌드</div>
+              <div style={sp.bar}>
+                <div style={{ ...sp.barFill, ...sp.barFillGold, width: '0%' }} />
+              </div>
+              <div style={sp.ratio}>0 / 16</div>
+            </div>
+            <div style={sp.slotMiniRow}>
+              <div style={sp.slotMiniLabel}>주간 공유</div>
+              <div style={sp.bar}>
+                <div style={{ ...sp.barFill, width: '0%' }} />
+              </div>
+              <div style={sp.ratio}>0 / 4</div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ---------- ROOT: 4-up grid ---------- */
+    function App() {
+      const DESK_W = 1440;
+      // Build 풍격은 70%+ 여백 → 한 화면에 다 담으려면 세로를 더 길게
+      const DESK_H_TODAY = 1320;
+      const DESK_H_SPRINT = 1320;
+      const PHONE_W = 393;
+      const PHONE_H = 852;
+
+      // Scale desktop browser windows so they share visual weight with phones.
+      const deskScale = 0.6;
+      const chrome = 78;
+
+      const deskWrap = (h) => ({
+        transform: `scale(${deskScale})`,
+        transformOrigin: 'top left',
+        width: DESK_W * deskScale,
+        height: (h + chrome) * deskScale,
+      });
+
+      return (
+        <div className="page">
+          {/* Cell 1 — Desktop Today */}
+          <div className="cell">
+            <div className="label"><em>데스크톱</em><span className="sep">·</span><span>Today</span></div>
+            <div style={deskWrap(DESK_H_TODAY)}>
+              <BrowserWindow
+                title="Coach Harness — Today"
+                url="coach.harness/today"
+                width={DESK_W}
+                height={DESK_H_TODAY}
+              >
+                <div className="app" style={{ width: DESK_W, minHeight: DESK_H_TODAY }}>
+                  <TodayScreen density="desktop" />
+                </div>
+              </BrowserWindow>
+            </div>
+          </div>
+
+          {/* Cell 2 — Desktop Sprint */}
+          <div className="cell">
+            <div className="label"><em>데스크톱</em><span className="sep">·</span><span>Sprint Progress</span></div>
+            <div style={deskWrap(DESK_H_SPRINT)}>
+              <BrowserWindow
+                title="Coach Harness — Sprint"
+                url="coach.harness/sprint/1"
+                width={DESK_W}
+                height={DESK_H_SPRINT}
+              >
+                <div className="app" style={{ width: DESK_W, minHeight: DESK_H_SPRINT }}>
+                  <SprintProgressScreen density="desktop" />
+                </div>
+              </BrowserWindow>
+            </div>
+          </div>
+
+          {/* Cell 3 — Mobile Today */}
+          <div className="cell">
+            <div className="label"><em>모바일</em><span className="sep">·</span><span>Today</span></div>
+            <IosFrame width={PHONE_W} height={PHONE_H} time="9:41" battery={86}>
+              <div className="app" style={{ width: PHONE_W, minHeight: PHONE_H - 88 }}>
+                <TodayScreen density="mobile" />
+              </div>
+            </IosFrame>
+          </div>
+
+          {/* Cell 4 — Mobile Sprint */}
+          <div className="cell">
+            <div className="label"><em>모바일</em><span className="sep">·</span><span>Sprint Progress</span></div>
+            <IosFrame width={PHONE_W} height={PHONE_H} time="9:41" battery={86}>
+              <div className="app" style={{ width: PHONE_W, minHeight: PHONE_H - 88 }}>
+                <SprintProgressScreen density="mobile" />
+              </div>
+            </IosFrame>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

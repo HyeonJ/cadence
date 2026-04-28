@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>Today · Takram — coach-harness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=Noto+Serif+KR:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #ECE6D8;
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    color: #2C2C2A;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* Subtle paper grain — opacity ≤ 0.05 */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.17  0 0 0 0 0.17  0 0 0 0 0.16  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.04;
+    z-index: 9999;
+    mix-blend-mode: multiply;
+  }
+  .page {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    padding: 64px;
+    align-items: start;
+    justify-items: center;
+  }
+  .mockup-cell { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .mockup-label {
+    font-style: italic;
+    font-family: 'Cormorant Garamond', 'Noto Serif KR', serif;
+    color: #888;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+/* ============================================================
+ * IosFrame — inlined verbatim from huashu-design/assets/ios_frame.jsx
+ * ============================================================ */
+const iosFrameStyles = {
+  wrapper: {
+    display: 'inline-block',
+    padding: 12,
+    background: '#000',
+    borderRadius: 60,
+    boxShadow: '0 0 0 2px #1f2937, 0 20px 60px rgba(0,0,0,0.3)',
+    position: 'relative',
+  },
+  screen: {
+    position: 'relative',
+    borderRadius: 48,
+    overflow: 'hidden',
+    background: '#fff',
+  },
+  statusBar: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0,
+    height: 54,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 32px 0 32px',
+    fontSize: 16,
+    fontWeight: 600,
+    fontFamily: '-apple-system, "SF Pro Text", sans-serif',
+    zIndex: 20,
+    pointerEvents: 'none',
+  },
+  dynamicIsland: {
+    position: 'absolute',
+    top: 12, left: '50%',
+    transform: 'translateX(-50%)',
+    width: 124, height: 36,
+    background: '#000',
+    borderRadius: 999,
+    zIndex: 30,
+  },
+  statusIcons: { display: 'flex', alignItems: 'center', gap: 6 },
+  signalIcon: { display: 'flex', alignItems: 'flex-end', gap: 2, height: 12 },
+  signalBar: { width: 3, background: 'currentColor', borderRadius: 1 },
+  wifiIcon: { width: 16, height: 12, position: 'relative' },
+  batteryIcon: {
+    width: 26, height: 12,
+    border: '1.5px solid currentColor',
+    borderRadius: 3, padding: 1,
+    position: 'relative', opacity: 0.8,
+  },
+  batteryCap: {
+    position: 'absolute', top: 3, right: -3,
+    width: 2, height: 6,
+    background: 'currentColor',
+    borderRadius: '0 1px 1px 0',
+  },
+  content: {
+    position: 'absolute',
+    top: 54, left: 0, right: 0, bottom: 34,
+    overflow: 'auto',
+  },
+  homeIndicator: {
+    position: 'absolute',
+    bottom: 10, left: '50%',
+    transform: 'translateX(-50%)',
+    width: 140, height: 5,
+    background: 'rgba(0,0,0,0.3)',
+    borderRadius: 999, zIndex: 10,
+  },
+  homeIndicatorDark: { background: 'rgba(255,255,255,0.5)' },
+};
+
+function IosFrame({
+  children, width = 393, height = 852,
+  time = '9:41', battery = 100,
+  darkMode = false, showStatusBar = true,
+  showDynamicIsland = true, showHomeIndicator = true,
+}) {
+  const textColor = darkMode ? '#fff' : '#000';
+  return (
+    <div style={iosFrameStyles.wrapper}>
+      <div style={{ ...iosFrameStyles.screen, width, height, background: darkMode ? '#000' : '#fff' }}>
+        {showStatusBar && (
+          <div style={{ ...iosFrameStyles.statusBar, color: textColor }}>
+            <span>{time}</span>
+            <div style={iosFrameStyles.statusIcons}>
+              <div style={iosFrameStyles.signalIcon}>
+                <div style={{ ...iosFrameStyles.signalBar, height: 4 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 6 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 9 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 11 }} />
+              </div>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" style={{ color: textColor }}>
+                <path d="M8 11.5a1 1 0 100-2 1 1 0 000 2z" fill="currentColor" />
+                <path d="M3 7.5a7 7 0 0110 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+                <path d="M1 4.5a11 11 0 0114 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" opacity="0.7" />
+              </svg>
+              <div style={iosFrameStyles.batteryIcon}>
+                <div style={{ width: `${battery}%`, height: '100%', background: 'currentColor', borderRadius: 1, opacity: 0.9 }} />
+                <div style={iosFrameStyles.batteryCap} />
+              </div>
+            </div>
+          </div>
+        )}
+        {showDynamicIsland && <div style={iosFrameStyles.dynamicIsland} />}
+        <div style={iosFrameStyles.content}>{children}</div>
+        {showHomeIndicator && (
+          <div style={{ ...iosFrameStyles.homeIndicator, ...(darkMode ? iosFrameStyles.homeIndicatorDark : {}) }} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * BrowserWindow — inlined verbatim from huashu-design/assets/browser_window.jsx
+ * ============================================================ */
+const browserWindowStyles = {
+  window: {
+    display: 'inline-block',
+    background: '#fff',
+    borderRadius: 10,
+    overflow: 'hidden',
+    boxShadow: '0 30px 80px rgba(0,0,0,0.25), 0 0 0 0.5px rgba(0,0,0,0.15)',
+  },
+  chrome: { background: '#dee1e6', paddingTop: 10, paddingLeft: 10, paddingRight: 10, userSelect: 'none' },
+  tabRow: { display: 'flex', alignItems: 'flex-end', gap: 6, position: 'relative' },
+  trafficLights: { display: 'flex', gap: 8, alignItems: 'center', paddingBottom: 10, marginRight: 8 },
+  light: { width: 12, height: 12, borderRadius: '50%', border: '0.5px solid rgba(0,0,0,0.15)' },
+  close: { background: '#ff5f57' },
+  minimize: { background: '#febc2e' },
+  maximize: { background: '#28c840' },
+  tab: {
+    background: '#fff', padding: '8px 30px 8px 14px',
+    borderTopLeftRadius: 10, borderTopRightRadius: 10,
+    fontSize: 12, color: '#222',
+    fontFamily: '-apple-system, sans-serif',
+    maxWidth: 220,
+    display: 'flex', alignItems: 'center', gap: 8,
+    position: 'relative', whiteSpace: 'nowrap',
+    overflow: 'hidden', textOverflow: 'ellipsis',
+  },
+  favicon: { width: 14, height: 14, borderRadius: 2, background: '#999', flexShrink: 0 },
+  navBar: { background: '#fff', padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 10, borderBottom: '1px solid #e5e7eb' },
+  navButtons: { display: 'flex', gap: 4, color: '#5f6368', fontSize: 16 },
+  navButton: { width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', cursor: 'pointer' },
+  urlBar: { flex: 1, background: '#f1f3f4', borderRadius: 999, padding: '7px 14px', fontSize: 13, color: '#333', display: 'flex', alignItems: 'center', gap: 8, fontFamily: '-apple-system, sans-serif' },
+  lockIcon: { color: '#5f6368', fontSize: 12 },
+  content: { position: 'relative', overflow: 'auto', background: '#fff' },
+};
+
+function BrowserWindow({ title = 'New Tab', url = 'https://example.com', width = 1200, height = 800, showTrafficLights = true, children }) {
+  return (
+    <div style={browserWindowStyles.window}>
+      <div style={browserWindowStyles.chrome}>
+        <div style={browserWindowStyles.tabRow}>
+          {showTrafficLights && (
+            <div style={browserWindowStyles.trafficLights}>
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.close }} />
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.minimize }} />
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.maximize }} />
+            </div>
+          )}
+          <div style={browserWindowStyles.tab}>
+            <div style={browserWindowStyles.favicon} />
+            <span>{title}</span>
+          </div>
+        </div>
+      </div>
+      <div style={browserWindowStyles.navBar}>
+        <div style={browserWindowStyles.navButtons}>
+          <div style={browserWindowStyles.navButton}>←</div>
+          <div style={browserWindowStyles.navButton}>→</div>
+          <div style={browserWindowStyles.navButton}>↻</div>
+        </div>
+        <div style={browserWindowStyles.urlBar}>
+          <span style={browserWindowStyles.lockIcon}>🔒</span>
+          <span>{url}</span>
+        </div>
+      </div>
+      <div style={{ ...browserWindowStyles.content, width, height }}>{children}</div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * Takram palette + shared atoms
+ * ============================================================ */
+const PAPER     = '#F4F1EA';
+const PAPER_DK  = '#ECE6D8';
+const INK       = '#2C2C2A';
+const INK_SOFT  = '#5A5A5A';
+const INK_FADE  = '#9A958A';
+const SAGE      = '#7A8B70';
+const SAGE_SOFT = '#A8B49C';
+const SAGE_FADE = 'rgba(122, 139, 112, 0.15)';
+const RULE      = 'rgba(44, 44, 42, 0.10)';
+
+const SERIF = "'Cormorant Garamond', 'Noto Serif KR', 'Lora', serif";
+const KSERIF = "'Noto Serif KR', 'Cormorant Garamond', serif";
+const SANS  = "'Pretendard', 'Inter', -apple-system, sans-serif";
+
+/* Sage leaf-shaped dot, inline SVG (as required) */
+function LeafDot({ size = 12, color = SAGE, filled = false }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
+      <path
+        d="M4 20 C 4 10, 12 4, 20 4 C 20 12, 14 20, 4 20 Z"
+        fill={filled ? color : 'none'}
+        stroke={color}
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+      {filled && (
+        <path d="M5 19 C 10 14, 14 10, 19 5" stroke="rgba(255,255,255,0.55)" strokeWidth="1" fill="none" strokeLinecap="round" />
+      )}
+    </svg>
+  );
+}
+
+function CheckCircle({ checked = false, size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 22 22" style={{ flexShrink: 0 }}>
+      <circle cx="11" cy="11" r="9" fill={checked ? SAGE : 'none'} stroke={checked ? SAGE : INK_SOFT} strokeWidth="1.2" />
+      {checked && <path d="M6.5 11.2 L 9.8 14.3 L 15.5 7.8" stroke="#F4F1EA" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />}
+    </svg>
+  );
+}
+
+/* Soft area chart — like a landscape */
+function AreaChart({ width = 220, height = 64, points, color = SAGE, fill = SAGE_FADE, dashed = false }) {
+  // points: array of y values 0..1
+  const n = points.length;
+  const stepX = width / (n - 1);
+  const ys = points.map((p) => height - p * (height - 6) - 3);
+  // Cardinal-ish smoothing via cubic
+  let d = `M 0 ${ys[0].toFixed(2)}`;
+  for (let i = 0; i < n - 1; i++) {
+    const x0 = i * stepX;
+    const x1 = (i + 1) * stepX;
+    const cx = (x0 + x1) / 2;
+    d += ` C ${cx.toFixed(2)} ${ys[i].toFixed(2)}, ${cx.toFixed(2)} ${ys[i + 1].toFixed(2)}, ${x1.toFixed(2)} ${ys[i + 1].toFixed(2)}`;
+  }
+  const fillD = d + ` L ${width} ${height} L 0 ${height} Z`;
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: 'block' }}>
+      <path d={fillD} fill={fill} />
+      <path d={d} fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeDasharray={dashed ? '3 4' : '0'} />
+    </svg>
+  );
+}
+
+/* Long horizon ink-wash curve, used as page divider */
+function HorizonCurve({ width, color = INK, opacity = 0.18 }) {
+  return (
+    <svg width={width} height="14" viewBox={`0 0 ${width} 14`} style={{ display: 'block' }}>
+      <path
+        d={`M 0 9 C ${width * 0.25} 2, ${width * 0.5} 13, ${width * 0.75} 6 S ${width} 8, ${width} 8`}
+        fill="none" stroke={color} strokeWidth="0.9" opacity={opacity} strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+/* ============================================================
+ * Today — Desktop (1440 × 900)
+ * ============================================================ */
+const todayDesktopStyles = {
+  page: {
+    width: 1440, height: 900,
+    background: PAPER, color: INK,
+    fontFamily: SANS,
+    position: 'relative',
+    padding: '56px 88px 48px 88px',
+    display: 'flex', flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 28 },
+  date: { fontFamily: KSERIF, fontWeight: 400, fontSize: 38, letterSpacing: '-0.01em', color: INK },
+  dateSub: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 17, color: INK_SOFT, marginTop: 6, letterSpacing: '0.02em' },
+  topRight: { textAlign: 'right', fontFamily: SERIF, fontSize: 14, color: INK_FADE, fontStyle: 'italic', letterSpacing: '0.06em' },
+  coachWrap: {
+    background: 'rgba(255,255,255,0.45)',
+    border: `1px solid ${RULE}`, borderRadius: 22,
+    padding: '26px 32px',
+    marginBottom: 36,
+    display: 'flex', alignItems: 'flex-start', gap: 20,
+  },
+  coachLabel: {
+    fontFamily: SERIF, fontStyle: 'italic', fontSize: 13,
+    color: SAGE, letterSpacing: '0.18em', textTransform: 'uppercase',
+    paddingTop: 6,
+    minWidth: 110,
+  },
+  coachText: { fontFamily: KSERIF, fontWeight: 300, fontSize: 24, lineHeight: 1.55, color: INK, letterSpacing: '-0.005em' },
+  twoCol: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, flex: 1 },
+  slotTitle: { fontFamily: SERIF, fontSize: 13, color: INK_FADE, letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: 6 },
+  slotHeading: { fontFamily: KSERIF, fontSize: 22, fontWeight: 400, color: INK, marginBottom: 4 },
+  slotSub: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 15, color: INK_SOFT, marginBottom: 22 },
+  taskRow: {
+    display: 'flex', alignItems: 'flex-start', gap: 16,
+    padding: '18px 0',
+    borderBottom: `1px solid ${RULE}`,
+  },
+  taskBody: { flex: 1, minWidth: 0 },
+  taskTitle: { fontFamily: KSERIF, fontSize: 17, color: INK, marginBottom: 3, fontWeight: 400 },
+  taskMeta: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 13, color: INK_FADE, letterSpacing: '0.04em' },
+  taskTime: { fontFamily: SERIF, fontSize: 14, color: INK_SOFT, fontVariantNumeric: 'tabular-nums', paddingTop: 1 },
+  whisper: {
+    fontFamily: KSERIF, fontStyle: 'normal', fontSize: 14, color: INK_FADE,
+    marginTop: 16, lineHeight: 1.65, fontWeight: 300,
+    paddingLeft: 2,
+  },
+  signalCard: {
+    background: 'rgba(255,255,255,0.35)',
+    border: `1px solid ${RULE}`, borderRadius: 18,
+    padding: '20px 24px', marginTop: 22,
+  },
+  signalRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: SERIF, fontSize: 14, color: INK_SOFT },
+  signalLabel: { letterSpacing: '0.04em' },
+  signalVal: { fontVariantNumeric: 'tabular-nums', color: INK },
+  footer: {
+    marginTop: 30,
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    paddingTop: 22,
+  },
+  footBtn: {
+    fontFamily: SERIF, fontStyle: 'italic', fontSize: 15,
+    color: INK_SOFT, letterSpacing: '0.06em',
+    background: 'transparent', border: 'none', cursor: 'pointer',
+  },
+  brand: {
+    fontFamily: SERIF, fontSize: 13, color: INK_FADE,
+    letterSpacing: '0.4em', textTransform: 'uppercase',
+  },
+};
+
+function TodayDesktop() {
+  return (
+    <div style={todayDesktopStyles.page}>
+      {/* corner ornament */}
+      <div style={{ position: 'absolute', top: 28, right: 88, opacity: 0.6 }}>
+        <svg width="60" height="20" viewBox="0 0 60 20"><path d="M2 10 C 18 2, 30 18, 58 8" stroke={SAGE} strokeWidth="1" fill="none" /></svg>
+      </div>
+
+      <div style={todayDesktopStyles.header}>
+        <div>
+          <div style={todayDesktopStyles.date}>2026년 5월 1일 금요일</div>
+          <div style={todayDesktopStyles.dateSub}>Sprint 1 · 셋째 날 — 정원의 셋째 잎</div>
+        </div>
+        <div style={todayDesktopStyles.topRight}>
+          coach · harness<br />
+          <span style={{ color: SAGE }}>오늘의 노트</span>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 4 }}><HorizonCurve width={1264} /></div>
+
+      <div style={todayDesktopStyles.coachWrap}>
+        <div style={todayDesktopStyles.coachLabel}>coach <br /><span style={{ color: INK_FADE }}>— 5월 1일</span></div>
+        <div style={todayDesktopStyles.coachText}>
+          「 어제 commit 0건. <span style={{ color: INK_FADE }}>흐름이 잠시 멎었습니다.</span><br />
+          오늘은 <span style={{ color: SAGE, fontStyle: 'italic' }}>빌드 1시간을 먼저</span>, 정독은 30분만 — 가볍게 권합니다. 」
+        </div>
+      </div>
+
+      <div style={todayDesktopStyles.twoCol}>
+        {/* Slot 1 */}
+        <div>
+          <div style={todayDesktopStyles.slotTitle}>Slot 1 — 평일 아침 30분</div>
+          <div style={todayDesktopStyles.slotHeading}>정독 · 한 줄씩 천천히</div>
+          <div style={todayDesktopStyles.slotSub}>창가의 빛이 드는 시간에.</div>
+
+          <div style={todayDesktopStyles.taskRow}>
+            <CheckCircle checked={true} size={20} />
+            <div style={todayDesktopStyles.taskBody}>
+              <div style={todayDesktopStyles.taskTitle}>Agent SDK Quickstart</div>
+              <div style={todayDesktopStyles.taskMeta}>anthropic.com / agent-sdk · 마침</div>
+            </div>
+            <div style={todayDesktopStyles.taskTime}>30 min</div>
+          </div>
+
+          <div style={todayDesktopStyles.taskRow}>
+            <CheckCircle checked={false} size={20} />
+            <div style={todayDesktopStyles.taskBody}>
+              <div style={todayDesktopStyles.taskTitle}>Building Agents — Engineering Blog</div>
+              <div style={todayDesktopStyles.taskMeta}>anthropic.com / engineering · 펼치기</div>
+            </div>
+            <div style={todayDesktopStyles.taskTime}>30 min</div>
+          </div>
+
+          <div style={todayDesktopStyles.whisper}>
+            정독은 두 편으로 충분합니다. 무리하지 않아도 좋아요.
+          </div>
+        </div>
+
+        {/* Slot 2 */}
+        <div>
+          <div style={todayDesktopStyles.slotTitle}>Slot 2 — 평일 저녁 1시간</div>
+          <div style={todayDesktopStyles.slotHeading}>빌드 · 손이 먼저 움직이는 시간</div>
+          <div style={todayDesktopStyles.slotSub}>오늘의 우선 신호.</div>
+
+          <div style={{ ...todayDesktopStyles.taskRow, background: 'rgba(122,139,112,0.06)', borderRadius: 14, padding: '20px 18px', borderBottom: 'none', marginTop: -8 }}>
+            <LeafDot size={18} filled />
+            <div style={todayDesktopStyles.taskBody}>
+              <div style={{ ...todayDesktopStyles.taskTitle, fontSize: 18 }}>사내 플러그인 → MCP 서버 wrapping</div>
+              <div style={todayDesktopStyles.taskMeta}>
+                <span style={{ fontFamily: SANS, fontStyle: 'normal', color: SAGE, letterSpacing: 0 }}>me/sprint1-mcp-wrap</span> · 시작 안 됨
+              </div>
+            </div>
+            <div style={todayDesktopStyles.taskTime}>60 min</div>
+          </div>
+
+          <div style={todayDesktopStyles.signalCard}>
+            <div style={{ ...todayDesktopStyles.slotTitle, marginBottom: 10 }}>어제의 신호</div>
+            <div style={todayDesktopStyles.signalRow}>
+              <span style={todayDesktopStyles.signalLabel}>GitHub commits</span>
+              <span style={todayDesktopStyles.signalVal}>0 <span style={{ color: INK_FADE }}>—</span></span>
+            </div>
+            <div style={{ height: 1, background: RULE, margin: '12px 0' }} />
+            <div style={todayDesktopStyles.signalRow}>
+              <span style={todayDesktopStyles.signalLabel}>정독</span>
+              <span style={todayDesktopStyles.signalVal}>2 / 2 <span style={{ color: SAGE }}>완</span></span>
+            </div>
+            <div style={{ marginTop: 14 }}>
+              <AreaChart width={360} height={36} points={[0.3, 0.45, 0.4, 0.6, 0.35, 0.25, 0.15]} />
+            </div>
+            <div style={{ ...todayDesktopStyles.taskMeta, marginTop: 6, textAlign: 'right' }}>지난 7일 · 흐름</div>
+          </div>
+
+          <div style={todayDesktopStyles.whisper}>
+            commit이 흐르면, 이 줄도 자연히 채워집니다.
+          </div>
+        </div>
+      </div>
+
+      <div style={todayDesktopStyles.footer}>
+        <button style={todayDesktopStyles.footBtn}>오늘 쉬기 →</button>
+        <div style={todayDesktopStyles.brand}>coach — harness · take a walk</div>
+        <button style={todayDesktopStyles.footBtn}>Settings ⌘,</button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * Sprint Progress — Desktop (1440 × 900)
+ * ============================================================ */
+const sprintDesktopStyles = {
+  page: {
+    width: 1440, height: 900,
+    background: PAPER, color: INK,
+    fontFamily: SANS,
+    padding: '56px 88px 48px 88px',
+    display: 'flex', flexDirection: 'column',
+    position: 'relative', overflow: 'hidden',
+  },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 22 },
+  title: { fontFamily: KSERIF, fontSize: 36, fontWeight: 400, letterSpacing: '-0.01em' },
+  subtitle: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 16, color: INK_SOFT, marginTop: 6 },
+  windowDate: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 15, color: INK_FADE, textAlign: 'right', letterSpacing: '0.04em' },
+  cardRow: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 28, margin: '20px 0 36px 0' },
+  card: {
+    background: 'rgba(255,255,255,0.5)',
+    border: `1px solid ${RULE}`, borderRadius: 22,
+    padding: '24px 28px',
+    position: 'relative',
+  },
+  cardLabel: { fontFamily: SERIF, fontSize: 12, color: INK_FADE, letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: 10 },
+  cardName: { fontFamily: KSERIF, fontSize: 20, color: INK, marginBottom: 4 },
+  cardCount: { fontFamily: SERIF, fontSize: 38, color: INK, fontWeight: 400, lineHeight: 1.05, marginTop: 4 },
+  cardCountSub: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 18, color: INK_FADE, marginLeft: 6 },
+  calWrap: { flex: 1, display: 'flex', flexDirection: 'column' },
+  calHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 14 },
+  calTitle: { fontFamily: KSERIF, fontSize: 20, color: INK },
+  weekRow: { display: 'grid', gridTemplateColumns: '60px repeat(7, 1fr)', gap: 10, marginBottom: 10, alignItems: 'center' },
+  weekLabel: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 13, color: INK_FADE, letterSpacing: '0.1em' },
+  dayHead: { fontFamily: SERIF, fontSize: 12, color: INK_FADE, textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.18em' },
+  cell: {
+    aspectRatio: '1.05 / 1',
+    border: `1px solid ${RULE}`,
+    borderRadius: 14,
+    background: 'rgba(255,255,255,0.4)',
+    padding: '8px 10px',
+    display: 'flex', flexDirection: 'column',
+    fontFamily: SERIF, fontSize: 13,
+    position: 'relative', overflow: 'hidden',
+  },
+};
+
+function StatCard({ label, name, count, total, points, dashed }) {
+  return (
+    <div style={sprintDesktopStyles.card}>
+      <div style={sprintDesktopStyles.cardLabel}>{label}</div>
+      <div style={sprintDesktopStyles.cardName}>{name}</div>
+      <div>
+        <span style={sprintDesktopStyles.cardCount}>{count}</span>
+        <span style={sprintDesktopStyles.cardCountSub}>/ {total}</span>
+      </div>
+      <div style={{ marginTop: 18 }}>
+        <AreaChart width={336} height={70} points={points} dashed={dashed} />
+      </div>
+      <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 12, color: INK_FADE, marginTop: 8, letterSpacing: '0.06em' }}>30일 흐름</div>
+    </div>
+  );
+}
+
+function CalendarCell({ day, week, dayIdx, today, past, count, label }) {
+  const isToday = today;
+  const dim = !past && !isToday;
+  return (
+    <div style={{
+      ...sprintDesktopStyles.cell,
+      background: isToday ? 'rgba(122,139,112,0.14)' : (past ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.28)'),
+      borderColor: isToday ? SAGE_SOFT : RULE,
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{
+          fontFamily: SERIF, fontSize: 18, fontWeight: 400,
+          color: isToday ? INK : (past ? INK : INK_FADE),
+          opacity: dim ? 0.55 : 1,
+        }}>{day}</div>
+        {isToday && <LeafDot size={14} filled />}
+      </div>
+      {past && count !== undefined && (
+        <div style={{ marginTop: 'auto', fontFamily: SERIF, fontStyle: 'italic', fontSize: 11, color: INK_SOFT, letterSpacing: '0.04em' }}>
+          {count > 0 ? `${count} ${label}` : '—'}
+        </div>
+      )}
+      {isToday && (
+        <div style={{ marginTop: 'auto', fontFamily: SERIF, fontStyle: 'italic', fontSize: 11, color: SAGE, letterSpacing: '0.04em' }}>오늘</div>
+      )}
+    </div>
+  );
+}
+
+function SprintDesktop() {
+  // 30 days from Apr 29 → May 28. Today = May 1 (W1, day 3).
+  // Build 4 weeks × 7 days. We'll show dates as numbers.
+  // W1: Apr 29 W, 30 T, May 1 F, 2 S, 3 S, 4 M, 5 T   → today = day 3 (May 1)
+  const grid = [
+    // [day-number, isPast, isToday, count, label]
+    [['29', true, false, 1, '정독'], ['30', true, false, 0, ''], ['1', false, true, null, ''], ['2', false, false, null, ''], ['3', false, false, null, ''], ['4', false, false, null, ''], ['5', false, false, null, '']],
+    [['6', false, false, null, ''], ['7', false, false, null, ''], ['8', false, false, null, ''], ['9', false, false, null, ''], ['10', false, false, null, ''], ['11', false, false, null, ''], ['12', false, false, null, '']],
+    [['13', false, false, null, ''], ['14', false, false, null, ''], ['15', false, false, null, ''], ['16', false, false, null, ''], ['17', false, false, null, ''], ['18', false, false, null, ''], ['19', false, false, null, '']],
+    [['20', false, false, null, ''], ['21', false, false, null, ''], ['22', false, false, null, ''], ['23', false, false, null, ''], ['24', false, false, null, ''], ['25', false, false, null, ''], ['26', false, false, null, '']],
+  ];
+  // Add tail (5/27, 5/28) into last row's last two cells — keep 4×7 to align with prompt
+  const days = ['수', '목', '금', '토', '일', '월', '화'];
+
+  return (
+    <div style={sprintDesktopStyles.page}>
+      <div style={sprintDesktopStyles.header}>
+        <div>
+          <div style={sprintDesktopStyles.title}>Sprint 1 · Agent SDK + MCP</div>
+          <div style={sprintDesktopStyles.subtitle}>한 달 동안의 작은 산책 — 매일 같은 시각에, 같은 정원으로.</div>
+        </div>
+        <div style={sprintDesktopStyles.windowDate}>
+          2026 — 04.29 → 05.28<br />
+          <span style={{ color: SAGE, fontStyle: 'normal', fontFamily: SERIF, letterSpacing: '0.18em' }}>DAY 3 / 30</span>
+        </div>
+      </div>
+
+      <div><HorizonCurve width={1264} /></div>
+
+      <div style={sprintDesktopStyles.cardRow}>
+        <StatCard label="INPUT · 정독" name="읽고 생각하기" count={4} total={25} points={[0.05, 0.18, 0.32, 0.35, 0.42, 0.42, 0.42, 0.42]} />
+        <StatCard label="BUILD · 빌드"  name="손으로 짓기" count={0} total={16} points={[0, 0, 0, 0.04, 0.04, 0.06, 0.06, 0.06]} dashed />
+        <StatCard label="SHARE · 공유" name="바깥에 내보내기" count={0} total={4} points={[0, 0, 0, 0, 0, 0, 0, 0]} dashed />
+      </div>
+
+      <div style={sprintDesktopStyles.calWrap}>
+        <div style={sprintDesktopStyles.calHeader}>
+          <div style={sprintDesktopStyles.calTitle}>30일 — 한 달의 결</div>
+          <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 13, color: INK_FADE, letterSpacing: '0.04em' }}>
+            과거는 진하게, 미래는 흐리게 — 오늘은 한 잎.
+          </div>
+        </div>
+
+        <div style={{ ...sprintDesktopStyles.weekRow, marginBottom: 4 }}>
+          <span></span>
+          {days.map((d) => <div key={d} style={sprintDesktopStyles.dayHead}>{d}</div>)}
+        </div>
+
+        {grid.map((row, wi) => (
+          <div key={wi} style={sprintDesktopStyles.weekRow}>
+            <span style={sprintDesktopStyles.weekLabel}>W{wi + 1}</span>
+            {row.map((c, di) => (
+              <CalendarCell key={di} day={c[0]} past={c[1]} today={c[2]} count={c[3]} label={c[4]} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * Today — Mobile (393 × 852)
+ * ============================================================ */
+const todayMobileStyles = {
+  page: {
+    width: 393, minHeight: 764,
+    background: PAPER, color: INK,
+    fontFamily: SANS,
+    padding: '14px 22px 40px 22px',
+  },
+  topMeta: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 12, color: INK_FADE, letterSpacing: '0.18em', textTransform: 'uppercase', marginTop: 4, marginBottom: 6 },
+  date: { fontFamily: KSERIF, fontSize: 26, color: INK, fontWeight: 400, lineHeight: 1.2 },
+  dateSub: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 13, color: INK_SOFT, marginTop: 4 },
+  coachWrap: {
+    background: 'rgba(255,255,255,0.5)', border: `1px solid ${RULE}`,
+    borderRadius: 18, padding: '16px 18px', marginTop: 18,
+  },
+  coachLabel: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 11, color: SAGE, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 8 },
+  coachText: { fontFamily: KSERIF, fontSize: 15, lineHeight: 1.55, color: INK, fontWeight: 300 },
+  slotTitle: { fontFamily: SERIF, fontSize: 11, color: INK_FADE, letterSpacing: '0.22em', textTransform: 'uppercase', marginTop: 22, marginBottom: 4 },
+  slotHeading: { fontFamily: KSERIF, fontSize: 17, color: INK, marginBottom: 2 },
+  slotSub: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 12, color: INK_SOFT, marginBottom: 10 },
+  taskRow: {
+    display: 'flex', alignItems: 'flex-start', gap: 12,
+    padding: '12px 0', borderBottom: `1px solid ${RULE}`,
+  },
+  taskTitle: { fontFamily: KSERIF, fontSize: 14, color: INK, lineHeight: 1.35 },
+  taskMeta: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 11, color: INK_FADE, marginTop: 2 },
+  taskTime: { fontFamily: SERIF, fontSize: 12, color: INK_SOFT, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' },
+  buildHero: {
+    background: 'rgba(122,139,112,0.08)',
+    border: `1px solid ${SAGE_FADE}`, borderRadius: 14,
+    padding: '14px 14px',
+    display: 'flex', alignItems: 'flex-start', gap: 12,
+    marginTop: 4,
+  },
+  signal: {
+    background: 'rgba(255,255,255,0.5)', border: `1px solid ${RULE}`,
+    borderRadius: 14, padding: '14px 16px', marginTop: 14,
+  },
+  signalRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: SERIF, fontSize: 13, color: INK_SOFT },
+  whisper: { fontFamily: KSERIF, fontSize: 12, color: INK_FADE, marginTop: 10, lineHeight: 1.55 },
+  footer: { display: 'flex', justifyContent: 'space-between', marginTop: 22, paddingTop: 14, borderTop: `1px solid ${RULE}` },
+  footBtn: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 13, color: INK_SOFT, background: 'transparent', border: 'none', padding: 0, letterSpacing: '0.04em' },
+};
+
+function TodayMobile() {
+  return (
+    <div style={todayMobileStyles.page}>
+      <div style={todayMobileStyles.topMeta}>5월 · Sprint 1 · 셋째 날</div>
+      <div style={todayMobileStyles.date}>2026.05.01<br />금요일 아침</div>
+      <div style={todayMobileStyles.dateSub}>창문이 조금 열려 있습니다.</div>
+
+      <div style={{ marginTop: 12 }}><HorizonCurve width={349} /></div>
+
+      <div style={todayMobileStyles.coachWrap}>
+        <div style={todayMobileStyles.coachLabel}>coach · 5월 1일</div>
+        <div style={todayMobileStyles.coachText}>
+          「 어제 commit 0건. <span style={{ color: INK_FADE }}>흐름이 잠시 멎었습니다.</span> 오늘은 <span style={{ color: SAGE, fontStyle: 'italic' }}>빌드 1시간을 먼저</span>, 정독은 30분만 권합니다. 」
+        </div>
+      </div>
+
+      <div style={todayMobileStyles.slotTitle}>Slot 1 — 평일 아침 30분</div>
+      <div style={todayMobileStyles.slotHeading}>정독</div>
+      <div style={todayMobileStyles.slotSub}>한 줄씩 천천히.</div>
+
+      <div style={todayMobileStyles.taskRow}>
+        <CheckCircle checked size={18} />
+        <div style={{ flex: 1 }}>
+          <div style={todayMobileStyles.taskTitle}>Agent SDK Quickstart</div>
+          <div style={todayMobileStyles.taskMeta}>anthropic.com/agent-sdk · 마침</div>
+        </div>
+        <div style={todayMobileStyles.taskTime}>30 min</div>
+      </div>
+      <div style={todayMobileStyles.taskRow}>
+        <CheckCircle size={18} />
+        <div style={{ flex: 1 }}>
+          <div style={todayMobileStyles.taskTitle}>Building Agents — Engineering Blog</div>
+          <div style={todayMobileStyles.taskMeta}>anthropic.com/engineering · 펼치기</div>
+        </div>
+        <div style={todayMobileStyles.taskTime}>30 min</div>
+      </div>
+
+      <div style={todayMobileStyles.slotTitle}>Slot 2 — 평일 저녁 1시간</div>
+      <div style={todayMobileStyles.slotHeading}>빌드</div>
+      <div style={todayMobileStyles.slotSub}>손이 먼저 움직이는 시간.</div>
+
+      <div style={todayMobileStyles.buildHero}>
+        <LeafDot size={16} filled />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ ...todayMobileStyles.taskTitle, fontSize: 15 }}>사내 플러그인 → MCP 서버 wrapping</div>
+          <div style={todayMobileStyles.taskMeta}>
+            <span style={{ fontFamily: SANS, fontStyle: 'normal', color: SAGE }}>me/sprint1-mcp-wrap</span>
+          </div>
+        </div>
+        <div style={todayMobileStyles.taskTime}>60 min</div>
+      </div>
+
+      <div style={todayMobileStyles.signal}>
+        <div style={{ fontFamily: SERIF, fontSize: 11, color: INK_FADE, letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: 8 }}>어제의 신호</div>
+        <div style={todayMobileStyles.signalRow}>
+          <span>GitHub commits</span>
+          <span style={{ color: INK }}>0 <span style={{ color: INK_FADE }}>—</span></span>
+        </div>
+        <div style={{ height: 1, background: RULE, margin: '8px 0' }} />
+        <div style={todayMobileStyles.signalRow}>
+          <span>정독</span>
+          <span style={{ color: INK }}>2 / 2 <span style={{ color: SAGE, fontStyle: 'italic' }}>완</span></span>
+        </div>
+        <div style={{ marginTop: 10 }}>
+          <AreaChart width={317} height={28} points={[0.3, 0.45, 0.4, 0.6, 0.35, 0.25, 0.15]} />
+        </div>
+      </div>
+
+      <div style={todayMobileStyles.whisper}>
+        commit이 흐르면, 이 줄도 자연히 채워집니다.
+      </div>
+
+      <div style={todayMobileStyles.footer}>
+        <button style={todayMobileStyles.footBtn}>오늘 쉬기</button>
+        <button style={todayMobileStyles.footBtn}>Settings</button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * Sprint Progress — Mobile (393 × 852)
+ * ============================================================ */
+const sprintMobileStyles = {
+  page: {
+    width: 393, minHeight: 764,
+    background: PAPER, color: INK,
+    fontFamily: SANS,
+    padding: '14px 22px 40px 22px',
+  },
+  topMeta: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 12, color: INK_FADE, letterSpacing: '0.18em', textTransform: 'uppercase', marginTop: 4, marginBottom: 4 },
+  title: { fontFamily: KSERIF, fontSize: 23, color: INK, fontWeight: 400, lineHeight: 1.2 },
+  subtitle: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 12, color: INK_SOFT, marginTop: 4 },
+  dayPill: {
+    display: 'inline-block', marginTop: 10,
+    fontFamily: SERIF, fontSize: 12, color: SAGE,
+    letterSpacing: '0.22em', textTransform: 'uppercase',
+  },
+  card: {
+    background: 'rgba(255,255,255,0.5)', border: `1px solid ${RULE}`,
+    borderRadius: 16, padding: '14px 16px', marginTop: 12,
+  },
+  cardTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' },
+  cardLabel: { fontFamily: SERIF, fontSize: 11, color: INK_FADE, letterSpacing: '0.22em', textTransform: 'uppercase' },
+  cardName: { fontFamily: KSERIF, fontSize: 16, color: INK, marginTop: 2 },
+  cardCount: { fontFamily: SERIF, fontSize: 26, color: INK, fontWeight: 400 },
+  cardCountSub: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 14, color: INK_FADE, marginLeft: 4 },
+  calTitle: { fontFamily: KSERIF, fontSize: 16, color: INK, marginTop: 22, marginBottom: 4 },
+  calNote: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 11, color: INK_FADE, marginBottom: 12 },
+  weekRow: { display: 'grid', gridTemplateColumns: '24px repeat(7, 1fr)', gap: 5, marginBottom: 6, alignItems: 'center' },
+  weekLabel: { fontFamily: SERIF, fontStyle: 'italic', fontSize: 10, color: INK_FADE },
+  dayHead: { fontFamily: SERIF, fontSize: 9, color: INK_FADE, textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.14em' },
+  cell: {
+    aspectRatio: '1 / 1.05', border: `1px solid ${RULE}`,
+    borderRadius: 7, background: 'rgba(255,255,255,0.4)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontFamily: SERIF, fontSize: 11, position: 'relative',
+  },
+};
+
+function MiniCard({ label, name, count, total, points, dashed }) {
+  return (
+    <div style={sprintMobileStyles.card}>
+      <div style={sprintMobileStyles.cardTop}>
+        <div>
+          <div style={sprintMobileStyles.cardLabel}>{label}</div>
+          <div style={sprintMobileStyles.cardName}>{name}</div>
+        </div>
+        <div>
+          <span style={sprintMobileStyles.cardCount}>{count}</span>
+          <span style={sprintMobileStyles.cardCountSub}>/ {total}</span>
+        </div>
+      </div>
+      <div style={{ marginTop: 10 }}>
+        <AreaChart width={317} height={32} points={points} dashed={dashed} />
+      </div>
+    </div>
+  );
+}
+
+function MiniCell({ day, past, today }) {
+  return (
+    <div style={{
+      ...sprintMobileStyles.cell,
+      background: today ? 'rgba(122,139,112,0.18)' : (past ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.25)'),
+      borderColor: today ? SAGE_SOFT : RULE,
+      color: today ? INK : (past ? INK : INK_FADE),
+      opacity: !past && !today ? 0.7 : 1,
+    }}>
+      {today ? <LeafDot size={11} filled /> : <span>{day}</span>}
+    </div>
+  );
+}
+
+function SprintMobile() {
+  const days = ['수', '목', '금', '토', '일', '월', '화'];
+  const grid = [
+    [['29', true, false], ['30', true, false], ['1', false, true], ['2', false, false], ['3', false, false], ['4', false, false], ['5', false, false]],
+    [['6', false, false], ['7', false, false], ['8', false, false], ['9', false, false], ['10', false, false], ['11', false, false], ['12', false, false]],
+    [['13', false, false], ['14', false, false], ['15', false, false], ['16', false, false], ['17', false, false], ['18', false, false], ['19', false, false]],
+    [['20', false, false], ['21', false, false], ['22', false, false], ['23', false, false], ['24', false, false], ['25', false, false], ['26', false, false]],
+  ];
+  return (
+    <div style={sprintMobileStyles.page}>
+      <div style={sprintMobileStyles.topMeta}>Sprint 1 · 한 달의 결</div>
+      <div style={sprintMobileStyles.title}>Agent SDK + MCP</div>
+      <div style={sprintMobileStyles.subtitle}>2026.04.29 — 05.28 · 매일 같은 시각, 같은 정원.</div>
+      <div style={sprintMobileStyles.dayPill}>DAY 3 / 30</div>
+
+      <div style={{ marginTop: 14 }}><HorizonCurve width={349} /></div>
+
+      <MiniCard label="INPUT · 정독"  name="읽고 생각하기"     count={4} total={25} points={[0.05, 0.18, 0.32, 0.35, 0.42, 0.42, 0.42, 0.42]} />
+      <MiniCard label="BUILD · 빌드"  name="손으로 짓기"        count={0} total={16} points={[0, 0, 0, 0.04, 0.04, 0.06, 0.06, 0.06]} dashed />
+      <MiniCard label="SHARE · 공유" name="바깥에 내보내기"  count={0} total={4}  points={[0, 0, 0, 0, 0, 0, 0, 0]} dashed />
+
+      <div style={sprintMobileStyles.calTitle}>30일 — 한 달의 결</div>
+      <div style={sprintMobileStyles.calNote}>과거는 진하게, 미래는 흐리게.</div>
+
+      <div style={{ ...sprintMobileStyles.weekRow, marginBottom: 2 }}>
+        <span></span>
+        {days.map((d) => <div key={d} style={sprintMobileStyles.dayHead}>{d}</div>)}
+      </div>
+      {grid.map((row, wi) => (
+        <div key={wi} style={sprintMobileStyles.weekRow}>
+          <span style={sprintMobileStyles.weekLabel}>W{wi + 1}</span>
+          {row.map((c, di) => <MiniCell key={di} day={c[0]} past={c[1]} today={c[2]} />)}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ============================================================
+ * Page composition
+ * ============================================================ */
+function App() {
+  return (
+    <div className="page">
+      <div className="mockup-cell">
+        <div className="mockup-label">데스크톱 · Today</div>
+        <BrowserWindow title="Today — coach.harness" url="https://coach.harness/today" width={1440} height={900}>
+          <TodayDesktop />
+        </BrowserWindow>
+      </div>
+
+      <div className="mockup-cell">
+        <div className="mockup-label">데스크톱 · Sprint Progress</div>
+        <BrowserWindow title="Sprint — coach.harness" url="https://coach.harness/sprint/1" width={1440} height={900}>
+          <SprintDesktop />
+        </BrowserWindow>
+      </div>
+
+      <div className="mockup-cell">
+        <div className="mockup-label">모바일 · Today</div>
+        <IosFrame width={393} height={852} time="9:41" battery={86}>
+          <TodayMobile />
+        </IosFrame>
+      </div>
+
+      <div className="mockup-cell">
+        <div className="mockup-label">모바일 · Sprint Progress</div>
+        <IosFrame width={393} height={852} time="9:41" battery={86}>
+          <SprintMobile />
+        </IosFrame>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

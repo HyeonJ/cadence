@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>Coach · Apple Health Style</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #F2F2F7;
+    font-family: 'Pretendard', -apple-system, 'SF Pro Text', 'Inter', sans-serif;
+    color: #1C1C1E;
+    -webkit-font-smoothing: antialiased;
+  }
+  .num, .num-en {
+    font-family: 'Inter', -apple-system, 'SF Pro Display', sans-serif;
+    font-feature-settings: "tnum" 1;
+    letter-spacing: -0.02em;
+  }
+  .label {
+    font-style: italic;
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+
+/* =========================================================
+   IosFrame (inlined from huashu-design)
+   ========================================================= */
+const iosFrameStyles = {
+  wrapper: {
+    display: 'inline-block',
+    padding: 12,
+    background: '#000',
+    borderRadius: 60,
+    boxShadow: '0 0 0 2px #1f2937, 0 20px 60px rgba(0,0,0,0.3)',
+    position: 'relative',
+  },
+  screen: {
+    position: 'relative',
+    borderRadius: 48,
+    overflow: 'hidden',
+    background: '#fff',
+  },
+  statusBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 54,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 32px 0 32px',
+    fontSize: 16,
+    fontWeight: 600,
+    fontFamily: '-apple-system, "SF Pro Text", sans-serif',
+    zIndex: 20,
+    pointerEvents: 'none',
+  },
+  dynamicIsland: {
+    position: 'absolute',
+    top: 12,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 124,
+    height: 36,
+    background: '#000',
+    borderRadius: 999,
+    zIndex: 30,
+  },
+  statusIcons: { display: 'flex', alignItems: 'center', gap: 6 },
+  signalIcon: { display: 'flex', alignItems: 'flex-end', gap: 2, height: 12 },
+  signalBar: { width: 3, background: 'currentColor', borderRadius: 1 },
+  batteryIcon: {
+    width: 26, height: 12,
+    border: '1.5px solid currentColor',
+    borderRadius: 3, padding: 1, position: 'relative', opacity: 0.8,
+  },
+  batteryCap: {
+    position: 'absolute', top: 3, right: -3,
+    width: 2, height: 6, background: 'currentColor', borderRadius: '0 1px 1px 0',
+  },
+  content: {
+    position: 'absolute', top: 54, left: 0, right: 0, bottom: 34, overflow: 'auto',
+  },
+  homeIndicator: {
+    position: 'absolute', bottom: 10, left: '50%',
+    transform: 'translateX(-50%)',
+    width: 140, height: 5,
+    background: 'rgba(0,0,0,0.3)',
+    borderRadius: 999, zIndex: 10,
+  },
+  homeIndicatorDark: { background: 'rgba(255,255,255,0.5)' },
+};
+
+function IosFrame({
+  children, width = 393, height = 852, time = '9:41', battery = 100,
+  darkMode = false, showStatusBar = true, showDynamicIsland = true, showHomeIndicator = true,
+}) {
+  const textColor = darkMode ? '#fff' : '#000';
+  return (
+    <div style={iosFrameStyles.wrapper}>
+      <div style={{ ...iosFrameStyles.screen, width, height, background: darkMode ? '#000' : '#fff' }}>
+        {showStatusBar && (
+          <div style={{ ...iosFrameStyles.statusBar, color: textColor }}>
+            <span>{time}</span>
+            <div style={iosFrameStyles.statusIcons}>
+              <div style={iosFrameStyles.signalIcon}>
+                <div style={{ ...iosFrameStyles.signalBar, height: 4 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 6 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 9 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 11 }} />
+              </div>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" style={{ color: textColor }}>
+                <path d="M8 11.5a1 1 0 100-2 1 1 0 000 2z" fill="currentColor" />
+                <path d="M3 7.5a7 7 0 0110 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+                <path d="M1 4.5a11 11 0 0114 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" opacity="0.7" />
+              </svg>
+              <div style={iosFrameStyles.batteryIcon}>
+                <div style={{ width: `${battery}%`, height: '100%', background: 'currentColor', borderRadius: 1, opacity: 0.9 }} />
+                <div style={iosFrameStyles.batteryCap} />
+              </div>
+            </div>
+          </div>
+        )}
+        {showDynamicIsland && <div style={iosFrameStyles.dynamicIsland} />}
+        <div style={iosFrameStyles.content}>{children}</div>
+        {showHomeIndicator && (
+          <div style={{ ...iosFrameStyles.homeIndicator, ...(darkMode ? iosFrameStyles.homeIndicatorDark : {}) }} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   BrowserWindow (inlined from huashu-design)
+   ========================================================= */
+const browserWindowStyles = {
+  window: {
+    display: 'inline-block',
+    background: '#fff',
+    borderRadius: 10,
+    overflow: 'hidden',
+    boxShadow: '0 30px 80px rgba(0,0,0,0.25), 0 0 0 0.5px rgba(0,0,0,0.15)',
+  },
+  chrome: { background: '#dee1e6', paddingTop: 10, paddingLeft: 10, paddingRight: 10, userSelect: 'none' },
+  tabRow: { display: 'flex', alignItems: 'flex-end', gap: 6, position: 'relative' },
+  trafficLights: { display: 'flex', gap: 8, alignItems: 'center', paddingBottom: 10, marginRight: 8 },
+  light: { width: 12, height: 12, borderRadius: '50%', border: '0.5px solid rgba(0,0,0,0.15)' },
+  close: { background: '#ff5f57' },
+  minimize: { background: '#febc2e' },
+  maximize: { background: '#28c840' },
+  tab: {
+    background: '#fff', padding: '8px 30px 8px 14px',
+    borderTopLeftRadius: 10, borderTopRightRadius: 10,
+    fontSize: 12, color: '#222',
+    fontFamily: '-apple-system, sans-serif',
+    maxWidth: 220, display: 'flex', alignItems: 'center', gap: 8,
+    position: 'relative', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+  },
+  favicon: { width: 14, height: 14, borderRadius: 2, background: '#999', flexShrink: 0 },
+  navBar: {
+    background: '#fff', padding: '8px 14px',
+    display: 'flex', alignItems: 'center', gap: 10,
+    borderBottom: '1px solid #e5e7eb',
+  },
+  navButtons: { display: 'flex', gap: 4, color: '#5f6368', fontSize: 16 },
+  navButton: { width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', cursor: 'pointer' },
+  urlBar: {
+    flex: 1, background: '#f1f3f4', borderRadius: 999,
+    padding: '7px 14px', fontSize: 13, color: '#333',
+    display: 'flex', alignItems: 'center', gap: 8,
+    fontFamily: '-apple-system, sans-serif',
+  },
+  lockIcon: { color: '#5f6368', fontSize: 12 },
+  content: { position: 'relative', overflow: 'auto', background: '#fff' },
+};
+
+function BrowserWindow({
+  title = 'New Tab', url = 'https://example.com',
+  width = 1200, height = 800, showTrafficLights = true, children,
+}) {
+  return (
+    <div style={browserWindowStyles.window}>
+      <div style={browserWindowStyles.chrome}>
+        <div style={browserWindowStyles.tabRow}>
+          {showTrafficLights && (
+            <div style={browserWindowStyles.trafficLights}>
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.close }} />
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.minimize }} />
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.maximize }} />
+            </div>
+          )}
+          <div style={browserWindowStyles.tab}>
+            <div style={browserWindowStyles.favicon} />
+            <span>{title}</span>
+          </div>
+        </div>
+      </div>
+      <div style={browserWindowStyles.navBar}>
+        <div style={browserWindowStyles.navButtons}>
+          <div style={browserWindowStyles.navButton}>←</div>
+          <div style={browserWindowStyles.navButton}>→</div>
+          <div style={browserWindowStyles.navButton}>↻</div>
+        </div>
+        <div style={browserWindowStyles.urlBar}>
+          <span style={browserWindowStyles.lockIcon}>🔒</span>
+          <span>{url}</span>
+        </div>
+      </div>
+      <div style={{ ...browserWindowStyles.content, width, height }}>{children}</div>
+    </div>
+  );
+}
+
+/* =========================================================
+   Apple-style icons (SF Symbols tone, inline SVG)
+   ========================================================= */
+const Icon = {
+  Heart: ({ size = 18, color = '#1C1C1E' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0112 6.7a4.3 4.3 0 017.5 3.6c0 5.6-7.5 10.2-7.5 10.2z" fill={color}/>
+    </svg>
+  ),
+  Book: ({ size = 18, color = '#1C1C1E' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M5 4.5A2 2 0 017 2.5h11a1 1 0 011 1v15a1 1 0 01-1 1H7a2 2 0 01-2-2v-13z" stroke={color} strokeWidth="1.7"/>
+      <path d="M9 7h6M9 10.5h6" stroke={color} strokeWidth="1.7" strokeLinecap="round"/>
+    </svg>
+  ),
+  Hammer: ({ size = 18, color = '#1C1C1E' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M14 4l6 6-3 3-6-6 3-3z" stroke={color} strokeWidth="1.7" strokeLinejoin="round"/>
+      <path d="M11 7L4 14a2 2 0 000 2.8L7.2 20a2 2 0 002.8 0L17 13" stroke={color} strokeWidth="1.7" strokeLinejoin="round"/>
+    </svg>
+  ),
+  Share: ({ size = 18, color = '#1C1C1E' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M12 3v13m0-13l-4 4m4-4l4 4" stroke={color} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M5 13v6a2 2 0 002 2h10a2 2 0 002-2v-6" stroke={color} strokeWidth="1.7" strokeLinecap="round"/>
+    </svg>
+  ),
+  Check: ({ size = 14, color = '#fff' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M5 12.5l4.5 4.5L19 7.5" stroke={color} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  ChevronRight: ({ size = 16, color = '#8E8E93' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M9 6l6 6-6 6" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  Sparkle: ({ size = 16, color = '#007AFF' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M12 3l1.8 4.7L18.5 9l-4.7 1.3L12 15l-1.8-4.7L5.5 9l4.7-1.3L12 3z" fill={color}/>
+    </svg>
+  ),
+  Calendar: ({ size = 16, color = '#1C1C1E' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <rect x="3.5" y="5.5" width="17" height="15" rx="2" stroke={color} strokeWidth="1.7"/>
+      <path d="M3.5 10h17M8 3v4M16 3v4" stroke={color} strokeWidth="1.7" strokeLinecap="round"/>
+    </svg>
+  ),
+  Bolt: ({ size = 14, color = '#fff' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" fill={color}/>
+    </svg>
+  ),
+  Today: ({ size = 22, color = '#007AFF' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="9" stroke={color} strokeWidth="1.8"/>
+      <circle cx="12" cy="12" r="2.5" fill={color}/>
+    </svg>
+  ),
+  Chart: ({ size = 22, color = '#8E8E93' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke={color} strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  ),
+};
+
+/* =========================================================
+   Activity Ring — 3중 (인풋 / 빌드 / 공유)
+   ========================================================= */
+function ActivityRing({ size = 220, strokeWidth = 18, gap = 6, values = [16, 0, 0], showCenter = true }) {
+  // 외→내: input(blue), build(cyan), share(sky)
+  const colors = ['#007AFF', '#38BDF8', '#7DD3FC'];
+  const trackColors = ['rgba(0,122,255,0.12)', 'rgba(56,189,248,0.14)', 'rgba(125,211,252,0.18)'];
+  const rings = [];
+  let r = (size - strokeWidth) / 2;
+  for (let i = 0; i < 3; i++) {
+    const radius = r - i * (strokeWidth + gap);
+    if (radius <= 0) break;
+    const c = 2 * Math.PI * radius;
+    const v = Math.max(0, Math.min(100, values[i] || 0));
+    const dash = (v / 100) * c;
+    rings.push({ radius, c, dash, color: colors[i], track: trackColors[i] });
+  }
+  return (
+    <div style={{ position: 'relative', width: size, height: size }}>
+      <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+        <defs>
+          <linearGradient id={`ringGrad0-${size}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#0EA5E9"/>
+            <stop offset="50%" stopColor="#38BDF8"/>
+            <stop offset="100%" stopColor="#7DD3FC"/>
+          </linearGradient>
+        </defs>
+        {rings.map((ring, i) => (
+          <g key={i}>
+            <circle cx={size/2} cy={size/2} r={ring.radius}
+              stroke={ring.track} strokeWidth={strokeWidth} fill="none" />
+            <circle cx={size/2} cy={size/2} r={ring.radius}
+              stroke={i === 0 ? `url(#ringGrad0-${size})` : ring.color}
+              strokeWidth={strokeWidth}
+              fill="none"
+              strokeDasharray={`${ring.dash} ${ring.c}`}
+              strokeLinecap="round"
+            />
+          </g>
+        ))}
+      </svg>
+      {showCenter && (
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+        }}>
+          <div className="num-en" style={{
+            fontSize: size * 0.26, fontWeight: 800, color: '#1C1C1E', lineHeight: 1,
+          }}>{Math.round(values[0])}<span style={{ fontSize: size * 0.13, fontWeight: 700, color: '#8E8E93' }}>%</span></div>
+          <div style={{ fontSize: size * 0.06, color: '#8E8E93', fontWeight: 600, marginTop: 6 }}>Sprint 1 진행률</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* =========================================================
+   Common bits
+   ========================================================= */
+function Card({ children, style = {}, padding = 20 }) {
+  return (
+    <div style={{
+      background: '#FFFFFF',
+      borderRadius: 18,
+      padding,
+      boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 0 0 0.5px rgba(0,0,0,0.04)',
+      ...style,
+    }}>{children}</div>
+  );
+}
+
+function Pill({ children, bg = '#007AFF', color = '#fff', icon = null }) {
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 4,
+      background: bg, color,
+      padding: '4px 10px',
+      borderRadius: 999,
+      fontSize: 11.5, fontWeight: 700,
+      letterSpacing: '0.01em',
+    }}>{icon}{children}</span>
+  );
+}
+
+function Checkbox({ checked = false, onChange = () => {} }) {
+  return (
+    <div onClick={onChange} style={{
+      width: 26, height: 26, borderRadius: 13,
+      background: checked ? '#007AFF' : '#fff',
+      border: checked ? '0' : '2px solid #C7C7CC',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      cursor: 'pointer', flexShrink: 0,
+      transition: 'all .15s',
+    }}>
+      {checked && <Icon.Check size={14} color="#fff" />}
+    </div>
+  );
+}
+
+/* =========================================================
+   Today screen
+   ========================================================= */
+function TodayContent({ compact = false }) {
+  const pad = compact ? 16 : 28;
+  return (
+    <div style={{
+      background: '#F2F2F7',
+      minHeight: '100%',
+      padding: pad,
+      paddingTop: compact ? 12 : 28,
+      fontFamily: 'inherit',
+    }}>
+      {/* Header */}
+      <div style={{ marginBottom: compact ? 14 : 22 }}>
+        <div style={{
+          fontSize: compact ? 13 : 14, color: '#8E8E93', fontWeight: 700,
+          letterSpacing: '0.02em', textTransform: 'uppercase',
+          marginBottom: 4,
+        }}>Today</div>
+        <div style={{
+          fontSize: compact ? 22 : 30,
+          fontWeight: 800,
+          color: '#1C1C1E',
+          letterSpacing: '-0.02em',
+          marginBottom: 4,
+        }}>2026년 5월 1일 금요일</div>
+        <div style={{
+          fontSize: compact ? 12.5 : 14, color: '#8E8E93', fontWeight: 600,
+        }}>Sprint 1 · Day <span className="num-en" style={{ color: '#007AFF', fontWeight: 800 }}>3</span> / 30 · Week 1</div>
+      </div>
+
+      {/* Hero — 오늘의 진행 (Activity Ring 미니) */}
+      <Card padding={compact ? 16 : 22} style={{ marginBottom: compact ? 12 : 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: compact ? 14 : 22 }}>
+          <ActivityRing
+            size={compact ? 100 : 132}
+            strokeWidth={compact ? 11 : 14}
+            gap={3}
+            values={[40, 0, 0]}
+            showCenter={false}
+          />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: compact ? 11.5 : 12, color: '#8E8E93', fontWeight: 700, letterSpacing: '0.04em', marginBottom: 6 }}>
+              오늘의 진행
+            </div>
+            <div className="num-en" style={{
+              fontSize: compact ? 30 : 40, fontWeight: 800, color: '#1C1C1E', lineHeight: 1, marginBottom: 8,
+            }}>1<span style={{ fontSize: compact ? 18 : 22, color: '#8E8E93', fontWeight: 700 }}>/3</span></div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <RingLabel color="#007AFF" name="인풋" v="2/2" />
+              <RingLabel color="#38BDF8" name="빌드" v="0/1" />
+              <RingLabel color="#7DD3FC" name="공유" v="—" />
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Coach comment */}
+      <Card padding={compact ? 16 : 22} style={{
+        marginBottom: compact ? 12 : 16,
+        background: 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)',
+        boxShadow: 'none',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+          <Icon.Sparkle size={14} color="#0EA5E9" />
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: '#0369A1', letterSpacing: '0.06em' }}>COACH COMMENT</div>
+        </div>
+        <div style={{
+          fontSize: compact ? 14.5 : 17,
+          fontWeight: 700,
+          color: '#0C4A6E',
+          lineHeight: 1.45,
+          letterSpacing: '-0.01em',
+        }}>
+          「어제 commit 0건. 오늘은 빌드 1h 우선,<br/>정독은 30분만 권장.」
+        </div>
+      </Card>
+
+      {/* Slot 1 */}
+      <SlotCard
+        compact={compact}
+        icon={<Icon.Book size={16} color="#1C1C1E" />}
+        slotLabel="Slot 1"
+        title="평일 아침 30분 · 정독"
+        items={[
+          { checked: true, name: 'Agent SDK Quickstart', time: '30분', meta: 'anthropic.com/agent-sdk' },
+          { checked: true, name: 'Building Agents — Engineering Blog', time: '30분', meta: 'anthropic.com/engineering' },
+        ]}
+      />
+
+      {/* Slot 2 */}
+      <SlotCard
+        compact={compact}
+        icon={<Icon.Hammer size={16} color="#1C1C1E" />}
+        slotLabel="Slot 2"
+        title="평일 저녁 1h · 빌드"
+        autoBadge
+        items={[
+          { checked: false, name: '사내 플러그인 → MCP 서버 wrapping', time: '60분', meta: 'me/sprint1-mcp-wrap', mono: true },
+        ]}
+      />
+
+      {/* 어제 신호 */}
+      <Card padding={compact ? 14 : 18} style={{ marginBottom: compact ? 12 : 16 }}>
+        <div style={{ fontSize: 11.5, fontWeight: 800, color: '#8E8E93', letterSpacing: '0.06em', marginBottom: 10 }}>어제 신호</div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <SignalChip label="GitHub commits" value="0" tone="warn" />
+          <SignalChip label="정독" value="2/2" tone="ok" />
+        </div>
+      </Card>
+
+      {/* Footer */}
+      <div style={{ display: 'flex', gap: 10, marginTop: compact ? 14 : 18 }}>
+        <button style={footBtn(compact)}>오늘 쉬기</button>
+        <button style={{ ...footBtn(compact), background: '#fff', color: '#1C1C1E', border: '1px solid #E5E5EA' }}>Settings</button>
+      </div>
+
+      <div style={{ height: compact ? 12 : 24 }} />
+    </div>
+  );
+}
+
+function footBtn(compact) {
+  return {
+    flex: 1,
+    height: compact ? 44 : 50,
+    border: 'none',
+    borderRadius: 14,
+    background: '#007AFF',
+    color: '#fff',
+    fontWeight: 700,
+    fontSize: compact ? 14 : 15,
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  };
+}
+
+function RingLabel({ color, name, v }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ width: 8, height: 8, borderRadius: 4, background: color }} />
+      <span style={{ fontSize: 13, color: '#1C1C1E', fontWeight: 600 }}>{name}</span>
+      <span className="num-en" style={{ marginLeft: 'auto', fontSize: 13, color: '#1C1C1E', fontWeight: 700 }}>{v}</span>
+    </div>
+  );
+}
+
+function SignalChip({ label, value, tone }) {
+  const palette = tone === 'ok'
+    ? { bg: '#E8F5EE', dot: '#34C759', txt: '#1B7A3B' }
+    : { bg: '#FFF4E5', dot: '#FF9500', txt: '#A85B00' };
+  return (
+    <div style={{
+      flex: 1, display: 'flex', alignItems: 'center', gap: 10,
+      padding: '10px 12px',
+      background: palette.bg, borderRadius: 12,
+    }}>
+      <div style={{ width: 8, height: 8, borderRadius: 4, background: palette.dot }} />
+      <span style={{ fontSize: 12, color: palette.txt, fontWeight: 700 }}>{label}</span>
+      <span className="num-en" style={{ marginLeft: 'auto', fontSize: 14, color: palette.txt, fontWeight: 800 }}>{value}</span>
+    </div>
+  );
+}
+
+function SlotCard({ icon, slotLabel, title, items, autoBadge = false, compact = false }) {
+  return (
+    <Card padding={compact ? 16 : 20} style={{ marginBottom: compact ? 12 : 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+        {icon}
+        <div style={{ fontSize: 11.5, fontWeight: 800, color: '#8E8E93', letterSpacing: '0.06em' }}>{slotLabel}</div>
+        {autoBadge && (
+          <div style={{ marginLeft: 'auto' }}>
+            <Pill bg="#007AFF" icon={<Icon.Bolt size={11} color="#fff"/>}>commit ≥ 1로 자동 완료</Pill>
+          </div>
+        )}
+      </div>
+      <div style={{
+        fontSize: compact ? 16 : 18, fontWeight: 800, color: '#1C1C1E',
+        letterSpacing: '-0.01em', marginBottom: 14,
+      }}>{title}</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {items.map((it, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Checkbox checked={it.checked} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{
+                fontSize: compact ? 14 : 15, fontWeight: 700, color: '#1C1C1E',
+                textDecoration: it.checked ? 'none' : 'none',
+                opacity: it.checked ? 0.55 : 1,
+                marginBottom: 2,
+                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+              }}>{it.name}</div>
+              <div style={{
+                fontSize: 12, color: '#8E8E93', fontWeight: 500,
+                fontFamily: it.mono ? 'ui-monospace, SFMono-Regular, Menlo, monospace' : 'inherit',
+              }}>{it.meta}</div>
+            </div>
+            <div className="num-en" style={{ fontSize: 13, color: '#8E8E93', fontWeight: 700 }}>{it.time}</div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+/* =========================================================
+   Sprint Progress screen
+   ========================================================= */
+function SprintProgressContent({ compact = false }) {
+  const pad = compact ? 16 : 28;
+  // 30일 캘린더 데이터 — Day 3까지 진행. (4주 = 28cells + 마지막 주 2cells)
+  // 0: empty(미래), 1: input only, 2: input+build, 3: today, 4: rest
+  const days = [];
+  for (let i = 1; i <= 30; i++) {
+    if (i === 3) days.push({ d: i, kind: 'today' });
+    else if (i === 1) days.push({ d: i, kind: 'past', input: 1, build: 0 });
+    else if (i === 2) days.push({ d: i, kind: 'past', input: 1, build: 0 });
+    else days.push({ d: i, kind: 'future' });
+  }
+
+  return (
+    <div style={{
+      background: '#F2F2F7',
+      minHeight: '100%',
+      padding: pad,
+      paddingTop: compact ? 12 : 28,
+      fontFamily: 'inherit',
+    }}>
+      {/* Header */}
+      <div style={{ marginBottom: compact ? 14 : 22 }}>
+        <div style={{
+          fontSize: compact ? 13 : 14, color: '#8E8E93', fontWeight: 700,
+          letterSpacing: '0.02em', textTransform: 'uppercase',
+          marginBottom: 4,
+        }}>Sprint Progress</div>
+        <div style={{
+          fontSize: compact ? 22 : 30,
+          fontWeight: 800, color: '#1C1C1E',
+          letterSpacing: '-0.02em',
+          marginBottom: 4,
+        }}>Sprint 1 · Agent SDK + MCP</div>
+        <div style={{ fontSize: compact ? 12.5 : 14, color: '#8E8E93', fontWeight: 600 }} className="num-en">
+          2026-04-29 ~ 2026-05-28
+        </div>
+      </div>
+
+      {/* Hero Activity Ring */}
+      <Card padding={compact ? 18 : 28} style={{ marginBottom: compact ? 12 : 18 }}>
+        <div style={{ display: 'flex', flexDirection: compact ? 'column' : 'row', alignItems: 'center', gap: compact ? 14 : 28 }}>
+          <ActivityRing
+            size={compact ? 220 : 280}
+            strokeWidth={compact ? 22 : 28}
+            gap={compact ? 5 : 7}
+            values={[16, 0, 0]}
+            showCenter={true}
+          />
+          <div style={{ flex: 1, alignSelf: 'stretch', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 10, width: compact ? '100%' : 'auto' }}>
+            <RingLegend color="#007AFF" name="인풋" desc="자료 정독" current={4} total={25} pct={16} />
+            <RingLegend color="#38BDF8" name="빌드" desc="실제 작업" current={0} total={16} pct={0} />
+            <RingLegend color="#7DD3FC" name="공유" desc="아웃풋" current={0} total={4} pct={0} />
+          </div>
+        </div>
+      </Card>
+
+      {/* Stat cards 3개 */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: compact ? 'repeat(3, 1fr)' : 'repeat(3, 1fr)',
+        gap: compact ? 8 : 14,
+        marginBottom: compact ? 14 : 18,
+      }}>
+        <StatCard color="#007AFF" name="인풋" current="4" total="25" pct="16%" compact={compact}/>
+        <StatCard color="#38BDF8" name="빌드" current="0" total="16" pct="0%" compact={compact}/>
+        <StatCard color="#7DD3FC" name="공유" current="0" total="4" pct="0%" compact={compact}/>
+      </div>
+
+      {/* Calendar */}
+      <Card padding={compact ? 16 : 22}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Icon.Calendar size={16} color="#1C1C1E"/>
+            <span style={{ fontSize: 13, fontWeight: 800, color: '#1C1C1E', letterSpacing: '0.02em' }}>30일 캘린더</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <LegendDot color="#007AFF" label="오늘" />
+            <LegendDot color="#7DD3FC" label="진행" />
+            <LegendDot color="#E5E5EA" label="예정" />
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '40px 1fr', gap: compact ? 8 : 12 }}>
+          {[1,2,3,4].map((wIdx) => {
+            const start = (wIdx - 1) * 7;
+            const weekDays = days.slice(start, Math.min(start + 7, 30));
+            return (
+              <React.Fragment key={wIdx}>
+                <div style={{
+                  display: 'flex', alignItems: 'center',
+                  fontSize: 11, fontWeight: 800, color: '#8E8E93',
+                  letterSpacing: '0.06em',
+                }}>W{wIdx}</div>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(7, 1fr)',
+                  gap: compact ? 6 : 10,
+                }}>
+                  {Array.from({ length: 7 }).map((_, di) => {
+                    const day = weekDays[di];
+                    if (!day) return <div key={di} />;
+                    return <DayCell key={di} day={day} compact={compact} />;
+                  })}
+                </div>
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </Card>
+
+      <div style={{ height: compact ? 12 : 24 }} />
+    </div>
+  );
+}
+
+function RingLegend({ color, name, desc, current, total, pct }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 12,
+      padding: '10px 12px',
+      background: '#F8F9FB', borderRadius: 14,
+    }}>
+      <div style={{ width: 12, height: 12, borderRadius: 6, background: color, flexShrink: 0 }}/>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 14, fontWeight: 800, color: '#1C1C1E' }}>{name}</div>
+        <div style={{ fontSize: 11.5, color: '#8E8E93', fontWeight: 600 }}>{desc}</div>
+      </div>
+      <div className="num-en" style={{ textAlign: 'right' }}>
+        <div style={{ fontSize: 16, fontWeight: 800, color: '#1C1C1E', lineHeight: 1 }}>
+          {current}<span style={{ color: '#8E8E93', fontWeight: 700 }}> / {total}</span>
+        </div>
+        <div style={{ fontSize: 11.5, fontWeight: 700, color, marginTop: 2 }}>{pct}%</div>
+      </div>
+    </div>
+  );
+}
+
+function StatCard({ color, name, current, total, pct, compact }) {
+  return (
+    <Card padding={compact ? 12 : 18}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+        <div style={{ width: 8, height: 8, borderRadius: 4, background: color }} />
+        <div style={{ fontSize: 11.5, fontWeight: 800, color: '#8E8E93', letterSpacing: '0.06em' }}>{name.toUpperCase()}</div>
+      </div>
+      <div className="num-en" style={{
+        fontSize: compact ? 26 : 38, fontWeight: 800, color: '#1C1C1E', lineHeight: 1,
+        letterSpacing: '-0.03em',
+      }}>
+        {current}<span style={{ color: '#C7C7CC', fontWeight: 700, fontSize: compact ? 18 : 24 }}> / {total}</span>
+      </div>
+      <div className="num-en" style={{
+        marginTop: 6,
+        fontSize: compact ? 12 : 14, fontWeight: 800,
+        color,
+      }}>{pct}</div>
+    </Card>
+  );
+}
+
+function LegendDot({ color, label }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+      <div style={{ width: 8, height: 8, borderRadius: 4, background: color }} />
+      <span style={{ fontSize: 11, fontWeight: 700, color: '#8E8E93' }}>{label}</span>
+    </div>
+  );
+}
+
+function DayCell({ day, compact }) {
+  let bg = '#E5E5EA';
+  let color = '#8E8E93';
+  let shadow = 'none';
+  let extra = null;
+
+  if (day.kind === 'today') {
+    bg = '#007AFF';
+    color = '#fff';
+    shadow = '0 4px 12px rgba(0,122,255,0.35)';
+    extra = <div style={{
+      position: 'absolute', bottom: 4, left: '50%', transform: 'translateX(-50%)',
+      width: 4, height: 4, borderRadius: 2, background: '#fff',
+    }}/>;
+  } else if (day.kind === 'past') {
+    bg = '#7DD3FC';
+    color = '#0C4A6E';
+  }
+
+  return (
+    <div style={{
+      position: 'relative',
+      aspectRatio: '1 / 1',
+      borderRadius: compact ? 8 : 11,
+      background: bg,
+      color,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: compact ? 11 : 13,
+      fontWeight: 800,
+      fontFamily: 'Inter, sans-serif',
+      letterSpacing: '-0.01em',
+      boxShadow: shadow,
+    }}>
+      {day.d}
+      {extra}
+    </div>
+  );
+}
+
+/* =========================================================
+   Page Layout
+   ========================================================= */
+function App() {
+  return (
+    <div style={{
+      padding: 64, gap: 48,
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gridAutoRows: 'min-content',
+      background: '#EDEEF2',
+      minHeight: '100vh',
+    }}>
+      {/* 1. Desktop Today */}
+      <div style={{ justifySelf: 'center' }}>
+        <div className="label">데스크톱 · Today</div>
+        <BrowserWindow title="Coach — Today" url="https://coach.app/today" width={1440} height={900}>
+          <div style={{ width: 1440, height: 900, overflow: 'auto' }}>
+            <DesktopShell active="today">
+              <TodayContent compact={false} />
+            </DesktopShell>
+          </div>
+        </BrowserWindow>
+      </div>
+
+      {/* 2. Desktop Sprint */}
+      <div style={{ justifySelf: 'center' }}>
+        <div className="label">데스크톱 · Sprint Progress</div>
+        <BrowserWindow title="Coach — Sprint" url="https://coach.app/sprint" width={1440} height={900}>
+          <div style={{ width: 1440, height: 900, overflow: 'auto' }}>
+            <DesktopShell active="sprint">
+              <SprintProgressContent compact={false} />
+            </DesktopShell>
+          </div>
+        </BrowserWindow>
+      </div>
+
+      {/* 3. iPhone Today */}
+      <div style={{ justifySelf: 'center' }}>
+        <div className="label">iPhone 15 Pro · Today</div>
+        <IosFrame time="9:41" battery={86}>
+          <TodayContent compact={true} />
+        </IosFrame>
+      </div>
+
+      {/* 4. iPhone Sprint */}
+      <div style={{ justifySelf: 'center' }}>
+        <div className="label">iPhone 15 Pro · Sprint Progress</div>
+        <IosFrame time="9:41" battery={86}>
+          <SprintProgressContent compact={true} />
+        </IosFrame>
+      </div>
+    </div>
+  );
+}
+
+function DesktopShell({ active, children }) {
+  return (
+    <div style={{
+      display: 'grid', gridTemplateColumns: '220px 1fr',
+      width: '100%', height: '100%',
+      background: '#F2F2F7',
+    }}>
+      {/* Sidebar */}
+      <div style={{
+        background: '#fff',
+        borderRight: '1px solid #E5E5EA',
+        padding: '22px 14px',
+        display: 'flex', flexDirection: 'column', gap: 4,
+      }}>
+        <div style={{
+          fontSize: 16, fontWeight: 800, color: '#1C1C1E', padding: '4px 12px 18px 12px',
+          letterSpacing: '-0.02em',
+          display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <div style={{
+            width: 24, height: 24, borderRadius: 7,
+            background: 'linear-gradient(135deg, #0EA5E9 0%, #38BDF8 50%, #7DD3FC 100%)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Icon.Heart size={13} color="#fff" />
+          </div>
+          Coach
+        </div>
+        <NavItem icon={<Icon.Today color={active === 'today' ? '#007AFF' : '#8E8E93'} />} label="Today" active={active === 'today'} />
+        <NavItem icon={<Icon.Chart color={active === 'sprint' ? '#007AFF' : '#8E8E93'} />} label="Sprint Progress" active={active === 'sprint'} />
+        <NavItem icon={<Icon.Book size={20} color="#8E8E93" />} label="History" />
+        <NavItem icon={<Icon.Share size={20} color="#8E8E93" />} label="Share" />
+
+        <div style={{ flex: 1 }}/>
+        <div style={{
+          background: '#F2F2F7',
+          borderRadius: 12,
+          padding: '12px 12px',
+          display: 'flex', alignItems: 'center', gap: 10,
+        }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: 16,
+            background: '#1C1C1E', color: '#fff',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 13, fontWeight: 800,
+          }}>HJ</div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 12.5, fontWeight: 700, color: '#1C1C1E' }}>HyeonJ</div>
+            <div style={{ fontSize: 11, color: '#8E8E93', fontWeight: 600 }}>Sprint 1 · Day 3</div>
+          </div>
+        </div>
+      </div>
+      {/* Content */}
+      <div style={{ overflow: 'auto' }}>{children}</div>
+    </div>
+  );
+}
+
+function NavItem({ icon, label, active = false }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 10,
+      padding: '10px 12px',
+      borderRadius: 10,
+      background: active ? '#EAF4FF' : 'transparent',
+      color: active ? '#007AFF' : '#1C1C1E',
+      fontSize: 13.5, fontWeight: 700,
+      cursor: 'pointer',
+    }}>
+      {icon}
+      <span>{label}</span>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

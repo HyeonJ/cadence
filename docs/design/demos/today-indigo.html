@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>Coach Harness · Japanese Indigo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Noto+Serif+KR:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#F4F1EA;
+    --paper-2:#EDE8DD;
+    --ink:#2C2C2A;
+    --ink-soft:#5A5A55;
+    --ink-faint:#9A968D;
+    --indigo:#1A237E;
+    --indigo-deep:#103064;
+    --indigo-mid:#3949AB;
+    --indigo-light:#A5B4FC;
+    --indigo-mist:#C7D2FE;
+    --rule:#D9D3C5;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#E8E2D2;}
+  body{
+    font-family:'Pretendard','Inter',-apple-system,sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .serif{font-family:'Cormorant Garamond','Noto Serif KR',serif;}
+  .kserif{font-family:'Noto Serif KR','Cormorant Garamond',serif;}
+  .label{font-style:italic;color:#888;font-size:13px;letter-spacing:0.04em;font-family:'Cormorant Garamond',serif;margin-bottom:14px;}
+  .stage{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:48px;
+    padding:64px;
+    align-items:start;
+    justify-items:center;
+  }
+  .cell{display:flex;flex-direction:column;align-items:center;}
+  /* paper texture overlay */
+  .paper-bg{position:relative;background:var(--paper);}
+  .paper-bg::before{
+    content:'';
+    position:absolute;inset:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.17  0 0 0 0 0.17  0 0 0 0 0.16  0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity:0.55;
+    pointer-events:none;
+    mix-blend-mode:multiply;
+  }
+  .paper-bg > *{position:relative;z-index:1;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-presets="react">
+/* ==================== ios_frame.jsx (inlined) ==================== */
+const iosFrameStyles = {
+  wrapper: {
+    display: 'inline-block',
+    padding: 12,
+    background: '#000',
+    borderRadius: 60,
+    boxShadow: '0 0 0 2px #1f2937, 0 20px 60px rgba(0,0,0,0.3)',
+    position: 'relative',
+  },
+  screen: {
+    position: 'relative',
+    borderRadius: 48,
+    overflow: 'hidden',
+    background: '#fff',
+  },
+  statusBar: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0,
+    height: 54,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 32px 0 32px',
+    fontSize: 16,
+    fontWeight: 600,
+    fontFamily: '-apple-system, "SF Pro Text", sans-serif',
+    zIndex: 20,
+    pointerEvents: 'none',
+  },
+  dynamicIsland: {
+    position: 'absolute',
+    top: 12,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 124,
+    height: 36,
+    background: '#000',
+    borderRadius: 999,
+    zIndex: 30,
+  },
+  statusIcons: { display:'flex', alignItems:'center', gap:6 },
+  signalIcon: { display:'flex', alignItems:'flex-end', gap:2, height:12 },
+  signalBar: { width:3, background:'currentColor', borderRadius:1 },
+  batteryIcon: {
+    width: 26, height: 12,
+    border: '1.5px solid currentColor',
+    borderRadius: 3, padding: 1,
+    position: 'relative', opacity: 0.8,
+  },
+  batteryCap: {
+    position:'absolute', top:3, right:-3,
+    width:2, height:6, background:'currentColor', borderRadius:'0 1px 1px 0',
+  },
+  content: { position:'absolute', top:54, left:0, right:0, bottom:34, overflow:'auto' },
+  homeIndicator: {
+    position:'absolute', bottom:10, left:'50%', transform:'translateX(-50%)',
+    width:140, height:5, background:'rgba(0,0,0,0.3)', borderRadius:999, zIndex:10,
+  },
+  homeIndicatorDark: { background:'rgba(255,255,255,0.5)' },
+};
+function IosFrame({
+  children, width=393, height=852, time='9:41', battery=100,
+  darkMode=false, showStatusBar=true, showDynamicIsland=true, showHomeIndicator=true,
+}){
+  const textColor = darkMode ? '#fff' : '#000';
+  return (
+    <div style={iosFrameStyles.wrapper}>
+      <div style={{...iosFrameStyles.screen, width, height, background: darkMode ? '#000' : '#fff'}}>
+        {showStatusBar && (
+          <div style={{...iosFrameStyles.statusBar, color:textColor}}>
+            <span>{time}</span>
+            <div style={iosFrameStyles.statusIcons}>
+              <div style={iosFrameStyles.signalIcon}>
+                <div style={{...iosFrameStyles.signalBar, height:4}} />
+                <div style={{...iosFrameStyles.signalBar, height:6}} />
+                <div style={{...iosFrameStyles.signalBar, height:9}} />
+                <div style={{...iosFrameStyles.signalBar, height:11}} />
+              </div>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" style={{color:textColor}}>
+                <path d="M8 11.5a1 1 0 100-2 1 1 0 000 2z" fill="currentColor" />
+                <path d="M3 7.5a7 7 0 0110 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+                <path d="M1 4.5a11 11 0 0114 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" opacity="0.7" />
+              </svg>
+              <div style={iosFrameStyles.batteryIcon}>
+                <div style={{width:`${battery}%`, height:'100%', background:'currentColor', borderRadius:1, opacity:0.9}} />
+                <div style={iosFrameStyles.batteryCap} />
+              </div>
+            </div>
+          </div>
+        )}
+        {showDynamicIsland && <div style={iosFrameStyles.dynamicIsland} />}
+        <div style={iosFrameStyles.content}>{children}</div>
+        {showHomeIndicator && (
+          <div style={{...iosFrameStyles.homeIndicator, ...(darkMode ? iosFrameStyles.homeIndicatorDark : {})}} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ==================== browser_window.jsx (inlined) ==================== */
+const browserWindowStyles = {
+  window: {
+    display:'inline-block', background:'#fff', borderRadius:10, overflow:'hidden',
+    boxShadow:'0 30px 80px rgba(0,0,0,0.25), 0 0 0 0.5px rgba(0,0,0,0.15)',
+  },
+  chrome: { background:'#dee1e6', paddingTop:10, paddingLeft:10, paddingRight:10, userSelect:'none' },
+  tabRow: { display:'flex', alignItems:'flex-end', gap:6, position:'relative' },
+  trafficLights: { display:'flex', gap:8, alignItems:'center', paddingBottom:10, marginRight:8 },
+  light: { width:12, height:12, borderRadius:'50%', border:'0.5px solid rgba(0,0,0,0.15)' },
+  close: { background:'#ff5f57' },
+  minimize: { background:'#febc2e' },
+  maximize: { background:'#28c840' },
+  tab: {
+    background:'#fff', padding:'8px 30px 8px 14px',
+    borderTopLeftRadius:10, borderTopRightRadius:10,
+    fontSize:12, color:'#222', fontFamily:'-apple-system, sans-serif',
+    maxWidth:220, display:'flex', alignItems:'center', gap:8,
+    position:'relative', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis',
+  },
+  favicon: { width:14, height:14, borderRadius:2, background:'#999', flexShrink:0 },
+  navBar: {
+    background:'#fff', padding:'8px 14px',
+    display:'flex', alignItems:'center', gap:10,
+    borderBottom:'1px solid #e5e7eb',
+  },
+  navButtons: { display:'flex', gap:4, color:'#5f6368', fontSize:16 },
+  navButton: { width:28, height:28, display:'flex', alignItems:'center', justifyContent:'center', borderRadius:'50%', cursor:'pointer' },
+  urlBar: {
+    flex:1, background:'#f1f3f4', borderRadius:999,
+    padding:'7px 14px', fontSize:13, color:'#333',
+    display:'flex', alignItems:'center', gap:8,
+    fontFamily:'-apple-system, sans-serif',
+  },
+  lockIcon: { color:'#5f6368', fontSize:12 },
+  content: { position:'relative', overflow:'auto', background:'#fff' },
+};
+function BrowserWindow({ title='New Tab', url='https://example.com', width=1200, height=800, showTrafficLights=true, children }){
+  return (
+    <div style={browserWindowStyles.window}>
+      <div style={browserWindowStyles.chrome}>
+        <div style={browserWindowStyles.tabRow}>
+          {showTrafficLights && (
+            <div style={browserWindowStyles.trafficLights}>
+              <div style={{...browserWindowStyles.light, ...browserWindowStyles.close}} />
+              <div style={{...browserWindowStyles.light, ...browserWindowStyles.minimize}} />
+              <div style={{...browserWindowStyles.light, ...browserWindowStyles.maximize}} />
+            </div>
+          )}
+          <div style={browserWindowStyles.tab}>
+            <div style={browserWindowStyles.favicon} />
+            <span>{title}</span>
+          </div>
+        </div>
+      </div>
+      <div style={browserWindowStyles.navBar}>
+        <div style={browserWindowStyles.navButtons}>
+          <div style={browserWindowStyles.navButton}>←</div>
+          <div style={browserWindowStyles.navButton}>→</div>
+          <div style={browserWindowStyles.navButton}>↻</div>
+        </div>
+        <div style={browserWindowStyles.urlBar}>
+          <span style={browserWindowStyles.lockIcon}>🔒</span>
+          <span>{url}</span>
+        </div>
+      </div>
+      <div style={{...browserWindowStyles.content, width, height}}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* ==================== Indigo design primitives ==================== */
+const PAPER = '#F4F1EA';
+const INK = '#2C2C2A';
+const INK_SOFT = '#5A5A55';
+const INK_FAINT = '#9A968D';
+const INDIGO = '#1A237E';
+const INDIGO_DEEP = '#103064';
+const INDIGO_MID = '#3949AB';
+const INDIGO_LIGHT = '#A5B4FC';
+const INDIGO_MIST = '#C7D2FE';
+const RULE = '#D9D3C5';
+
+/* paper texture inline */
+function PaperTexture({opacity=0.04}){
+  return (
+    <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',mixBlendMode:'multiply',opacity}} xmlns="http://www.w3.org/2000/svg">
+      <filter id="paperNoise">
+        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/>
+        <feColorMatrix values="0 0 0 0 0.17  0 0 0 0 0.17  0 0 0 0 0.16  0 0 0 1 0"/>
+      </filter>
+      <rect width="100%" height="100%" filter="url(#paperNoise)" />
+    </svg>
+  );
+}
+
+/* a hand-drawn tiny grass dot — single inline SVG */
+function GrassDot({size=14, color=INDIGO_DEEP}){
+  return (
+    <svg width={size} height={size} viewBox="0 0 14 14" fill="none">
+      <path d="M7 12 C 7 8, 5 6, 3 4" stroke={color} strokeWidth="1.1" strokeLinecap="round" fill="none"/>
+      <path d="M7 12 C 7 8.5, 8.5 6, 11 4.5" stroke={color} strokeWidth="1.1" strokeLinecap="round" fill="none" opacity="0.85"/>
+      <circle cx="7" cy="12" r="1.3" fill={color}/>
+    </svg>
+  );
+}
+
+/* round checkbox */
+function CheckCircle({checked=false, size=20}){
+  return (
+    <div style={{
+      width:size, height:size, borderRadius:999,
+      border:`1.3px solid ${checked ? INDIGO_DEEP : INK_FAINT}`,
+      background: checked ? INDIGO_DEEP : 'transparent',
+      display:'flex', alignItems:'center', justifyContent:'center',
+      flexShrink:0,
+    }}>
+      {checked && (
+        <svg width={size*0.55} height={size*0.55} viewBox="0 0 12 12" fill="none">
+          <path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#F4F1EA" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+        </svg>
+      )}
+    </div>
+  );
+}
+
+/* hairline ink line */
+function Hairline({color=RULE, opacity=1, style={}}){
+  return <div style={{height:1, background:color, opacity, ...style}}/>;
+}
+
+/* ==================== Area chart — the centerpiece ==================== */
+/* Generates smooth cubic-Bezier area paths from a series of values 0..1 */
+function smoothPath(points){
+  if (points.length < 2) return '';
+  let d = `M ${points[0].x} ${points[0].y}`;
+  for (let i=0; i<points.length-1; i++){
+    const p0 = points[i-1] || points[i];
+    const p1 = points[i];
+    const p2 = points[i+1];
+    const p3 = points[i+2] || p2;
+    const t = 0.22;
+    const c1x = p1.x + (p2.x - p0.x) * t;
+    const c1y = p1.y + (p2.y - p0.y) * t;
+    const c2x = p2.x - (p3.x - p1.x) * t;
+    const c2y = p2.y - (p3.y - p1.y) * t;
+    d += ` C ${c1x} ${c1y}, ${c2x} ${c2y}, ${p2.x} ${p2.y}`;
+  }
+  return d;
+}
+function AreaLayer({ values, width, height, padX=20, baseY, fill, stroke, strokeWidth=1.2, fillOpacity=0.55 }){
+  const innerW = width - padX*2;
+  const stepX = innerW / (values.length - 1);
+  const points = values.map((v,i)=>({
+    x: padX + i*stepX,
+    y: baseY - v * (baseY - 16),
+  }));
+  const linePath = smoothPath(points);
+  const areaPath = `${linePath} L ${points[points.length-1].x} ${baseY} L ${points[0].x} ${baseY} Z`;
+  return (
+    <g>
+      <path d={areaPath} fill={fill} opacity={fillOpacity} />
+      <path d={linePath} fill="none" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"/>
+    </g>
+  );
+}
+
+function SprintAreaChart({width=900, height=260}){
+  // 30 days
+  const N = 30;
+  // input — front-loaded reading
+  const inputVals = [0.55,0.62,0.70,0.66,0.58,0.50,0.45,0.42,0.40,0.38,0.36,0.34,0.32,0.30,0.28,0.26,0.24,0.22,0.20,0.18,0.16,0.15,0.14,0.13,0.12,0.11,0.10,0.09,0.08,0.07];
+  // build — ramps mid-sprint
+  const buildVals = [0.05,0.08,0.10,0.14,0.20,0.28,0.36,0.44,0.52,0.60,0.66,0.72,0.78,0.82,0.85,0.88,0.86,0.84,0.80,0.76,0.72,0.68,0.62,0.56,0.50,0.44,0.38,0.32,0.26,0.20];
+  // share — late
+  const shareVals = [0.00,0.00,0.00,0.00,0.02,0.04,0.05,0.06,0.08,0.10,0.12,0.14,0.16,0.18,0.20,0.22,0.26,0.30,0.36,0.42,0.50,0.58,0.66,0.72,0.78,0.82,0.86,0.88,0.90,0.92];
+
+  const baseY = height - 36;
+
+  // grid horizontal lines
+  const gridY = [0.25, 0.5, 0.75].map(p => baseY - p*(baseY-16));
+
+  // x-axis ticks for weeks
+  const padX = 20;
+  const innerW = width - padX*2;
+  const stepX = innerW / (N - 1);
+
+  const todayIndex = 2; // day 3
+
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{display:'block'}}>
+      <defs>
+        <linearGradient id="indigoFadeA" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor={INDIGO_DEEP} stopOpacity="0.55"/>
+          <stop offset="100%" stopColor={INDIGO_DEEP} stopOpacity="0.05"/>
+        </linearGradient>
+        <linearGradient id="indigoFadeB" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor={INDIGO_MID} stopOpacity="0.45"/>
+          <stop offset="100%" stopColor={INDIGO_MID} stopOpacity="0.04"/>
+        </linearGradient>
+        <linearGradient id="indigoFadeC" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor={INDIGO_LIGHT} stopOpacity="0.55"/>
+          <stop offset="100%" stopColor={INDIGO_LIGHT} stopOpacity="0.02"/>
+        </linearGradient>
+      </defs>
+
+      {/* horizontal hairlines */}
+      {gridY.map((y,i)=>(
+        <line key={i} x1={padX} x2={width-padX} y1={y} y2={y} stroke={RULE} strokeWidth="0.6" strokeDasharray="2 4"/>
+      ))}
+      <line x1={padX} x2={width-padX} y1={baseY} y2={baseY} stroke={INK_FAINT} strokeWidth="0.8" />
+
+      {/* layers: input (deepest), build, share (lightest top) - but indigo agnomen of light/deep */}
+      <AreaLayer values={inputVals} width={width} height={height} padX={padX} baseY={baseY}
+        fill="url(#indigoFadeA)" stroke={INDIGO_DEEP} strokeWidth={1.1} fillOpacity={1}/>
+      <AreaLayer values={buildVals} width={width} height={height} padX={padX} baseY={baseY}
+        fill="url(#indigoFadeB)" stroke={INDIGO_MID} strokeWidth={1.1} fillOpacity={1}/>
+      <AreaLayer values={shareVals} width={width} height={height} padX={padX} baseY={baseY}
+        fill="url(#indigoFadeC)" stroke={INDIGO_LIGHT} strokeWidth={1.1} fillOpacity={1}/>
+
+      {/* today marker — vertical hairline + grass dot */}
+      <line x1={padX + todayIndex*stepX} x2={padX + todayIndex*stepX}
+            y1={16} y2={baseY} stroke={INDIGO_DEEP} strokeWidth="0.8" strokeDasharray="3 3" opacity="0.6"/>
+      <circle cx={padX + todayIndex*stepX} cy={baseY} r="3.5" fill={INDIGO_DEEP}/>
+      <text x={padX + todayIndex*stepX + 8} y={baseY-6}
+            fontFamily="'Cormorant Garamond', serif" fontStyle="italic"
+            fontSize="12" fill={INDIGO_DEEP}>오늘 · 셋째 날</text>
+
+      {/* week labels under axis */}
+      {[0,7,14,21,28].map((d,i)=>(
+        <text key={i}
+              x={padX + d*stepX} y={baseY+18}
+              textAnchor="middle"
+              fontFamily="'Cormorant Garamond', serif"
+              fontStyle="italic"
+              fontSize="11" fill={INK_FAINT}>
+          {`Day ${d+1}`}
+        </text>
+      ))}
+    </svg>
+  );
+}
+
+/* mini area chart for progress cards */
+function MiniArea({values, width=200, height=46, color=INDIGO_DEEP, fillId}){
+  const padX=4;
+  const baseY = height - 4;
+  const innerW = width - padX*2;
+  const stepX = innerW / (values.length - 1);
+  const points = values.map((v,i)=>({ x: padX + i*stepX, y: baseY - v * (baseY-6) }));
+  const linePath = smoothPath(points);
+  const areaPath = `${linePath} L ${points[points.length-1].x} ${baseY} L ${points[0].x} ${baseY} Z`;
+  const id = `mini-${fillId}`;
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{display:'block'}}>
+      <defs>
+        <linearGradient id={id} x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.45"/>
+          <stop offset="100%" stopColor={color} stopOpacity="0.03"/>
+        </linearGradient>
+      </defs>
+      <path d={areaPath} fill={`url(#${id})`} />
+      <path d={linePath} fill="none" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
+/* ==================== Today screen ==================== */
+function TodayContent({mobile=false}){
+  const pad = mobile ? 22 : 56;
+  const headSize = mobile ? 22 : 30;
+  return (
+    <div className="paper-bg" style={{
+      width:'100%', height:'100%',
+      background:PAPER,
+      padding: `${mobile ? 14 : 36}px ${pad}px ${mobile ? 24 : 44}px`,
+      overflow:'hidden',
+      position:'relative',
+    }}>
+      <PaperTexture opacity={0.04}/>
+
+      {/* header */}
+      <div style={{display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom: mobile?14:22}}>
+        <div>
+          <div className="serif" style={{fontStyle:'italic', color:INK_FAINT, fontSize: mobile?11:13, letterSpacing:'0.06em', marginBottom:4}}>
+            Coach · 藍
+          </div>
+          <div className="kserif" style={{fontSize:headSize, fontWeight:500, color:INK, letterSpacing:'-0.01em', lineHeight:1.15}}>
+            2026년 5월 1일 금요일
+          </div>
+          <div className="serif" style={{fontStyle:'italic', color:INDIGO_DEEP, fontSize: mobile?12:15, marginTop:4}}>
+            Sprint 1 &middot; 셋째 날
+          </div>
+        </div>
+        {!mobile && (
+          <div style={{textAlign:'right'}}>
+            <div className="serif" style={{fontStyle:'italic', color:INK_FAINT, fontSize:12, letterSpacing:'0.08em'}}>SIGNAL · YESTERDAY</div>
+            <div style={{display:'flex', gap:14, marginTop:8, justifyContent:'flex-end'}}>
+              <div style={{textAlign:'right'}}>
+                <div className="serif" style={{fontSize:22, color:INK, fontWeight:500}}>0</div>
+                <div style={{fontSize:11, color:INK_FAINT, letterSpacing:'0.04em'}}>commits</div>
+              </div>
+              <div style={{textAlign:'right'}}>
+                <div className="serif" style={{fontSize:22, color:INDIGO_DEEP, fontWeight:500}}>2 / 2</div>
+                <div style={{fontSize:11, color:INK_FAINT, letterSpacing:'0.04em'}}>정독</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* coach quote */}
+      <div style={{
+        position:'relative',
+        padding: mobile ? '12px 14px 12px 22px' : '16px 22px 16px 30px',
+        marginBottom: mobile?16:24,
+        background:'transparent',
+      }}>
+        <div style={{
+          position:'absolute', left:0, top:6, bottom:6,
+          width:1.5, background:INDIGO_DEEP, opacity:0.5,
+        }}/>
+        <div className="kserif" style={{
+          fontStyle:'italic',
+          fontSize: mobile?14:17,
+          lineHeight:1.55,
+          color:INK,
+        }}>
+          「어제 commit 0건. 오늘은 빌드 1h를 먼저, 정독은 30분만 권하노라.」
+        </div>
+        <div className="serif" style={{
+          fontStyle:'italic', color:INK_FAINT, fontSize: mobile?11:12,
+          marginTop:6, letterSpacing:'0.04em',
+        }}>— Coach</div>
+      </div>
+
+      {/* slot 1 */}
+      <SlotBlock
+        mobile={mobile}
+        eyebrow="SLOT · 01"
+        title="평일 아침 30분 · 정독"
+        subtitle="자연을 건너가듯 천천히 읽기"
+        items={[
+          {checked:true,  title:'Agent SDK Quickstart', meta:'30분 · anthropic.com/agent-sdk'},
+          {checked:true,  title:'Building Agents — Engineering Blog', meta:'30분 · anthropic.com/engineering'},
+        ]}
+      />
+
+      <div style={{height: mobile?12:18}}/>
+
+      {/* slot 2 */}
+      <SlotBlock
+        mobile={mobile}
+        eyebrow="SLOT · 02"
+        title="평일 저녁 1h · 빌드"
+        subtitle="commit이 흐르면 자연히 채워집니다"
+        autoSignal
+        items={[
+          {checked:false, title:'사내 플러그인 → MCP 서버 wrapping', meta:'60분 · me/sprint1-mcp-wrap'},
+        ]}
+      />
+
+      {!mobile && <div style={{height:14}}/>}
+
+      {/* mobile: signal row */}
+      {mobile && (
+        <div style={{display:'flex', justifyContent:'space-between', marginTop:14, padding:'10px 0', borderTop:`1px solid ${RULE}`}}>
+          <div className="serif" style={{fontStyle:'italic', color:INK_FAINT, fontSize:11, letterSpacing:'0.06em'}}>어제의 신호</div>
+          <div style={{display:'flex', gap:14}}>
+            <div className="serif" style={{fontSize:13, color:INK}}><span style={{color:INK_FAINT, fontStyle:'italic'}}>commits </span>0</div>
+            <div className="serif" style={{fontSize:13, color:INDIGO_DEEP}}><span style={{color:INK_FAINT, fontStyle:'italic'}}>정독 </span>2 / 2</div>
+          </div>
+        </div>
+      )}
+
+      {/* footer */}
+      <div style={{
+        position:'absolute',
+        left:pad, right:pad,
+        bottom: mobile?18:22,
+        display:'flex', justifyContent:'space-between', alignItems:'center',
+      }}>
+        <div className="serif" style={{fontStyle:'italic', color:INK_FAINT, fontSize: mobile?12:13}}>
+          오늘 쉬기
+        </div>
+        <div style={{display:'flex', alignItems:'center', gap:10}}>
+          <span className="serif" style={{fontStyle:'italic', color:INK_FAINT, fontSize: mobile?12:13}}>Settings</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle cx="7" cy="7" r="2.4" stroke={INK_FAINT} strokeWidth="0.9" fill="none"/>
+            <circle cx="7" cy="7" r="5.6" stroke={INK_FAINT} strokeWidth="0.9" fill="none" strokeDasharray="1.5 2"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SlotBlock({mobile, eyebrow, title, subtitle, items, autoSignal}){
+  return (
+    <div style={{position:'relative'}}>
+      {/* eyebrow row */}
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom: mobile?6:10}}>
+        <div className="serif" style={{
+          fontStyle:'italic', color:INDIGO_DEEP,
+          fontSize: mobile?11:12, letterSpacing:'0.18em',
+        }}>{eyebrow}</div>
+        {autoSignal && (
+          <div style={{
+            display:'flex', alignItems:'center', gap:6,
+            padding:'3px 9px',
+            border:`1px solid ${INDIGO_DEEP}`,
+            borderRadius:999,
+            color:INDIGO_DEEP,
+            fontSize: mobile?10:11,
+            letterSpacing:'0.06em',
+          }} className="serif">
+            <span style={{
+              width:5, height:5, borderRadius:999, background:INDIGO_DEEP,
+              boxShadow:`0 0 0 3px ${INDIGO_MIST}`,
+            }}/>
+            <span style={{fontStyle:'italic'}}>commit ≥ 1 자동완료</span>
+          </div>
+        )}
+      </div>
+
+      {/* title */}
+      <div className="kserif" style={{
+        fontSize: mobile?17:21, color:INK, fontWeight:500, letterSpacing:'-0.005em',
+      }}>{title}</div>
+      <div className="serif" style={{
+        fontStyle:'italic', color:INK_FAINT, fontSize: mobile?12:13, marginTop:2, marginBottom: mobile?10:14,
+      }}>{subtitle}</div>
+
+      {/* items */}
+      <div style={{display:'flex', flexDirection:'column', gap: mobile?8:10}}>
+        {items.map((it, i)=>(
+          <div key={i} style={{
+            display:'flex', alignItems:'flex-start', gap: mobile?12:14,
+            padding: mobile ? '10px 14px' : '14px 18px',
+            background:'rgba(255,255,255,0.55)',
+            border:`1px solid ${RULE}`,
+            borderRadius: mobile?16:20,
+            position:'relative',
+          }}>
+            <div style={{paddingTop:2}}>
+              <CheckCircle checked={it.checked} size={mobile?18:20}/>
+            </div>
+            <div style={{flex:1, minWidth:0}}>
+              <div className="kserif" style={{
+                fontSize: mobile?14:16, color:INK,
+                textDecoration: it.checked ? 'line-through' : 'none',
+                textDecorationColor: INK_FAINT,
+                textDecorationThickness:'0.8px',
+              }}>{it.title}</div>
+              <div className="serif" style={{
+                fontStyle:'italic', color:INK_FAINT, fontSize: mobile?11:12,
+                marginTop:3, letterSpacing:'0.02em',
+              }}>{it.meta}</div>
+            </div>
+            <div style={{paddingTop:3}}>
+              <GrassDot size={mobile?12:14} color={it.checked ? INDIGO_DEEP : INK_FAINT}/>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ==================== Sprint Progress screen ==================== */
+function SprintContent({mobile=false}){
+  const pad = mobile ? 22 : 52;
+  return (
+    <div className="paper-bg" style={{
+      width:'100%', height:'100%',
+      background:PAPER,
+      padding: `${mobile ? 14 : 32}px ${pad}px ${mobile ? 24 : 36}px`,
+      overflow:'hidden',
+      position:'relative',
+    }}>
+      <PaperTexture opacity={0.04}/>
+
+      {/* header */}
+      <div style={{marginBottom: mobile?14:18}}>
+        <div className="serif" style={{fontStyle:'italic', color:INK_FAINT, fontSize: mobile?11:13, letterSpacing:'0.08em', marginBottom:4}}>
+          SPRINT · 01
+        </div>
+        <div className="kserif" style={{fontSize: mobile?20:28, fontWeight:500, color:INK, letterSpacing:'-0.01em', lineHeight:1.15}}>
+          Sprint 1 · Agent SDK + MCP
+        </div>
+        <div className="serif" style={{fontStyle:'italic', color:INDIGO_DEEP, fontSize: mobile?12:14, marginTop:4}}>
+          2026 · 04 · 29 ~ 2026 · 05 · 28 &nbsp;·&nbsp; 30 일의 능선
+        </div>
+      </div>
+
+      {/* area chart */}
+      {!mobile && (
+        <div style={{
+          marginBottom:18,
+          padding:'14px 4px 4px',
+          background:'rgba(255,255,255,0.4)',
+          border:`1px solid ${RULE}`,
+          borderRadius:18,
+          position:'relative',
+          overflow:'hidden',
+        }}>
+          {/* legend */}
+          <div style={{
+            display:'flex', gap:18, padding:'0 16px 8px',
+            color:INK_SOFT,
+          }}>
+            <LegendDot color={INDIGO_DEEP} label="入 · 인풋"/>
+            <LegendDot color={INDIGO_MID} label="作 · 빌드"/>
+            <LegendDot color={INDIGO_LIGHT} label="共 · 공유"/>
+          </div>
+          <SprintAreaChart width={1100} height={240}/>
+        </div>
+      )}
+      {mobile && (
+        <div style={{
+          marginBottom:14,
+          padding:'10px 4px 4px',
+          background:'rgba(255,255,255,0.4)',
+          border:`1px solid ${RULE}`,
+          borderRadius:14,
+          position:'relative',
+          overflow:'hidden',
+        }}>
+          <div style={{display:'flex', gap:12, padding:'0 12px 6px'}}>
+            <LegendDot color={INDIGO_DEEP} label="入" small/>
+            <LegendDot color={INDIGO_MID} label="作" small/>
+            <LegendDot color={INDIGO_LIGHT} label="共" small/>
+          </div>
+          <SprintAreaChart width={350} height={150}/>
+        </div>
+      )}
+
+      {/* progress cards */}
+      <div style={{
+        display:'grid',
+        gridTemplateColumns: mobile ? '1fr' : '1fr 1fr 1fr',
+        gap: mobile?10:14,
+        marginBottom: mobile?14:18,
+      }}>
+        <ProgressCard mobile={mobile} kanji="入" label="인풋" cur={4} total={25}
+          values={[0.55,0.62,0.70,0.66,0.58,0.50,0.45,0.42,0.40,0.38]} color={INDIGO_DEEP} fillId="a"/>
+        <ProgressCard mobile={mobile} kanji="作" label="빌드" cur={0} total={16}
+          values={[0.05,0.08,0.10,0.14,0.20,0.28,0.36,0.44,0.52,0.60]} color={INDIGO_MID} fillId="b"/>
+        <ProgressCard mobile={mobile} kanji="共" label="공유" cur={0} total={4}
+          values={[0,0,0,0,0.02,0.04,0.05,0.06,0.08,0.10]} color={INDIGO_LIGHT} fillId="c"/>
+      </div>
+
+      {/* calendar */}
+      <Calendar mobile={mobile}/>
+    </div>
+  );
+}
+
+function LegendDot({color, label, small}){
+  return (
+    <div style={{display:'flex', alignItems:'center', gap:7}}>
+      <span style={{
+        display:'inline-block', width:10, height:10, borderRadius:999,
+        background:color, boxShadow:`0 0 0 2px ${PAPER}, 0 0 0 3px ${color}33`,
+      }}/>
+      <span className="serif" style={{
+        fontStyle:'italic', fontSize: small?11:12, color:INK_SOFT, letterSpacing:'0.03em',
+      }}>{label}</span>
+    </div>
+  );
+}
+
+function ProgressCard({mobile, kanji, label, cur, total, values, color, fillId}){
+  const pct = total ? cur/total : 0;
+  return (
+    <div style={{
+      padding: mobile?'12px 14px':'16px 18px',
+      border:`1px solid ${RULE}`,
+      borderRadius: mobile?16:18,
+      background:'rgba(255,255,255,0.5)',
+      position:'relative',
+    }}>
+      <div style={{display:'flex', alignItems:'baseline', justifyContent:'space-between'}}>
+        <div style={{display:'flex', alignItems:'baseline', gap:10}}>
+          <div className="kserif" style={{fontSize: mobile?22:26, color:color, fontWeight:500, lineHeight:1}}>
+            {kanji}
+          </div>
+          <div>
+            <div className="serif" style={{fontStyle:'italic', color:INK_FAINT, fontSize: mobile?11:12, letterSpacing:'0.08em'}}>
+              {label.toUpperCase()}
+            </div>
+            <div className="kserif" style={{fontSize: mobile?14:16, color:INK, marginTop:1}}>{label}</div>
+          </div>
+        </div>
+        <div className="serif" style={{fontSize: mobile?18:22, color:INK, fontWeight:500}}>
+          {cur} <span style={{color:INK_FAINT, fontStyle:'italic'}}>/ {total}</span>
+        </div>
+      </div>
+      <div style={{margin:'10px 0 6px'}}>
+        <MiniArea values={values} width={mobile?280:240} height={mobile?40:46} color={color} fillId={fillId}/>
+      </div>
+      {/* progress hairline */}
+      <div style={{position:'relative', height:2, background:'rgba(0,0,0,0.06)', borderRadius:2}}>
+        <div style={{position:'absolute',left:0,top:0,bottom:0, width:`${pct*100}%`, background:color, borderRadius:2, opacity:0.85}}/>
+      </div>
+    </div>
+  );
+}
+
+function Calendar({mobile}){
+  // 30 days. today = day 3
+  const today = 2;
+  const cells = [];
+  for (let i=0;i<28;i++){
+    cells.push(i);
+  }
+  // we'll pad to 30 with extra two
+  const allDays = [...Array(30).keys()];
+  // group by week (4w + 2)
+  const weeks = [];
+  for (let w=0; w<5; w++){
+    const start = w*7;
+    const end = Math.min(start+7, 30);
+    if (start < 30) weeks.push(allDays.slice(start, end));
+  }
+
+  return (
+    <div style={{
+      padding: mobile?'12px 14px':'14px 18px',
+      border:`1px solid ${RULE}`,
+      borderRadius: mobile?16:18,
+      background:'rgba(255,255,255,0.5)',
+    }}>
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:10}}>
+        <div className="serif" style={{fontStyle:'italic', color:INK_FAINT, fontSize:12, letterSpacing:'0.12em'}}>
+          THIRTY DAYS
+        </div>
+        <div className="serif" style={{fontStyle:'italic', color:INK_FAINT, fontSize:11}}>
+          月 · 火 · 水 · 木 · 金 · 土 · 日
+        </div>
+      </div>
+      <div style={{display:'flex', flexDirection:'column', gap: mobile?6:8}}>
+        {weeks.map((week, wi)=>(
+          <div key={wi} style={{display:'flex', alignItems:'center', gap: mobile?6:10}}>
+            <div className="serif" style={{
+              width:34, fontSize: mobile?11:12, color:INK_FAINT,
+              fontStyle:'italic', letterSpacing:'0.05em',
+            }}>{`W${wi+1}`}</div>
+            <div style={{
+              display:'grid',
+              gridTemplateColumns:'repeat(7, 1fr)',
+              gap: mobile?5:8, flex:1,
+            }}>
+              {Array(7).fill(0).map((_, di)=>{
+                const dayIdx = week[di];
+                if (dayIdx === undefined){
+                  return <div key={di}/>;
+                }
+                const isToday = dayIdx === today;
+                const isPast = dayIdx < today;
+                const isFuture = dayIdx > today;
+                return (
+                  <DayCell key={di} mobile={mobile} day={dayIdx+1} isToday={isToday} isPast={isPast} isFuture={isFuture}/>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DayCell({mobile, day, isToday, isPast, isFuture}){
+  const size = mobile ? 32 : 40;
+  return (
+    <div style={{
+      height:size,
+      borderRadius: mobile?10:12,
+      border:`1px solid ${isToday ? INDIGO_DEEP : RULE}`,
+      background: isToday ? '#FFF' : (isPast ? 'rgba(26,35,126,0.05)' : 'transparent'),
+      display:'flex', alignItems:'center', justifyContent:'center',
+      position:'relative',
+      flexDirection:'column',
+      gap:2,
+    }}>
+      <span className="serif" style={{
+        fontSize: mobile?10:11, fontStyle:'italic',
+        color: isFuture ? INK_FAINT : (isToday ? INDIGO_DEEP : INK_SOFT),
+      }}>{day}</span>
+      {isToday ? (
+        <GrassDot size={mobile?9:11} color={INDIGO_DEEP}/>
+      ) : isPast ? (
+        <span style={{width:4, height:4, borderRadius:999, background: day%2===0 ? INDIGO_DEEP : INDIGO_MID, opacity:0.85}}/>
+      ) : (
+        <span style={{width:3, height:3, borderRadius:999, background:INK_FAINT, opacity:0.4}}/>
+      )}
+    </div>
+  );
+}
+
+/* ==================== Stage layout ==================== */
+function App(){
+  return (
+    <div className="stage">
+      {/* 1) desktop today */}
+      <div className="cell">
+        <div className="label">데스크톱 · Today</div>
+        <BrowserWindow
+          title="Coach · Today"
+          url="coach.harness/today"
+          width={1440} height={900}>
+          <TodayContent mobile={false}/>
+        </BrowserWindow>
+      </div>
+
+      {/* 2) desktop sprint */}
+      <div className="cell">
+        <div className="label">데스크톱 · Sprint Progress</div>
+        <BrowserWindow
+          title="Coach · Sprint 1"
+          url="coach.harness/sprint/1"
+          width={1440} height={900}>
+          <SprintContent mobile={false}/>
+        </BrowserWindow>
+      </div>
+
+      {/* 3) iphone today */}
+      <div className="cell">
+        <div className="label">iPhone 15 Pro · Today</div>
+        <IosFrame width={393} height={852} time="9:41" battery={84}>
+          <TodayContent mobile={true}/>
+        </IosFrame>
+      </div>
+
+      {/* 4) iphone sprint */}
+      <div className="cell">
+        <div className="label">iPhone 15 Pro · Sprint Progress</div>
+        <IosFrame width={393} height={852} time="9:41" battery={84}>
+          <SprintContent mobile={true}/>
+        </IosFrame>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

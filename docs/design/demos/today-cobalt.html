@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>Coach Harness — Today / Sprint Progress (Cool Cobalt)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #F2F3F5;
+    font-family: 'Pretendard', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #0A0A0A;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .page {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    padding: 64px;
+    max-width: 2880px;
+    margin: 0 auto;
+  }
+  .mockup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .mockup-label {
+    font-style: italic;
+    color: #888;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.01em;
+    align-self: flex-start;
+  }
+  .num-display {
+    font-family: 'Inter', sans-serif;
+    font-feature-settings: 'tnum' 1, 'ss01' 1;
+    letter-spacing: -0.02em;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+// =====================================================
+// IosFrame (inline from huashu-design assets)
+// =====================================================
+const iosFrameStyles = {
+  wrapper: {
+    display: 'inline-block',
+    padding: 12,
+    background: '#000',
+    borderRadius: 60,
+    boxShadow: '0 0 0 2px #1f2937, 0 20px 60px rgba(0,0,0,0.3)',
+    position: 'relative',
+  },
+  screen: {
+    position: 'relative',
+    borderRadius: 48,
+    overflow: 'hidden',
+    background: '#fff',
+  },
+  statusBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 54,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 32px 0 32px',
+    fontSize: 16,
+    fontWeight: 600,
+    fontFamily: '-apple-system, "SF Pro Text", sans-serif',
+    zIndex: 20,
+    pointerEvents: 'none',
+  },
+  dynamicIsland: {
+    position: 'absolute',
+    top: 12,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 124,
+    height: 36,
+    background: '#000',
+    borderRadius: 999,
+    zIndex: 30,
+  },
+  statusIcons: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 6,
+  },
+  signalIcon: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    gap: 2,
+    height: 12,
+  },
+  signalBar: {
+    width: 3,
+    background: 'currentColor',
+    borderRadius: 1,
+  },
+  batteryIcon: {
+    width: 26,
+    height: 12,
+    border: '1.5px solid currentColor',
+    borderRadius: 3,
+    padding: 1,
+    position: 'relative',
+    opacity: 0.8,
+  },
+  batteryCap: {
+    position: 'absolute',
+    top: 3,
+    right: -3,
+    width: 2,
+    height: 6,
+    background: 'currentColor',
+    borderRadius: '0 1px 1px 0',
+  },
+  content: {
+    position: 'absolute',
+    top: 54,
+    left: 0,
+    right: 0,
+    bottom: 34,
+    overflow: 'auto',
+  },
+  homeIndicator: {
+    position: 'absolute',
+    bottom: 10,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 140,
+    height: 5,
+    background: 'rgba(0,0,0,0.3)',
+    borderRadius: 999,
+    zIndex: 10,
+  },
+  homeIndicatorDark: {
+    background: 'rgba(255,255,255,0.5)',
+  },
+};
+
+function IosFrame({
+  children,
+  width = 393,
+  height = 852,
+  time = '9:41',
+  battery = 100,
+  darkMode = false,
+  showStatusBar = true,
+  showDynamicIsland = true,
+  showHomeIndicator = true,
+}) {
+  const textColor = darkMode ? '#fff' : '#000';
+  return (
+    <div style={iosFrameStyles.wrapper}>
+      <div style={{
+        ...iosFrameStyles.screen,
+        width,
+        height,
+        background: darkMode ? '#000' : '#fff',
+      }}>
+        {showStatusBar && (
+          <div style={{ ...iosFrameStyles.statusBar, color: textColor }}>
+            <span>{time}</span>
+            <div style={iosFrameStyles.statusIcons}>
+              <div style={iosFrameStyles.signalIcon}>
+                <div style={{ ...iosFrameStyles.signalBar, height: 4 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 6 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 9 }} />
+                <div style={{ ...iosFrameStyles.signalBar, height: 11 }} />
+              </div>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" style={{ color: textColor }}>
+                <path d="M8 11.5a1 1 0 100-2 1 1 0 000 2z" fill="currentColor" />
+                <path d="M3 7.5a7 7 0 0110 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+                <path d="M1 4.5a11 11 0 0114 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" opacity="0.7" />
+              </svg>
+              <div style={iosFrameStyles.batteryIcon}>
+                <div style={{
+                  width: `${battery}%`,
+                  height: '100%',
+                  background: 'currentColor',
+                  borderRadius: 1,
+                  opacity: 0.9,
+                }} />
+                <div style={iosFrameStyles.batteryCap} />
+              </div>
+            </div>
+          </div>
+        )}
+        {showDynamicIsland && <div style={iosFrameStyles.dynamicIsland} />}
+        <div style={iosFrameStyles.content}>
+          {children}
+        </div>
+        {showHomeIndicator && (
+          <div style={{
+            ...iosFrameStyles.homeIndicator,
+            ...(darkMode ? iosFrameStyles.homeIndicatorDark : {}),
+          }} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+// =====================================================
+// BrowserWindow (inline from huashu-design assets)
+// =====================================================
+const browserWindowStyles = {
+  window: {
+    display: 'inline-block',
+    background: '#fff',
+    borderRadius: 10,
+    overflow: 'hidden',
+    boxShadow: '0 30px 80px rgba(0,0,0,0.25), 0 0 0 0.5px rgba(0,0,0,0.15)',
+  },
+  chrome: {
+    background: '#dee1e6',
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    userSelect: 'none',
+  },
+  tabRow: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    gap: 6,
+    position: 'relative',
+  },
+  trafficLights: {
+    display: 'flex',
+    gap: 8,
+    alignItems: 'center',
+    paddingBottom: 10,
+    marginRight: 8,
+  },
+  light: {
+    width: 12,
+    height: 12,
+    borderRadius: '50%',
+    border: '0.5px solid rgba(0,0,0,0.15)',
+  },
+  close: { background: '#ff5f57' },
+  minimize: { background: '#febc2e' },
+  maximize: { background: '#28c840' },
+  tab: {
+    background: '#fff',
+    padding: '8px 30px 8px 14px',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    fontSize: 12,
+    color: '#222',
+    fontFamily: '-apple-system, sans-serif',
+    maxWidth: 220,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  favicon: {
+    width: 14,
+    height: 14,
+    borderRadius: 2,
+    background: '#999',
+    flexShrink: 0,
+  },
+  navBar: {
+    background: '#fff',
+    padding: '8px 14px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    borderBottom: '1px solid #e5e7eb',
+  },
+  navButtons: {
+    display: 'flex',
+    gap: 4,
+    color: '#5f6368',
+    fontSize: 16,
+  },
+  navButton: {
+    width: 28,
+    height: 28,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '50%',
+    cursor: 'pointer',
+  },
+  urlBar: {
+    flex: 1,
+    background: '#f1f3f4',
+    borderRadius: 999,
+    padding: '7px 14px',
+    fontSize: 13,
+    color: '#333',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    fontFamily: '-apple-system, sans-serif',
+  },
+  lockIcon: {
+    color: '#5f6368',
+    fontSize: 12,
+  },
+  content: {
+    position: 'relative',
+    overflow: 'auto',
+    background: '#fff',
+  },
+};
+
+function BrowserWindow({
+  title = 'New Tab',
+  url = 'https://example.com',
+  width = 1200,
+  height = 800,
+  showTrafficLights = true,
+  children,
+}) {
+  return (
+    <div style={browserWindowStyles.window}>
+      <div style={browserWindowStyles.chrome}>
+        <div style={browserWindowStyles.tabRow}>
+          {showTrafficLights && (
+            <div style={browserWindowStyles.trafficLights}>
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.close }} />
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.minimize }} />
+              <div style={{ ...browserWindowStyles.light, ...browserWindowStyles.maximize }} />
+            </div>
+          )}
+          <div style={browserWindowStyles.tab}>
+            <div style={browserWindowStyles.favicon} />
+            <span>{title}</span>
+          </div>
+        </div>
+      </div>
+      <div style={browserWindowStyles.navBar}>
+        <div style={browserWindowStyles.navButtons}>
+          <div style={browserWindowStyles.navButton}>←</div>
+          <div style={browserWindowStyles.navButton}>→</div>
+          <div style={browserWindowStyles.navButton}>↻</div>
+        </div>
+        <div style={browserWindowStyles.urlBar}>
+          <span style={browserWindowStyles.lockIcon}>🔒</span>
+          <span>{url}</span>
+        </div>
+      </div>
+      <div style={{ ...browserWindowStyles.content, width, height }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// =====================================================
+// Cool Cobalt design tokens
+// =====================================================
+const COBALT = '#2563EB';
+const COBALT_DARK = '#1D4ED8';
+const SKY = '#DBEAFE';
+const SKY_DEEP = '#BFDBFE';
+const INK = '#0A0A0A';
+const INK_2 = '#262626';
+const GRAY_500 = '#737373';
+const GRAY_400 = '#A3A3A3';
+const GRAY_300 = '#D4D4D4';
+const HAIRLINE = '#E5E5E5';
+const HAIRLINE_2 = '#DCE0E6';
+const BASE = '#FAFAFA';
+
+const FONT_NUM = "'Inter', -apple-system, sans-serif";
+const FONT_BODY = "'Pretendard', 'Inter', -apple-system, sans-serif";
+
+// =====================================================
+// Shared atoms — Linear/Vercel style
+// =====================================================
+function Hairline({ vertical = false, style = {} }) {
+  return (
+    <div style={{
+      background: HAIRLINE,
+      ...(vertical ? { width: 1, alignSelf: 'stretch' } : { height: 1, width: '100%' }),
+      ...style,
+    }} />
+  );
+}
+
+function Badge({ children, tone = 'sky' }) {
+  const tones = {
+    sky:    { bg: SKY,         color: COBALT_DARK, border: SKY_DEEP },
+    ink:    { bg: '#F5F5F5',   color: INK,         border: HAIRLINE },
+    cobalt: { bg: COBALT,      color: '#fff',      border: COBALT_DARK },
+    ghost:  { bg: 'transparent', color: GRAY_500,  border: HAIRLINE },
+  };
+  const t = tones[tone] || tones.sky;
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 6,
+      padding: '3px 8px',
+      fontSize: 11,
+      fontWeight: 600,
+      letterSpacing: '0.02em',
+      color: t.color,
+      background: t.bg,
+      border: `1px solid ${t.border}`,
+      borderRadius: 4,
+      fontFamily: FONT_NUM,
+      textTransform: 'uppercase',
+    }}>{children}</span>
+  );
+}
+
+function Checkbox({ checked = false }) {
+  return (
+    <div style={{
+      width: 16,
+      height: 16,
+      borderRadius: 3,
+      border: checked ? `1.5px solid ${COBALT}` : `1.5px solid ${GRAY_300}`,
+      background: checked ? COBALT : '#fff',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+    }}>
+      {checked && (
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M2 5.2L4 7.2L8.4 2.8" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
+    </div>
+  );
+}
+
+// Tiny vector glyphs (no emoji, no SVG people)
+function Glyph({ name, size = 14, color = INK_2 }) {
+  const stroke = { stroke: color, strokeWidth: 1.5, fill: 'none', strokeLinecap: 'round', strokeLinejoin: 'round' };
+  const paths = {
+    book: <><path d="M3 4h6a3 3 0 013 3v9a2 2 0 00-2-2H3V4z" {...stroke} /><path d="M21 4h-6a3 3 0 00-3 3v9a2 2 0 012-2h7V4z" {...stroke} /></>,
+    code: <><path d="M8 7l-5 5 5 5" {...stroke} /><path d="M16 7l5 5-5 5" {...stroke} /><path d="M14 4l-4 16" {...stroke} /></>,
+    git: <><circle cx="6" cy="6" r="2" {...stroke} /><circle cx="6" cy="18" r="2" {...stroke} /><circle cx="18" cy="14" r="2" {...stroke} /><path d="M6 8v8M8 6h6a4 4 0 014 4" {...stroke} /></>,
+    sun: <><circle cx="12" cy="12" r="4" {...stroke} /><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4" {...stroke} /></>,
+    moon: <path d="M20 14a8 8 0 11-9.5-9.5A6 6 0 0020 14z" {...stroke} />,
+    arrow: <><path d="M5 12h14" {...stroke} /><path d="M13 6l6 6-6 6" {...stroke} /></>,
+    check: <path d="M4 12l5 5 11-11" {...stroke} />,
+    dot: <circle cx="12" cy="12" r="3" fill={color} />,
+    flag: <><path d="M5 4v17" {...stroke} /><path d="M5 5h12l-2 4 2 4H5" {...stroke} /></>,
+    layers: <><path d="M12 3l9 5-9 5-9-5 9-5z" {...stroke} /><path d="M3 13l9 5 9-5" {...stroke} /></>,
+    settings: <><circle cx="12" cy="12" r="3" {...stroke} /><path d="M19 12a7 7 0 00-.1-1.2l2-1.6-2-3.4-2.4.9a7 7 0 00-2-1.2L14 3h-4l-.5 2.5a7 7 0 00-2 1.2l-2.4-.9-2 3.4 2 1.6A7 7 0 005 12a7 7 0 00.1 1.2l-2 1.6 2 3.4 2.4-.9a7 7 0 002 1.2L10 21h4l.5-2.5a7 7 0 002-1.2l2.4.9 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z" {...stroke} /></>,
+  };
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" style={{ flexShrink: 0, display: 'block' }}>
+      {paths[name]}
+    </svg>
+  );
+}
+
+// =====================================================
+// Today — Desktop
+// =====================================================
+const todayDesktopStyles = {
+  root: {
+    width: '100%',
+    height: '100%',
+    background: BASE,
+    fontFamily: FONT_BODY,
+    color: INK,
+    display: 'grid',
+    gridTemplateColumns: '220px 1fr',
+  },
+  sidebar: {
+    borderRight: `1px solid ${HAIRLINE}`,
+    padding: '20px 16px',
+    background: '#fff',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 4,
+  },
+  brandRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '4px 6px 18px',
+  },
+  brandMark: {
+    width: 18,
+    height: 18,
+    background: INK,
+    borderRadius: 4,
+    display: 'grid',
+    placeItems: 'center',
+  },
+  navItem: (active) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    padding: '7px 8px',
+    fontSize: 13,
+    fontWeight: active ? 600 : 500,
+    color: active ? INK : GRAY_500,
+    background: active ? '#F5F5F5' : 'transparent',
+    borderRadius: 4,
+    cursor: 'pointer',
+  }),
+  main: {
+    padding: '28px 40px 32px',
+    overflow: 'auto',
+  },
+  topBar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 18,
+    borderBottom: `1px solid ${HAIRLINE}`,
+  },
+  crumb: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: 12,
+    color: GRAY_500,
+    fontFamily: FONT_NUM,
+    letterSpacing: '0.01em',
+  },
+  pageTitle: {
+    fontFamily: FONT_NUM,
+    fontWeight: 700,
+    fontSize: 28,
+    letterSpacing: '-0.02em',
+    color: INK,
+    marginTop: 6,
+    marginBottom: 0,
+  },
+  subTitle: {
+    fontSize: 13,
+    color: GRAY_500,
+    marginTop: 6,
+    fontFamily: FONT_NUM,
+  },
+  coachCard: {
+    marginTop: 24,
+    padding: '18px 22px',
+    background: '#fff',
+    border: `1px solid ${HAIRLINE}`,
+    borderRadius: 6,
+    display: 'flex',
+    gap: 16,
+    alignItems: 'flex-start',
+  },
+  coachLabel: {
+    fontSize: 11,
+    fontFamily: FONT_NUM,
+    fontWeight: 600,
+    letterSpacing: '0.08em',
+    color: COBALT_DARK,
+    textTransform: 'uppercase',
+  },
+  coachText: {
+    marginTop: 6,
+    fontSize: 15,
+    fontWeight: 500,
+    color: INK,
+    lineHeight: 1.55,
+  },
+  slotGrid: {
+    marginTop: 24,
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: 16,
+  },
+  slotCard: {
+    background: '#fff',
+    border: `1px solid ${HAIRLINE}`,
+    borderRadius: 6,
+    padding: '20px 22px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 14,
+  },
+  slotHead: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  slotTitle: {
+    fontFamily: FONT_NUM,
+    fontWeight: 700,
+    fontSize: 13,
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+    color: INK,
+  },
+  slotMeta: {
+    fontSize: 12,
+    color: GRAY_500,
+    fontFamily: FONT_NUM,
+  },
+  taskRow: {
+    display: 'grid',
+    gridTemplateColumns: '20px 1fr auto',
+    gap: 12,
+    alignItems: 'flex-start',
+    padding: '10px 0',
+    borderTop: `1px solid ${HAIRLINE}`,
+  },
+  taskTitle: {
+    fontSize: 14,
+    fontWeight: 600,
+    color: INK,
+    lineHeight: 1.4,
+  },
+  taskUrl: {
+    marginTop: 4,
+    fontSize: 12,
+    color: GRAY_500,
+    fontFamily: FONT_NUM,
+  },
+  taskMin: {
+    fontSize: 12,
+    color: INK_2,
+    fontFamily: FONT_NUM,
+    fontWeight: 600,
+  },
+  yesterdayRow: {
+    marginTop: 24,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 24,
+    padding: '14px 0 0',
+    borderTop: `1px solid ${HAIRLINE}`,
+    fontSize: 12,
+    color: GRAY_500,
+    fontFamily: FONT_NUM,
+  },
+  footerRow: {
+    marginTop: 24,
+    display: 'flex',
+    gap: 8,
+  },
+  btn: (primary) => ({
+    padding: '8px 14px',
+    fontSize: 13,
+    fontWeight: 600,
+    borderRadius: 4,
+    border: primary ? `1px solid ${COBALT_DARK}` : `1px solid ${HAIRLINE}`,
+    background: primary ? COBALT : '#fff',
+    color: primary ? '#fff' : INK,
+    fontFamily: FONT_BODY,
+    cursor: 'pointer',
+  }),
+};
+
+function TodayDesktop() {
+  return (
+    <div style={todayDesktopStyles.root}>
+      <aside style={todayDesktopStyles.sidebar}>
+        <div style={todayDesktopStyles.brandRow}>
+          <div style={todayDesktopStyles.brandMark}>
+            <svg width="10" height="10" viewBox="0 0 10 10"><rect x="1" y="1" width="3.5" height="8" fill="#fff"/><rect x="5.5" y="1" width="3.5" height="3.5" fill="#fff"/></svg>
+          </div>
+          <div style={{ fontFamily: FONT_NUM, fontWeight: 700, fontSize: 13, letterSpacing: '-0.01em' }}>Coach</div>
+          <div style={{ fontFamily: FONT_NUM, fontSize: 11, color: GRAY_400, marginLeft: 'auto' }}>v0.3</div>
+        </div>
+        <div style={{ fontSize: 10, fontFamily: FONT_NUM, fontWeight: 600, color: GRAY_400, letterSpacing: '0.1em', padding: '8px 8px 4px' }}>SPRINT</div>
+        <div style={todayDesktopStyles.navItem(true)}>
+          <Glyph name="sun" size={14} color={INK} />
+          <span>Today</span>
+          <span style={{ marginLeft: 'auto', fontSize: 11, fontFamily: FONT_NUM, color: GRAY_400 }}>D3</span>
+        </div>
+        <div style={todayDesktopStyles.navItem(false)}>
+          <Glyph name="layers" size={14} color={GRAY_500} />
+          <span>Sprint Progress</span>
+        </div>
+        <div style={todayDesktopStyles.navItem(false)}>
+          <Glyph name="flag" size={14} color={GRAY_500} />
+          <span>Goals</span>
+        </div>
+        <div style={todayDesktopStyles.navItem(false)}>
+          <Glyph name="git" size={14} color={GRAY_500} />
+          <span>Signals</span>
+        </div>
+        <div style={{ fontSize: 10, fontFamily: FONT_NUM, fontWeight: 600, color: GRAY_400, letterSpacing: '0.1em', padding: '20px 8px 4px' }}>WORKSPACE</div>
+        <div style={todayDesktopStyles.navItem(false)}>
+          <Glyph name="book" size={14} color={GRAY_500} />
+          <span>Library</span>
+        </div>
+        <div style={todayDesktopStyles.navItem(false)}>
+          <Glyph name="settings" size={14} color={GRAY_500} />
+          <span>Settings</span>
+        </div>
+      </aside>
+
+      <main style={todayDesktopStyles.main}>
+        <div style={todayDesktopStyles.topBar}>
+          <div style={todayDesktopStyles.crumb}>
+            <span>Sprint 1</span>
+            <span style={{ color: GRAY_300 }}>/</span>
+            <span style={{ color: INK }}>Today</span>
+          </div>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <Badge tone="sky">Active</Badge>
+            <Badge tone="ghost">Day 3 / 30</Badge>
+          </div>
+        </div>
+
+        <h1 style={todayDesktopStyles.pageTitle}>2026년 5월 1일 금요일</h1>
+        <div style={todayDesktopStyles.subTitle}>Sprint 1 · Week 1 · Day 03</div>
+
+        <div style={todayDesktopStyles.coachCard}>
+          <div style={{ width: 4, alignSelf: 'stretch', background: COBALT, borderRadius: 2 }} />
+          <div style={{ flex: 1 }}>
+            <div style={todayDesktopStyles.coachLabel}>Coach Comment</div>
+            <div style={todayDesktopStyles.coachText}>
+              어제 commit 0건. 오늘은 빌드 1h 우선, 정독은 30분만 권장.
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: FONT_NUM }}>
+            <div style={{ fontSize: 11, color: GRAY_500 }}>signal</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: COBALT, letterSpacing: '-0.03em' }} className="num-display">↓</div>
+          </div>
+        </div>
+
+        <div style={todayDesktopStyles.slotGrid}>
+          {/* Slot 1 — 정독 */}
+          <div style={todayDesktopStyles.slotCard}>
+            <div style={todayDesktopStyles.slotHead}>
+              <div>
+                <div style={todayDesktopStyles.slotTitle}>Slot 01 · 정독</div>
+                <div style={todayDesktopStyles.slotMeta}>평일 아침 30분 · 09:00 — 09:30</div>
+              </div>
+              <Badge tone="ghost">Manual</Badge>
+            </div>
+
+            <div style={{ ...todayDesktopStyles.taskRow, borderTop: 'none' }}>
+              <Checkbox />
+              <div>
+                <div style={todayDesktopStyles.taskTitle}>Agent SDK Quickstart</div>
+                <div style={todayDesktopStyles.taskUrl}>anthropic.com/agent-sdk</div>
+              </div>
+              <div style={todayDesktopStyles.taskMin}>30m</div>
+            </div>
+
+            <div style={todayDesktopStyles.taskRow}>
+              <Checkbox />
+              <div>
+                <div style={todayDesktopStyles.taskTitle}>Building Agents — Engineering Blog</div>
+                <div style={todayDesktopStyles.taskUrl}>anthropic.com/engineering</div>
+              </div>
+              <div style={todayDesktopStyles.taskMin}>30m</div>
+            </div>
+          </div>
+
+          {/* Slot 2 — 빌드 */}
+          <div style={todayDesktopStyles.slotCard}>
+            <div style={todayDesktopStyles.slotHead}>
+              <div>
+                <div style={todayDesktopStyles.slotTitle}>Slot 02 · 빌드</div>
+                <div style={todayDesktopStyles.slotMeta}>평일 저녁 1h · 21:00 — 22:00</div>
+              </div>
+              <Badge tone="sky">Auto</Badge>
+            </div>
+
+            <div style={{ ...todayDesktopStyles.taskRow, borderTop: 'none' }}>
+              <Checkbox />
+              <div>
+                <div style={todayDesktopStyles.taskTitle}>사내 플러그인 → MCP 서버 wrapping</div>
+                <div style={todayDesktopStyles.taskUrl}>github.com/me/sprint1-mcp-wrap</div>
+              </div>
+              <div style={todayDesktopStyles.taskMin}>60m</div>
+            </div>
+
+            <div style={{
+              marginTop: 'auto',
+              padding: '10px 12px',
+              background: SKY,
+              border: `1px solid ${SKY_DEEP}`,
+              borderRadius: 4,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+            }}>
+              <Glyph name="git" size={14} color={COBALT_DARK} />
+              <div style={{ fontSize: 12, color: COBALT_DARK, fontWeight: 600, fontFamily: FONT_NUM }}>
+                자동 감지 · commit ≥ 1로 자동 완료
+              </div>
+              <div style={{ marginLeft: 'auto', fontFamily: FONT_NUM, fontSize: 11, color: COBALT_DARK, fontWeight: 700 }}>
+                listening…
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={todayDesktopStyles.yesterdayRow}>
+          <span style={{ color: INK_2, fontWeight: 600 }}>어제</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Glyph name="git" size={12} color={GRAY_500} />
+            GitHub commits
+            <span className="num-display" style={{ color: INK, fontWeight: 700 }}>0</span>
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Glyph name="book" size={12} color={GRAY_500} />
+            정독
+            <span className="num-display" style={{ color: COBALT, fontWeight: 700 }}>2 / 2</span>
+            <Glyph name="check" size={12} color={COBALT} />
+          </span>
+          <span style={{ marginLeft: 'auto', fontFamily: FONT_NUM, color: GRAY_400 }}>last sync · 08:42</span>
+        </div>
+
+        <div style={todayDesktopStyles.footerRow}>
+          <button style={todayDesktopStyles.btn(true)}>
+            오늘 시작하기 →
+          </button>
+          <button style={todayDesktopStyles.btn(false)}>오늘 쉬기</button>
+          <button style={{ ...todayDesktopStyles.btn(false), marginLeft: 'auto' }}>Settings</button>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+// =====================================================
+// Sprint Progress — Desktop
+// =====================================================
+const sprintDesktopStyles = {
+  root: {
+    width: '100%',
+    height: '100%',
+    background: BASE,
+    fontFamily: FONT_BODY,
+    color: INK,
+    padding: '32px 48px 36px',
+    overflow: 'auto',
+  },
+  topBar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 18,
+    borderBottom: `1px solid ${HAIRLINE}`,
+  },
+  pageHead: {
+    marginTop: 14,
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    gap: 24,
+  },
+  pageTitle: {
+    fontFamily: FONT_NUM,
+    fontWeight: 700,
+    fontSize: 30,
+    letterSpacing: '-0.02em',
+    color: INK,
+    margin: 0,
+  },
+  subTitle: {
+    fontSize: 13,
+    color: GRAY_500,
+    marginTop: 8,
+    fontFamily: FONT_NUM,
+  },
+  metricsRow: {
+    marginTop: 24,
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    background: '#fff',
+    border: `1px solid ${HAIRLINE}`,
+    borderRadius: 6,
+  },
+  metricCell: (last) => ({
+    padding: '22px 24px',
+    borderRight: last ? 'none' : `1px solid ${HAIRLINE}`,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 8,
+  }),
+  metricLabel: {
+    fontSize: 11,
+    fontFamily: FONT_NUM,
+    fontWeight: 600,
+    color: GRAY_500,
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
+  },
+  metricValue: {
+    fontFamily: FONT_NUM,
+    fontSize: 44,
+    fontWeight: 700,
+    letterSpacing: '-0.04em',
+    color: INK,
+    lineHeight: 1,
+    display: 'flex',
+    alignItems: 'baseline',
+    gap: 6,
+  },
+  metricFrac: {
+    fontFamily: FONT_NUM,
+    fontSize: 13,
+    color: GRAY_500,
+    fontWeight: 500,
+  },
+  metricBar: {
+    height: 4,
+    background: HAIRLINE,
+    borderRadius: 2,
+    overflow: 'hidden',
+    marginTop: 2,
+  },
+  metricBarFill: (pct, color) => ({
+    width: `${pct}%`,
+    height: '100%',
+    background: color,
+  }),
+  calRoot: {
+    marginTop: 28,
+    background: '#fff',
+    border: `1px solid ${HAIRLINE}`,
+    borderRadius: 6,
+    padding: '22px 24px 26px',
+  },
+  calHead: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 14,
+    borderBottom: `1px solid ${HAIRLINE}`,
+  },
+  calTitle: {
+    fontFamily: FONT_NUM,
+    fontWeight: 700,
+    fontSize: 13,
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+    color: INK,
+  },
+  legendRow: {
+    display: 'flex',
+    gap: 14,
+    fontSize: 11,
+    fontFamily: FONT_NUM,
+    color: GRAY_500,
+    alignItems: 'center',
+  },
+  weekRow: {
+    display: 'grid',
+    gridTemplateColumns: '40px repeat(7, 1fr)',
+    gap: 0,
+  },
+  weekLabel: {
+    fontFamily: FONT_NUM,
+    fontSize: 11,
+    fontWeight: 700,
+    color: GRAY_400,
+    letterSpacing: '0.08em',
+    display: 'flex',
+    alignItems: 'center',
+    paddingTop: 14,
+  },
+  dayHeader: {
+    fontFamily: FONT_NUM,
+    fontSize: 10,
+    color: GRAY_400,
+    letterSpacing: '0.1em',
+    textAlign: 'center',
+    padding: '14px 0 8px',
+    textTransform: 'uppercase',
+  },
+};
+
+const DAY_HEADERS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+
+// 30-day sprint state. day index 0..29
+// statuses: 'past' | 'today' | 'future'
+// dayMeta: each day has { input, build, share } amounts (small dots).
+function buildSprintDays() {
+  const days = [];
+  for (let i = 0; i < 30; i++) {
+    let status = 'future';
+    if (i < 2) status = 'past';
+    else if (i === 2) status = 'today';
+    days.push({ idx: i, status });
+  }
+  // sample past activity
+  // d0: input 2 build 0 share 0
+  // d1: input 2 build 0 share 0
+  days[0].input = 2; days[0].build = 0; days[0].share = 0;
+  days[1].input = 2; days[1].build = 0; days[1].share = 0;
+  days[2].input = 0; days[2].build = 0; days[2].share = 0;
+  return days;
+}
+
+function DayCell({ day, isMobile = false }) {
+  const w = isMobile ? 'auto' : 'auto';
+  const cellH = isMobile ? 38 : 56;
+  const baseStyle = {
+    height: cellH,
+    borderRight: `1px solid ${HAIRLINE}`,
+    borderBottom: `1px solid ${HAIRLINE}`,
+    padding: isMobile ? '4px 4px 4px 6px' : '6px 8px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    position: 'relative',
+  };
+  let bg = '#fff';
+  let labelColor = GRAY_400;
+  if (day.status === 'past') {
+    bg = SKY;
+    labelColor = COBALT_DARK;
+  }
+  if (day.status === 'today') {
+    bg = '#fff';
+    labelColor = COBALT;
+  }
+  return (
+    <div style={{ ...baseStyle, background: bg, ...(day.status === 'today' ? { boxShadow: `inset 0 0 0 1.5px ${COBALT}` } : {}) }}>
+      <div style={{
+        fontFamily: FONT_NUM,
+        fontSize: isMobile ? 10 : 11,
+        fontWeight: 700,
+        color: labelColor,
+        letterSpacing: '0.02em',
+      }}>
+        {String(day.idx + 1).padStart(2, '0')}
+      </div>
+      {day.status === 'past' && (
+        <div style={{ display: 'flex', gap: 3, alignItems: 'center' }}>
+          {day.input > 0 && <div style={{ width: 4, height: 4, borderRadius: 99, background: COBALT }} />}
+          {day.build > 0 && <div style={{ width: 4, height: 4, borderRadius: 99, background: INK_2 }} />}
+          {day.share > 0 && <div style={{ width: 4, height: 4, borderRadius: 99, background: SKY_DEEP }} />}
+          {day.input === 0 && day.build === 0 && day.share === 0 && (
+            <div style={{ fontFamily: FONT_NUM, fontSize: 9, color: GRAY_400 }}>—</div>
+          )}
+        </div>
+      )}
+      {day.status === 'today' && (
+        <div style={{
+          fontFamily: FONT_NUM,
+          fontSize: isMobile ? 8 : 9,
+          fontWeight: 700,
+          color: COBALT,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+        }}>Today</div>
+      )}
+    </div>
+  );
+}
+
+function SprintCalendar({ isMobile = false }) {
+  const days = buildSprintDays();
+  return (
+    <div>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '28px repeat(7, 1fr)' : '40px repeat(7, 1fr)' }}>
+        <div />
+        {DAY_HEADERS.map(d => (
+          <div key={d} style={{
+            fontFamily: FONT_NUM,
+            fontSize: isMobile ? 9 : 10,
+            color: GRAY_400,
+            letterSpacing: '0.1em',
+            textAlign: 'left',
+            padding: isMobile ? '8px 6px 6px' : '14px 8px 8px',
+            fontWeight: 600,
+          }}>{d}</div>
+        ))}
+      </div>
+      <div style={{ borderTop: `1px solid ${HAIRLINE}`, borderLeft: `1px solid ${HAIRLINE}` }}>
+        {[0,1,2,3].map(week => (
+          <div key={week} style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '28px repeat(7, 1fr)' : '40px repeat(7, 1fr)',
+          }}>
+            <div style={{
+              fontFamily: FONT_NUM,
+              fontSize: isMobile ? 9 : 11,
+              fontWeight: 700,
+              color: GRAY_400,
+              letterSpacing: '0.06em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRight: `1px solid ${HAIRLINE}`,
+              borderBottom: `1px solid ${HAIRLINE}`,
+              background: '#FAFAFA',
+            }}>W{week + 1}</div>
+            {Array.from({ length: 7 }).map((_, i) => {
+              const idx = week * 7 + i;
+              if (idx >= 30) {
+                return (
+                  <div key={i} style={{
+                    height: isMobile ? 38 : 56,
+                    borderRight: `1px solid ${HAIRLINE}`,
+                    borderBottom: `1px solid ${HAIRLINE}`,
+                    background: '#FCFCFD',
+                  }} />
+                );
+              }
+              return <DayCell key={i} day={days[idx]} isMobile={isMobile} />;
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SprintDesktop() {
+  return (
+    <div style={sprintDesktopStyles.root}>
+      <div style={sprintDesktopStyles.topBar}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: FONT_NUM, fontSize: 12, color: GRAY_500 }}>
+          <span>Coach</span>
+          <span style={{ color: GRAY_300 }}>/</span>
+          <span style={{ color: INK }}>Sprint Progress</span>
+        </div>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <Badge tone="sky">Sprint 01</Badge>
+          <Badge tone="ghost">Day 3 / 30</Badge>
+          <Badge tone="ghost">Week 01</Badge>
+        </div>
+      </div>
+
+      <div style={sprintDesktopStyles.pageHead}>
+        <div>
+          <h1 style={sprintDesktopStyles.pageTitle}>Sprint 01 · Agent SDK + MCP</h1>
+          <div style={sprintDesktopStyles.subTitle}>2026-04-29 → 2026-05-28 · 30 days</div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, fontFamily: FONT_NUM }}>
+          <div style={{ fontSize: 11, color: GRAY_500, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Overall</div>
+          <div style={{ fontSize: 32, fontWeight: 700, color: COBALT, letterSpacing: '-0.03em' }} className="num-display">9%</div>
+        </div>
+      </div>
+
+      <div style={sprintDesktopStyles.metricsRow}>
+        <div style={sprintDesktopStyles.metricCell(false)}>
+          <div style={sprintDesktopStyles.metricLabel}>Input · 정독</div>
+          <div style={{ ...sprintDesktopStyles.metricValue, color: COBALT }} className="num-display">
+            4
+            <span style={sprintDesktopStyles.metricFrac}>/ 25 · 16%</span>
+          </div>
+          <div style={sprintDesktopStyles.metricBar}>
+            <div style={sprintDesktopStyles.metricBarFill(16, COBALT)} />
+          </div>
+        </div>
+        <div style={sprintDesktopStyles.metricCell(false)}>
+          <div style={sprintDesktopStyles.metricLabel}>Build · 빌드</div>
+          <div style={sprintDesktopStyles.metricValue} className="num-display">
+            0
+            <span style={sprintDesktopStyles.metricFrac}>/ 16 · 0%</span>
+          </div>
+          <div style={sprintDesktopStyles.metricBar}>
+            <div style={sprintDesktopStyles.metricBarFill(0, INK_2)} />
+          </div>
+        </div>
+        <div style={sprintDesktopStyles.metricCell(true)}>
+          <div style={sprintDesktopStyles.metricLabel}>Share · 공유</div>
+          <div style={sprintDesktopStyles.metricValue} className="num-display">
+            0
+            <span style={sprintDesktopStyles.metricFrac}>/ 4 · 0%</span>
+          </div>
+          <div style={sprintDesktopStyles.metricBar}>
+            <div style={sprintDesktopStyles.metricBarFill(0, SKY_DEEP)} />
+          </div>
+        </div>
+      </div>
+
+      <div style={sprintDesktopStyles.calRoot}>
+        <div style={sprintDesktopStyles.calHead}>
+          <div style={sprintDesktopStyles.calTitle}>30-Day Activity</div>
+          <div style={sprintDesktopStyles.legendRow}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 8, height: 8, background: COBALT, borderRadius: 99 }} /> Input
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 8, height: 8, background: INK_2, borderRadius: 99 }} /> Build
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 8, height: 8, background: SKY_DEEP, borderRadius: 99 }} /> Share
+            </span>
+            <span style={{ marginLeft: 8, color: GRAY_400 }}>·</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 10, height: 10, background: SKY, border: `1px solid ${SKY_DEEP}` }} /> 진행한 날
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 10, height: 10, background: '#fff', boxShadow: `inset 0 0 0 1.5px ${COBALT}` }} /> Today
+            </span>
+          </div>
+        </div>
+        <div style={{ marginTop: 14 }}>
+          <SprintCalendar isMobile={false} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =====================================================
+// Today — Mobile
+// =====================================================
+const todayMobileStyles = {
+  root: {
+    background: BASE,
+    fontFamily: FONT_BODY,
+    color: INK,
+    minHeight: '100%',
+    padding: '20px 20px 32px',
+  },
+  brandRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 14,
+  },
+  brand: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    fontFamily: FONT_NUM,
+    fontWeight: 700,
+    fontSize: 13,
+    letterSpacing: '-0.01em',
+  },
+  brandMark: {
+    width: 16, height: 16, background: INK, borderRadius: 3,
+    display: 'grid', placeItems: 'center',
+  },
+  pageTitle: {
+    fontFamily: FONT_NUM,
+    fontSize: 24,
+    fontWeight: 700,
+    letterSpacing: '-0.02em',
+    margin: 0,
+    marginTop: 6,
+  },
+  subTitle: {
+    fontSize: 12,
+    color: GRAY_500,
+    marginTop: 6,
+    fontFamily: FONT_NUM,
+  },
+  coachCard: {
+    marginTop: 18,
+    padding: '14px 16px',
+    background: '#fff',
+    border: `1px solid ${HAIRLINE}`,
+    borderRadius: 6,
+    display: 'flex',
+    gap: 12,
+    alignItems: 'flex-start',
+  },
+  slotCard: {
+    marginTop: 14,
+    background: '#fff',
+    border: `1px solid ${HAIRLINE}`,
+    borderRadius: 6,
+    padding: '14px 16px',
+  },
+  slotHead: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  slotTitle: {
+    fontFamily: FONT_NUM,
+    fontWeight: 700,
+    fontSize: 12,
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+  },
+  slotMeta: {
+    fontSize: 11,
+    color: GRAY_500,
+    fontFamily: FONT_NUM,
+    marginTop: 2,
+  },
+  taskRow: {
+    display: 'grid',
+    gridTemplateColumns: '20px 1fr auto',
+    gap: 10,
+    alignItems: 'flex-start',
+    padding: '10px 0',
+    borderTop: `1px solid ${HAIRLINE}`,
+    marginTop: 10,
+  },
+  taskTitle: {
+    fontSize: 13,
+    fontWeight: 600,
+    lineHeight: 1.35,
+  },
+  taskUrl: {
+    marginTop: 3,
+    fontSize: 10.5,
+    color: GRAY_500,
+    fontFamily: FONT_NUM,
+  },
+  taskMin: {
+    fontFamily: FONT_NUM,
+    fontSize: 11,
+    fontWeight: 700,
+    color: INK_2,
+  },
+  yesterdayRow: {
+    marginTop: 14,
+    padding: '10px 12px',
+    background: '#fff',
+    border: `1px solid ${HAIRLINE}`,
+    borderRadius: 6,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 14,
+    fontSize: 11,
+    color: GRAY_500,
+    fontFamily: FONT_NUM,
+    flexWrap: 'wrap',
+  },
+  footerRow: {
+    marginTop: 14,
+    display: 'flex',
+    gap: 8,
+  },
+  btn: (primary) => ({
+    flex: primary ? 1 : 'initial',
+    padding: '11px 14px',
+    fontSize: 13,
+    fontWeight: 600,
+    borderRadius: 5,
+    border: primary ? `1px solid ${COBALT_DARK}` : `1px solid ${HAIRLINE}`,
+    background: primary ? COBALT : '#fff',
+    color: primary ? '#fff' : INK,
+    fontFamily: FONT_BODY,
+  }),
+};
+
+function TodayMobile() {
+  return (
+    <div style={todayMobileStyles.root}>
+      <div style={todayMobileStyles.brandRow}>
+        <div style={todayMobileStyles.brand}>
+          <div style={todayMobileStyles.brandMark}>
+            <svg width="9" height="9" viewBox="0 0 10 10"><rect x="1" y="1" width="3.5" height="8" fill="#fff"/><rect x="5.5" y="1" width="3.5" height="3.5" fill="#fff"/></svg>
+          </div>
+          Coach
+        </div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <Badge tone="sky">Active</Badge>
+          <Badge tone="ghost">D3/30</Badge>
+        </div>
+      </div>
+
+      <div style={{ borderTop: `1px solid ${HAIRLINE}`, paddingTop: 14 }}>
+        <div style={{ fontFamily: FONT_NUM, fontSize: 11, color: GRAY_500, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Today</div>
+        <h1 style={todayMobileStyles.pageTitle}>2026.05.01 금</h1>
+        <div style={todayMobileStyles.subTitle}>Sprint 1 · Week 1 · Day 03</div>
+      </div>
+
+      <div style={todayMobileStyles.coachCard}>
+        <div style={{ width: 3, alignSelf: 'stretch', background: COBALT, borderRadius: 2 }} />
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 10, fontFamily: FONT_NUM, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: COBALT_DARK }}>
+            Coach Comment
+          </div>
+          <div style={{ marginTop: 4, fontSize: 13, fontWeight: 500, lineHeight: 1.5 }}>
+            어제 commit 0건. 오늘은 빌드 1h 우선, 정독은 30분만 권장.
+          </div>
+        </div>
+      </div>
+
+      <div style={todayMobileStyles.slotCard}>
+        <div style={todayMobileStyles.slotHead}>
+          <div>
+            <div style={todayMobileStyles.slotTitle}>Slot 01 · 정독</div>
+            <div style={todayMobileStyles.slotMeta}>평일 아침 30분</div>
+          </div>
+          <Badge tone="ghost">Manual</Badge>
+        </div>
+        <div style={{ ...todayMobileStyles.taskRow, borderTop: `1px solid ${HAIRLINE}`, marginTop: 12 }}>
+          <Checkbox />
+          <div>
+            <div style={todayMobileStyles.taskTitle}>Agent SDK Quickstart</div>
+            <div style={todayMobileStyles.taskUrl}>anthropic.com/agent-sdk</div>
+          </div>
+          <div style={todayMobileStyles.taskMin}>30m</div>
+        </div>
+        <div style={todayMobileStyles.taskRow}>
+          <Checkbox />
+          <div>
+            <div style={todayMobileStyles.taskTitle}>Building Agents — Engineering Blog</div>
+            <div style={todayMobileStyles.taskUrl}>anthropic.com/engineering</div>
+          </div>
+          <div style={todayMobileStyles.taskMin}>30m</div>
+        </div>
+      </div>
+
+      <div style={todayMobileStyles.slotCard}>
+        <div style={todayMobileStyles.slotHead}>
+          <div>
+            <div style={todayMobileStyles.slotTitle}>Slot 02 · 빌드</div>
+            <div style={todayMobileStyles.slotMeta}>평일 저녁 1h</div>
+          </div>
+          <Badge tone="sky">Auto</Badge>
+        </div>
+        <div style={{ ...todayMobileStyles.taskRow, borderTop: `1px solid ${HAIRLINE}`, marginTop: 12 }}>
+          <Checkbox />
+          <div>
+            <div style={todayMobileStyles.taskTitle}>사내 플러그인 → MCP 서버 wrapping</div>
+            <div style={todayMobileStyles.taskUrl}>me/sprint1-mcp-wrap</div>
+          </div>
+          <div style={todayMobileStyles.taskMin}>60m</div>
+        </div>
+        <div style={{
+          marginTop: 10,
+          padding: '8px 10px',
+          background: SKY,
+          border: `1px solid ${SKY_DEEP}`,
+          borderRadius: 4,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+        }}>
+          <Glyph name="git" size={12} color={COBALT_DARK} />
+          <div style={{ fontSize: 11, color: COBALT_DARK, fontWeight: 600, fontFamily: FONT_NUM, lineHeight: 1.35 }}>
+            commit ≥ 1로 자동 완료
+          </div>
+        </div>
+      </div>
+
+      <div style={todayMobileStyles.yesterdayRow}>
+        <span style={{ color: INK_2, fontWeight: 700 }}>어제</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <Glyph name="git" size={11} color={GRAY_500} />
+          commits <span className="num-display" style={{ color: INK, fontWeight: 700 }}>0</span>
+        </span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <Glyph name="book" size={11} color={GRAY_500} />
+          정독 <span className="num-display" style={{ color: COBALT, fontWeight: 700 }}>2/2</span>
+          <Glyph name="check" size={11} color={COBALT} />
+        </span>
+      </div>
+
+      <div style={todayMobileStyles.footerRow}>
+        <button style={todayMobileStyles.btn(true)}>오늘 시작하기 →</button>
+        <button style={todayMobileStyles.btn(false)}>쉬기</button>
+      </div>
+    </div>
+  );
+}
+
+// =====================================================
+// Sprint Progress — Mobile
+// =====================================================
+const sprintMobileStyles = {
+  root: {
+    background: BASE,
+    fontFamily: FONT_BODY,
+    color: INK,
+    minHeight: '100%',
+    padding: '20px 18px 28px',
+  },
+  brandRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 14,
+  },
+  pageTitle: {
+    fontFamily: FONT_NUM,
+    fontSize: 22,
+    fontWeight: 700,
+    letterSpacing: '-0.02em',
+    margin: 0,
+    marginTop: 4,
+    lineHeight: 1.2,
+  },
+  subTitle: {
+    fontSize: 11,
+    color: GRAY_500,
+    marginTop: 6,
+    fontFamily: FONT_NUM,
+  },
+  metric: {
+    padding: '14px 0',
+    borderBottom: `1px solid ${HAIRLINE}`,
+    display: 'grid',
+    gridTemplateColumns: '90px 1fr auto',
+    alignItems: 'center',
+    gap: 12,
+  },
+  metricLabel: {
+    fontSize: 10.5,
+    fontFamily: FONT_NUM,
+    fontWeight: 600,
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
+    color: GRAY_500,
+  },
+  metricValue: {
+    fontFamily: FONT_NUM,
+    fontSize: 26,
+    fontWeight: 700,
+    letterSpacing: '-0.03em',
+    lineHeight: 1,
+    display: 'flex',
+    alignItems: 'baseline',
+    gap: 6,
+  },
+  metricFrac: {
+    fontSize: 11,
+    color: GRAY_500,
+    fontWeight: 500,
+  },
+  metricBar: {
+    height: 3,
+    background: HAIRLINE,
+    borderRadius: 2,
+    overflow: 'hidden',
+    marginTop: 6,
+  },
+};
+
+function SprintMobile() {
+  return (
+    <div style={sprintMobileStyles.root}>
+      <div style={sprintMobileStyles.brandRow}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: FONT_NUM, fontWeight: 700, fontSize: 13 }}>
+          <div style={{ width: 16, height: 16, background: INK, borderRadius: 3, display: 'grid', placeItems: 'center' }}>
+            <svg width="9" height="9" viewBox="0 0 10 10"><rect x="1" y="1" width="3.5" height="8" fill="#fff"/><rect x="5.5" y="1" width="3.5" height="3.5" fill="#fff"/></svg>
+          </div>
+          Sprint
+        </div>
+        <Badge tone="sky">Sprint 01</Badge>
+      </div>
+
+      <div style={{ borderTop: `1px solid ${HAIRLINE}`, paddingTop: 14 }}>
+        <div style={{ fontFamily: FONT_NUM, fontSize: 11, color: GRAY_500, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          Sprint Progress
+        </div>
+        <h1 style={sprintMobileStyles.pageTitle}>Agent SDK + MCP</h1>
+        <div style={sprintMobileStyles.subTitle}>2026-04-29 → 2026-05-28</div>
+      </div>
+
+      <div style={{ marginTop: 16, padding: '14px 16px', background: '#fff', border: `1px solid ${HAIRLINE}`, borderRadius: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+          <div style={{ fontSize: 10.5, fontFamily: FONT_NUM, fontWeight: 600, color: GRAY_500, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Overall</div>
+          <div style={{ fontFamily: FONT_NUM, fontSize: 30, fontWeight: 700, color: COBALT, letterSpacing: '-0.03em' }} className="num-display">9%</div>
+        </div>
+
+        <div style={sprintMobileStyles.metric}>
+          <div style={sprintMobileStyles.metricLabel}>Input · 정독</div>
+          <div>
+            <div style={{ ...sprintMobileStyles.metricValue, color: COBALT }} className="num-display">
+              4 <span style={sprintMobileStyles.metricFrac}>/ 25</span>
+            </div>
+            <div style={sprintMobileStyles.metricBar}>
+              <div style={{ width: '16%', height: '100%', background: COBALT }} />
+            </div>
+          </div>
+          <div style={{ fontFamily: FONT_NUM, fontSize: 12, color: GRAY_500, fontWeight: 600 }}>16%</div>
+        </div>
+
+        <div style={sprintMobileStyles.metric}>
+          <div style={sprintMobileStyles.metricLabel}>Build · 빌드</div>
+          <div>
+            <div style={sprintMobileStyles.metricValue} className="num-display">
+              0 <span style={sprintMobileStyles.metricFrac}>/ 16</span>
+            </div>
+            <div style={sprintMobileStyles.metricBar}>
+              <div style={{ width: '0%', height: '100%', background: INK_2 }} />
+            </div>
+          </div>
+          <div style={{ fontFamily: FONT_NUM, fontSize: 12, color: GRAY_500, fontWeight: 600 }}>0%</div>
+        </div>
+
+        <div style={{ ...sprintMobileStyles.metric, borderBottom: 'none' }}>
+          <div style={sprintMobileStyles.metricLabel}>Share · 공유</div>
+          <div>
+            <div style={sprintMobileStyles.metricValue} className="num-display">
+              0 <span style={sprintMobileStyles.metricFrac}>/ 4</span>
+            </div>
+            <div style={sprintMobileStyles.metricBar}>
+              <div style={{ width: '0%', height: '100%', background: SKY_DEEP }} />
+            </div>
+          </div>
+          <div style={{ fontFamily: FONT_NUM, fontSize: 12, color: GRAY_500, fontWeight: 600 }}>0%</div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: 16, padding: '14px 14px 18px', background: '#fff', border: `1px solid ${HAIRLINE}`, borderRadius: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 8, borderBottom: `1px solid ${HAIRLINE}` }}>
+          <div style={{ fontFamily: FONT_NUM, fontSize: 11, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>30-Day Activity</div>
+          <div style={{ display: 'flex', gap: 8, fontFamily: FONT_NUM, fontSize: 9.5, color: GRAY_500 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ width: 6, height: 6, background: COBALT, borderRadius: 99 }} /> In
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ width: 6, height: 6, background: INK_2, borderRadius: 99 }} /> Bd
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ width: 6, height: 6, background: SKY_DEEP, borderRadius: 99 }} /> Sh
+            </span>
+          </div>
+        </div>
+        <div style={{ marginTop: 10 }}>
+          <SprintCalendar isMobile={true} />
+        </div>
+      </div>
+
+      <div style={{ marginTop: 14, fontFamily: FONT_NUM, fontSize: 10.5, color: GRAY_400, textAlign: 'center' }}>
+        last sync · 2026-05-01 08:42
+      </div>
+    </div>
+  );
+}
+
+// =====================================================
+// Page composition — 2x2 mockup grid
+// =====================================================
+function App() {
+  return (
+    <div className="page">
+      <div className="mockup">
+        <div className="mockup-label">데스크톱 · Today</div>
+        <BrowserWindow
+          title="Coach — Today"
+          url="coach.local/today"
+          width={1440}
+          height={900}
+        >
+          <TodayDesktop />
+        </BrowserWindow>
+      </div>
+
+      <div className="mockup">
+        <div className="mockup-label">데스크톱 · Sprint Progress</div>
+        <BrowserWindow
+          title="Coach — Sprint Progress"
+          url="coach.local/sprint/01"
+          width={1440}
+          height={900}
+        >
+          <SprintDesktop />
+        </BrowserWindow>
+      </div>
+
+      <div className="mockup" style={{ alignItems: 'center' }}>
+        <div className="mockup-label" style={{ alignSelf: 'flex-start' }}>iPhone 15 Pro · Today</div>
+        <IosFrame width={393} height={852} time="9:41" battery={88}>
+          <TodayMobile />
+        </IosFrame>
+      </div>
+
+      <div className="mockup" style={{ alignItems: 'center' }}>
+        <div className="mockup-label" style={{ alignSelf: 'flex-start' }}>iPhone 15 Pro · Sprint Progress</div>
+        <IosFrame width={393} height={852} time="9:41" battery={88}>
+          <SprintMobile />
+        </IosFrame>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
