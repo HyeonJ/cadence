@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "main": "./src/server.ts",
-  "bin": { "mcp-cadence-supabase": "./src/server.ts" },
+  "bin": {
+    "mcp-cadence-supabase": "./src/server.ts"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
@@ -12,15 +14,16 @@
     "start": "tsx src/server.ts"
   },
   "dependencies": {
+    "@cadence/db": "workspace:*",
     "@modelcontextprotocol/sdk": "^0.5.0",
     "@supabase/supabase-js": "^2.45.0",
-    "@cadence/db": "workspace:*",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.0"
   },
   "devDependencies": {
-    "tsx": "^4.19.0",
-    "vitest": "^2.0.5",
     "@types/node": "^20.16.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "tsx": "^4.19.0",
+    "vitest": "^2.0.5"
   }
 }

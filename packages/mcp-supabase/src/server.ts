@@ -2,6 +2,7 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { ListToolsRequestSchema, CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import { registry } from "./tools/index.ts";
 
 const server = new Server(
   { name: "cadence-supabase", version: "0.0.1" },
@@ -9,11 +10,12 @@ const server = new Server(
 );
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [], // 채워질 예정 (Task 3+)
+  tools: registry.list(),
 }));
 
-server.setRequestHandler(CallToolRequestSchema, async () => {
-  throw new Error("No tools registered yet");
+server.setRequestHandler(CallToolRequestSchema, async (req) => {
+  const result = await registry.call(req.params.name, req.params.arguments ?? {});
+  return { content: [{ type: "text", text: JSON.stringify(result) }] };
 });
 
 async function main() {
