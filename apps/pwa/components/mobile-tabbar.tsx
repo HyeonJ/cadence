@@ -39,6 +39,7 @@ export function MobileTabbar(): React.JSX.Element {
     <nav
       className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-hairline-strong h-14 flex items-stretch"
       aria-label="기본 네비게이션"
+      style={{ paddingBottom: "max(env(safe-area-inset-bottom), 0px)" }}
     >
       {TABS.map((t) => {
         const active = pathname.startsWith(t.href);
