@@ -2,7 +2,8 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { upsertUserSettings, type NotifySlot } from "@/lib/queries/user-settings";
+import { upsertUserSettings } from "@/lib/queries/user-settings";
+import type { TablesInsert } from "@cadence/db";
 
 const OnboardingSchema = z.object({
   timezone: z.string().min(1).default("Asia/Seoul"),
@@ -56,7 +57,7 @@ export async function completeOnboarding(
     github_username: parsed.data.github_username,
     monitored_repos: parsed.data.monitored_repos,
     discord_webhook_url: parsed.data.discord_webhook_url || null,
-    notify_schedule: parsed.data.notify_schedule as unknown as NotifySlot[],
+    notify_schedule: parsed.data.notify_schedule as unknown as TablesInsert<"user_settings">["notify_schedule"],
   });
   if (!result.ok) return { ok: false, message: result.message };
 
