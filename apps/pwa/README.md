@@ -24,9 +24,19 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 
 ## 화면
 
-- `/today` — 오늘 카드 + Activity Ring + slot/task list + status 토글
-- `/sprint` — Sprint 진행 + 30일 캘린더 + 주간 breakdown
 - `/login` — magiclink 이메일 로그인
+- `/onboarding` — 4-step (timezone · GitHub · Discord · 알림 시간)
+- `/today` — 오늘 카드 + Activity Ring + slot/task list + status 토글
+- `/today/[date]` — 과거 카드 read-only (좌/우 화살표 + 오늘로 링크)
+- `/sprint` — Sprint 진행 + 30일 캘린더 + 주간 breakdown
+- `/settings` — GitHub · Discord · 알림 시간 · Sprint 종료
+
+## PWA
+
+- `app/manifest.ts` — Next 15 manifest (`/manifest.webmanifest` 자동 라우트)
+- `app/sw.ts` — `@serwist/next` 서비스 워커 (정적 자산만 캐싱, 데이터 NetworkOnly)
+- `public/icons/` — 192/512 PNG + maskable SVG + apple-touch-icon
+- 설치: 모바일 Safari 공유 → "홈 화면에 추가" / Android Chrome 자동 prompt
 
 ## 디자인 토큰
 
