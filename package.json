@@ -9,6 +9,8 @@
     "supabase:stop": "supabase stop",
     "supabase:reset": "supabase db reset",
     "supabase:gen-types": "supabase gen types typescript --local > packages/db/src/types.ts",
+    "dev:pwa": "pnpm --filter @cadence/pwa dev",
+    "build:pwa": "pnpm --filter @cadence/pwa build",
     "test": "pnpm --recursive run test"
   },
   "devDependencies": {
