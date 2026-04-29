@@ -8,12 +8,24 @@ export interface BackboneMaterial {
   source_tag?: string;
 }
 
+export interface StudyGuideStep {
+  minutes: number;
+  action: string;
+}
+
+export interface StudyGuide {
+  objective: string;
+  key_points: string[];
+  steps: StudyGuideStep[];
+}
+
 export interface BackboneMeta {
   materials: BackboneMaterial[];
   targets: string[];
   estimated_minutes?: number;
   // 백본 자체의 title — daily_card_items.title과 보통 동일
   backbone_title?: string;
+  study_guide?: StudyGuide;
 }
 
 export interface TodayDataItem {
@@ -107,6 +119,7 @@ export async function fetchTodayData(date_kst: string): Promise<TodayData> {
               materials?: BackboneMaterial[];
               targets?: string[];
               estimated_minutes?: number;
+              study_guide?: StudyGuide;
             }
           | null;
         backboneMap.set(bb.id, {
@@ -114,6 +127,7 @@ export async function fetchTodayData(date_kst: string): Promise<TodayData> {
           targets: c?.targets ?? [],
           estimated_minutes: c?.estimated_minutes,
           backbone_title: c?.title,
+          study_guide: c?.study_guide,
         });
       }
     }
