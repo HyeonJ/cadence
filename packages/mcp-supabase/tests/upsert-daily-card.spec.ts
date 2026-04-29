@@ -50,6 +50,42 @@ describe("upsert_daily_card", () => {
     expect(items?.length).toBe(1);
   });
 
+  it("source_backbone_id 전달 시 daily_card_items에 영속화", async () => {
+    const client = getServiceClient();
+    const { data: backbone } = await client
+      .from("sprint_backbone_items")
+      .select("id")
+      .eq("sprint_id", sprintId)
+      .limit(1);
+    const backboneId = backbone![0].id;
+
+    const result = await upsertDailyCardTool.handler({
+      user_id: userId,
+      date_kst: "2026-05-02",
+      sprint_id: sprintId,
+      coach_comment: "test",
+      fallback_used: false,
+      generation_meta: {},
+      card_raw: {},
+      items: [
+        {
+          slot_key: "weekday_morning_input",
+          title: "Test item",
+          kind: "manual_check",
+          status: "pending",
+          source_backbone_id: backboneId,
+        },
+      ],
+    });
+
+    const { data: items } = await client
+      .from("daily_card_items")
+      .select("source_backbone_id")
+      .eq("daily_card_id", result.daily_card_id);
+    expect(items?.length).toBe(1);
+    expect(items?.[0]?.source_backbone_id).toBe(backboneId);
+  });
+
   it("같은 (user, date_kst) 재호출 시 기존 row delete + 신규 insert (멱등)", async () => {
     await upsertDailyCardTool.handler({
       user_id: userId,

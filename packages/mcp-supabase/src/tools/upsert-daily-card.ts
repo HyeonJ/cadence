@@ -19,6 +19,7 @@ const ItemSchema = z.object({
   status: z.enum(["pending", "done", "skipped", "auto_done"]).default("pending"),
   auto_detected: z.boolean().default(false),
   note: z.string().max(500).optional(),
+  source_backbone_id: z.string().uuid().optional(),
 });
 
 const InputSchema = z.object({
@@ -81,6 +82,7 @@ export const upsertDailyCardTool: ToolDef<Input, Output> = {
         status: it.status,
         auto_detected: it.auto_detected,
         note: it.note ?? null,
+        source_backbone_id: it.source_backbone_id ?? null,
       }));
       const { error: itemsErr } = await client.from("daily_card_items").insert(itemRows);
       if (itemsErr) throw new Error(`upsert_daily_card items failed: ${itemsErr.message}`);
