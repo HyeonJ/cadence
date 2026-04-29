@@ -14,7 +14,11 @@ const SettingsSchema = z.object({
   discord_webhook_url: z
     .string()
     .url()
-    .startsWith("https://discord.com/api/webhooks/")
+    .refine(
+      (u) =>
+        /^https:\/\/(canary\.|ptb\.)?(discord\.com|discordapp\.com)\/api\/webhooks\//.test(u),
+      "Discord webhook URL이어야 합니다 (discord.com 또는 discordapp.com /api/webhooks/...)",
+    )
     .or(z.literal(""))
     .optional()
     .default(""),

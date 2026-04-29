@@ -2,9 +2,17 @@ import { z } from "zod";
 import type { ToolDef } from "../tool-registry.ts";
 
 const InputSchema = z.object({
-  webhook_url: z.string().url().refine((u) => u.includes("discord.com/api/webhooks"), {
-    message: "Discord webhook URL must contain discord.com/api/webhooks",
-  }),
+  webhook_url: z
+    .string()
+    .url()
+    .refine(
+      (u) =>
+        /^https:\/\/(canary\.|ptb\.)?(discord\.com|discordapp\.com)\/api\/webhooks\//.test(u),
+      {
+        message:
+          "Discord webhook URL이어야 합니다 (discord.com 또는 discordapp.com /api/webhooks/...)",
+      },
+    ),
   content: z.string().min(1).max(2000),
 });
 type Input = z.infer<typeof InputSchema>;
