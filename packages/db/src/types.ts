@@ -43,6 +43,7 @@ export type Database = {
           kind: string
           note: string | null
           slot_key: string
+          source_backbone_id: string | null
           status: string
           status_changed_at: string
           title: string
@@ -56,6 +57,7 @@ export type Database = {
           kind: string
           note?: string | null
           slot_key: string
+          source_backbone_id?: string | null
           status?: string
           status_changed_at?: string
           title: string
@@ -69,6 +71,7 @@ export type Database = {
           kind?: string
           note?: string | null
           slot_key?: string
+          source_backbone_id?: string | null
           status?: string
           status_changed_at?: string
           title?: string
@@ -80,6 +83,13 @@ export type Database = {
             columns: ["daily_card_id"]
             isOneToOne: false
             referencedRelation: "daily_cards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "daily_card_items_source_backbone_id_fkey"
+            columns: ["source_backbone_id"]
+            isOneToOne: false
+            referencedRelation: "sprint_backbone_items"
             referencedColumns: ["id"]
           },
         ]
