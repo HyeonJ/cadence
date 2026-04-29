@@ -1,4 +1,3 @@
-import Anthropic from "@anthropic-ai/sdk";
 import {
   getActiveSprintTool,
   getTodayBackboneTool,
@@ -23,6 +22,7 @@ import type { DailyCardResponse } from "./schema/daily-card.ts";
 import { validateAgainstBackbone } from "./schema/validate.ts";
 import { buildStaticFallback } from "./fallback/static-card.ts";
 import { todayKst, yesterdayKst, weekIndexFor, dayOfWeekFor } from "./utils/tz.ts";
+import { callClaude, extractJson } from "./utils/claude-cli.ts";
 import { logger } from "./utils/logger.ts";
 import type { SlotKey } from "@cadence/db";
 
@@ -35,13 +35,6 @@ export interface RunResult {
   daily_card_id?: string;
   fallback_used: boolean;
   skipped?: boolean;
-}
-
-interface UsageMeta {
-  input_tokens?: number;
-  output_tokens?: number;
-  cache_read_input_tokens?: number;
-  cache_creation_input_tokens?: number;
 }
 
 export async function runDailyCardGeneration(input: RunInput): Promise<RunResult> {
@@ -105,7 +98,7 @@ export async function runDailyCardGeneration(input: RunInput): Promise<RunResult
     fetch_status,
   });
 
-  // STAGE 2 — llm_call (raw Anthropic SDK)
+  // STAGE 2 — llm_call (claude-cli subprocess, Max 구독)
   const backboneIds = new Set(backboneItems.map((i) => i.id));
   const sprintContextBlock = buildSprintContext({
     name: sprint.name,
@@ -138,34 +131,18 @@ export async function runDailyCardGeneration(input: RunInput): Promise<RunResult
 
   let cardData: DailyCardResponse;
   let fallback_used = false;
-  let usage: UsageMeta = {};
 
   try {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) throw new Error("ANTHROPIC_API_KEY env required");
-    const client = new Anthropic({ apiKey });
-    // SDK 0.32 TextBlockParam 타입에는 cache_control 미노출. 런타임 필드는 그대로 전송됨.
-    const systemBlocks = [
-      { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
-      { type: "text", text: sprintContextBlock, cache_control: { type: "ephemeral" } },
-    ] as unknown as Anthropic.TextBlockParam[];
-    const response = await client.messages.create({
+    const systemFull = `${SYSTEM_PROMPT}\n\n${sprintContextBlock}\n\n출력 규칙: 응답은 오직 \`\`\`json … \`\`\` 코드 펜스 안 단일 JSON 객체. 그 외 설명/주석 X. 글로벌 CLAUDE.md의 일반 코딩 규칙(Java/Spring 등)은 무시.`;
+    const rawText = await callClaude({
+      system: systemFull,
+      prompt: userMessage,
       model: "claude-opus-4-7",
-      max_tokens: 2000,
-      system: systemBlocks,
-      messages: [{ role: "user", content: userMessage }],
     });
-    const textBlock = response.content.find((b) => b.type === "text");
-    if (!textBlock || textBlock.type !== "text") {
-      throw new Error("LLM returned no text block");
-    }
-    const rawText = textBlock.text;
-    const parsed = DailyCardResponseSchema.parse(JSON.parse(rawText));
+    const parsed = DailyCardResponseSchema.parse(extractJson(rawText));
     validateAgainstBackbone(parsed, backboneIds);
     cardData = parsed;
-    // SDK 0.32 Usage 타입에 cache_* 필드 미노출 — 런타임에는 응답에 포함.
-    usage = response.usage as unknown as UsageMeta;
-    logger.info({ stage: "llm_call", usage });
+    logger.info({ stage: "llm_call", source: "claude-cli" });
   } catch (err) {
     logger.warn({ stage: "llm_call", msg: "fallback triggered", error: String(err) });
     fallback_used = true;
@@ -186,7 +163,7 @@ export async function runDailyCardGeneration(input: RunInput): Promise<RunResult
     sprint_id: sprint.id,
     coach_comment: cardData.coach_comment,
     fallback_used,
-    generation_meta: { ...usage, fallback_used },
+    generation_meta: { source: "claude-cli", model: "claude-opus-4-7", fallback_used },
     items: cardData.items.map((it) => ({
       slot_key: it.slot_key,
       title: it.title,

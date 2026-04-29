@@ -1,12 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock Anthropic SDK BEFORE importing agent.ts
-vi.mock("@anthropic-ai/sdk", () => {
-  const messagesCreate = vi.fn().mockResolvedValue({
-    content: [
-      {
-        type: "text",
-        text: JSON.stringify({
+// Mock claude-cli BEFORE importing agent.ts
+vi.mock("../src/utils/claude-cli.ts", async () => {
+  const actual = await vi.importActual<typeof import("../src/utils/claude-cli.ts")>(
+    "../src/utils/claude-cli.ts"
+  );
+  return {
+    ...actual,
+    callClaude: vi.fn().mockResolvedValue(
+      "```json\n" +
+        JSON.stringify({
           coach_comment: "어제 commit 0건. 빌드 1h 우선.",
           items: [
             {
@@ -17,15 +20,10 @@ vi.mock("@anthropic-ai/sdk", () => {
               estimated_minutes: 30,
             },
           ],
-        }),
-      },
-    ],
-    usage: { input_tokens: 4500, output_tokens: 800, cache_read_input_tokens: 1500 },
-  });
-  const Anthropic = vi.fn().mockImplementation(() => ({
-    messages: { create: messagesCreate },
-  }));
-  return { default: Anthropic };
+        }) +
+        "\n```"
+    ),
+  };
 });
 
 vi.mock("@cadence/mcp-supabase", () => ({
@@ -72,9 +70,6 @@ vi.mock("@cadence/mcp-github", () => ({
 vi.mock("@cadence/mcp-discord", () => ({
   sendDmTool: { handler: vi.fn().mockResolvedValue({ ok: true, status: 204 }) },
 }));
-
-// Set required env BEFORE importing agent.ts (which uses process.env in handler)
-process.env.ANTHROPIC_API_KEY = "test-key";
 
 const { runDailyCardGeneration } = await import("../src/agent.ts");
 
