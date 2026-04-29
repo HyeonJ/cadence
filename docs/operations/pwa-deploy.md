@@ -1,5 +1,8 @@
 # Cadence PWA — 배포 가이드 (Plan 05 산출 / Plan 06에서 본격 적용)
 
+> **상태:** ✅ 적용 완료 (2026-04-29). Cadence MVP는 `https://cadence-pwa.vercel.app`에서 동작 중.
+> 본 문서는 처음 배포 시 reference. 일상 운영은 `cloud-runbook.md` 참조.
+
 ## 사전 조건
 
 - Supabase Cloud 프로젝트 생성 완료 (Plan 06에서 실시)
@@ -82,3 +85,14 @@ DevTools → Application → Service Workers:
 - 데이터 export (Settings → 다운로드)
 - 실제 계정 삭제 (auth.users + cascade)
 - 운영 알림 (Discord webhook으로 build 실패/Routine 실패)
+
+## 적용 후 검증 결과 (2026-04-29)
+
+- ✅ Supabase Cloud `lcppyflvevjmxpmsclek` 6 테이블 + RLS 정상
+- ✅ Vercel `cadence-pwa.vercel.app` 빌드 + 자동 deploy
+- ✅ 매직링크 → Onboarding → user_settings 생성 → /today 풀 사이클
+- ✅ Routine Cloud 대상 실행 → daily_card 생성 → Discord 알림
+- ✅ 폰 PWA 설치 가능 (iOS Safari 홈 화면 추가)
+- ✅ 데이터 export + 계정 삭제 + admin 알림 모두 작동
+
+상세 운영 절차: `docs/operations/cloud-runbook.md`
