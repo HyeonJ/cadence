@@ -193,6 +193,7 @@ export async function runDailyCardGeneration(input: RunInput): Promise<RunResult
       url: it.url,
       kind: it.kind,
       auto_target: it.auto_target as Record<string, unknown> | undefined,
+      source_backbone_id: it.source_backbone_id,
     })),
   });
 
