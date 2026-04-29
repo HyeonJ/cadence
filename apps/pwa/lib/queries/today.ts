@@ -2,6 +2,20 @@ import "server-only";
 import type { Tables } from "@cadence/db";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 
+export interface BackboneMaterial {
+  name: string;
+  url?: string;
+  source_tag?: string;
+}
+
+export interface BackboneMeta {
+  materials: BackboneMaterial[];
+  targets: string[];
+  estimated_minutes?: number;
+  // 백본 자체의 title — daily_card_items.title과 보통 동일
+  backbone_title?: string;
+}
+
 export interface TodayDataItem {
   id: string;
   slot_key: Tables<"daily_card_items">["slot_key"];
@@ -11,14 +25,14 @@ export interface TodayDataItem {
   status: Tables<"daily_card_items">["status"];
   estimated_minutes: number | null;
   auto_target: Tables<"daily_card_items">["auto_target"];
+  note: string | null;
+  status_changed_at: string | null;
+  source_backbone_id: string | null;
+  backbone: BackboneMeta | null;
 }
 
 type SprintRow = Pick<Tables<"sprints">, "id" | "name" | "start_date_kst" | "end_date_kst" | "status">;
 type CardRow = Pick<Tables<"daily_cards">, "id" | "coach_comment" | "fallback_used">;
-type ItemRow = Pick<
-  Tables<"daily_card_items">,
-  "id" | "slot_key" | "title" | "url" | "kind" | "status" | "auto_target"
->;
 type SignalRow = Pick<Tables<"yesterday_signals">, "repo_commits" | "fetch_status">;
 
 export interface TodayData {
@@ -58,19 +72,69 @@ export async function fetchTodayData(date_kst: string): Promise<TodayData> {
   if (card) {
     const itemsRes = await supabase
       .from("daily_card_items")
-      .select("id, slot_key, title, url, kind, status, auto_target")
+      .select(
+        "id, slot_key, title, url, kind, status, auto_target, note, status_changed_at, source_backbone_id"
+      )
       .eq("daily_card_id", card.id);
-    const rows = (itemsRes.data ?? []) as ItemRow[];
-    items = rows.map((r) => ({
-      id: r.id,
-      slot_key: r.slot_key,
-      title: r.title,
-      url: r.url,
-      kind: r.kind,
-      status: r.status,
-      estimated_minutes: null,
-      auto_target: r.auto_target,
-    }));
+    const rows = (itemsRes.data ?? []) as Array<{
+      id: string;
+      slot_key: string;
+      title: string;
+      url: string | null;
+      kind: string;
+      status: string;
+      auto_target: unknown;
+      note: string | null;
+      status_changed_at: string | null;
+      source_backbone_id: string | null;
+    }>;
+
+    // backbone JOIN — source_backbone_id가 있는 것만 모아서 1회 select
+    const backboneIds = rows
+      .map((r) => r.source_backbone_id)
+      .filter((id): id is string => id !== null);
+    const backboneMap = new Map<string, BackboneMeta>();
+    if (backboneIds.length > 0) {
+      const bbRes = await supabase
+        .from("sprint_backbone_items")
+        .select("id, content")
+        .in("id", backboneIds);
+      const bbRows = (bbRes.data ?? []) as Array<{ id: string; content: unknown }>;
+      for (const bb of bbRows) {
+        const c = bb.content as
+          | {
+              title?: string;
+              materials?: BackboneMaterial[];
+              targets?: string[];
+              estimated_minutes?: number;
+            }
+          | null;
+        backboneMap.set(bb.id, {
+          materials: c?.materials ?? [],
+          targets: c?.targets ?? [],
+          estimated_minutes: c?.estimated_minutes,
+          backbone_title: c?.title,
+        });
+      }
+    }
+
+    items = rows.map((r) => {
+      const bb = r.source_backbone_id ? backboneMap.get(r.source_backbone_id) ?? null : null;
+      return {
+        id: r.id,
+        slot_key: r.slot_key as TodayDataItem["slot_key"],
+        title: r.title,
+        url: r.url,
+        kind: r.kind as TodayDataItem["kind"],
+        status: r.status as TodayDataItem["status"],
+        estimated_minutes: bb?.estimated_minutes ?? null,
+        auto_target: r.auto_target as TodayDataItem["auto_target"],
+        note: r.note,
+        status_changed_at: r.status_changed_at,
+        source_backbone_id: r.source_backbone_id,
+        backbone: bb,
+      };
+    });
   }
 
   // 어제 신호
