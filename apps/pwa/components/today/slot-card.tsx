@@ -27,9 +27,6 @@ const SLOT_LABEL: Record<string, { label: string; ringColor: string; ringVar: st
   },
 };
 
-type ItemStatus = "pending" | "done" | "skipped" | "auto_done";
-type ItemKind = "manual_check" | "auto_signal";
-
 export function SlotCard({
   slotKey,
   items,
@@ -71,12 +68,7 @@ export function SlotCard({
       {items.map((it, idx) => (
         <TaskRowToggle
           key={it.id}
-          itemId={it.id}
-          initialStatus={it.status as ItemStatus}
-          title={it.title}
-          url={it.url}
-          durationLabel={it.estimated_minutes ? `${it.estimated_minutes}분` : "—"}
-          kind={it.kind as ItemKind}
+          item={it}
           isLast={idx === items.length - 1}
           readOnly={readOnly}
         />

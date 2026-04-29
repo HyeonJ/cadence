@@ -4,6 +4,7 @@ import { SlotCard } from "@/components/today/slot-card";
 
 vi.mock("@/app/(app)/today/today-card-actions", () => ({
   toggleItemStatus: vi.fn(),
+  saveItemNote: vi.fn(),
 }));
 
 describe("SlotCard", () => {
