@@ -6,6 +6,7 @@ loadEnv({ path: join(__dirname, "..", "..", "..", ".env"), override: true });
 
 import { runDailyCardGeneration } from "./agent.ts";
 import { logger } from "./utils/logger.ts";
+import { sendAdminAlert } from "./utils/admin-alert.ts";
 
 async function main(): Promise<void> {
   const userId = process.env.COACH_USER_ID;
@@ -14,8 +15,17 @@ async function main(): Promise<void> {
   logger.info({ stage: "done", result });
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   // eslint-disable-next-line no-console
   console.error("[routine] fatal:", err);
+  await sendAdminAlert({
+    severity: "error",
+    message: (err as Error).message ?? "unknown fatal",
+    context: {
+      stack: ((err as Error).stack ?? "").slice(0, 1500),
+      user_id: process.env.COACH_USER_ID,
+      ts: new Date().toISOString(),
+    },
+  });
   process.exit(1);
 });
