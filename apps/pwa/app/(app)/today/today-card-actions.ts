@@ -41,3 +41,30 @@ export async function toggleItemStatus(
   revalidatePath("/today");
   return { ok: true, status: updateRes.data.status as "pending" | "done" | "skipped" };
 }
+
+const NoteSchema = z.object({
+  item_id: z.string().uuid(),
+  note: z.string().max(500),
+});
+
+export type NoteResult = { ok: true } | { ok: false; message: string };
+
+export async function saveItemNote(
+  input: z.infer<typeof NoteSchema>
+): Promise<NoteResult> {
+  const parsed = NoteSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, message: "메모 형식이 올바르지 않습니다 (최대 500자)" };
+  }
+  const supabase = await getSupabaseServerClient();
+  const builder = supabase
+    .from("daily_card_items")
+    .update({ note: parsed.data.note || null } as never)
+    .eq("id", parsed.data.item_id) as unknown as Promise<{
+      error: { message: string } | null;
+    }>;
+  const res = await builder;
+  if (res.error) return { ok: false, message: res.error.message };
+  revalidatePath("/today");
+  return { ok: true };
+}
