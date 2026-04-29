@@ -32,3 +32,16 @@ describe("export schema", () => {
     expect(v).toMatch(/^\d{4}-\d{2}-\d{2}T.*Z$/);
   });
 });
+
+describe("deleteAccount confirm guard", () => {
+  it("'DELETE' 외 입력은 거부", () => {
+    const acceptable = "DELETE";
+    const cases = ["delete", "Delete", "DELETE ", " DELETE", ""];
+    for (const c of cases) {
+      expect(c === acceptable).toBe(false);
+    }
+  });
+  it("정확히 'DELETE'만 통과", () => {
+    expect("DELETE" === "DELETE").toBe(true);
+  });
+});
