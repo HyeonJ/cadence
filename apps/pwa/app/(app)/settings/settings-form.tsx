@@ -218,16 +218,6 @@ export function SettingsForm({
         </Dialog>
       </section>
 
-      {/* 계정 (placeholder) */}
-      <section className="bg-surface border border-card-line rounded-md p-5">
-        <h2 className="font-display text-[14px] font-semibold uppercase tracking-[0.1em] text-muted mb-2">
-          계정
-        </h2>
-        <p className="text-[12.5px] text-muted leading-relaxed">
-          데이터 export · 계정 삭제는 Plan 06 (배포 단계)에서 제공됩니다. 그 전에는
-          Supabase Studio 또는 CLI 직접 사용.
-        </p>
-      </section>
     </form>
   );
 }
