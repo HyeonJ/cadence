@@ -48,14 +48,9 @@ export function StudyGuidePanel({
         </span>
         <ol className="flex flex-col gap-1.5 m-0 pl-0 list-none">
           {guide.steps.map((s, i) => (
-            <li key={i} className="flex items-baseline gap-3 text-[12.5px] text-ink-2">
-              <span className="font-display tab text-sub w-10 flex-shrink-0">
-                {s.minutes}분
-              </span>
-              <span className="flex-1">
-                <span className="font-display text-sub mr-1.5">{i + 1}.</span>
-                {s.action}
-              </span>
+            <li key={i} className="flex items-baseline gap-2 text-[12.5px] text-ink-2">
+              <span className="font-display text-sub flex-shrink-0">{i + 1}.</span>
+              <span className="flex-1">{s.action}</span>
             </li>
           ))}
         </ol>

@@ -27,12 +27,12 @@ describe("StudyGuidePanel", () => {
     expect(screen.getByText("포인트 C")).toBeInTheDocument();
   });
 
-  it("steps의 minutes/action 표시", () => {
+  it("steps의 action 표시 (minutes 라벨은 노출 X)", () => {
     render(<StudyGuidePanel guide={SAMPLE} url={null} />);
     expect(screen.getByText("README 읽기")).toBeInTheDocument();
     expect(screen.getByText("예제 코드 보기")).toBeInTheDocument();
-    expect(screen.getByText(/5분/)).toBeInTheDocument();
-    expect(screen.getByText(/10분/)).toBeInTheDocument();
+    expect(screen.queryByText(/5분/)).toBeNull();
+    expect(screen.queryByText(/10분/)).toBeNull();
   });
 
   it("url 있으면 외부 링크 표시", () => {
