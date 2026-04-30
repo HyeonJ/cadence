@@ -5,6 +5,7 @@ import {
   updateBackboneItemTool,
   removeBackboneItemTool,
 } from "@cadence/mcp-supabase";
+import { runBackboneGenerateGuides } from "./backbone-generate-guides.ts";
 
 export function backboneCommand(): Command {
   const cmd = new Command("backbone").description("Sprint backbone CRUD (L1)");
@@ -86,6 +87,24 @@ export function backboneCommand(): Command {
       });
       // eslint-disable-next-line no-console
       console.log("Removed (soft delete)");
+    });
+
+  cmd
+    .command("generate-guides")
+    .description("backbone item 30개에 한국어 학습 가이드 1회 생성 (Max CLI)")
+    .requiredOption("--sprint <uuid>")
+    .option("--limit <n>", "처음 N개만 처리 (테스트용)")
+    .option("--force", "이미 가이드가 있는 항목도 재생성", false)
+    .action(async (opts: { sprint: string; limit?: string; force: boolean }) => {
+      const stats = await runBackboneGenerateGuides({
+        sprintId: opts.sprint,
+        limit: opts.limit ? Number(opts.limit) : undefined,
+        force: opts.force,
+      });
+      // eslint-disable-next-line no-console
+      console.log(
+        `완료: ${stats.succeeded}/${stats.total} 성공, 실패 ${stats.failed}, skip ${stats.skipped}`
+      );
     });
 
   return cmd;

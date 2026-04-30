@@ -10,7 +10,6 @@
     "start": "tsx src/main.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.32.0",
     "@cadence/db": "workspace:*",
     "@cadence/mcp-supabase": "workspace:*",
     "@cadence/mcp-github": "workspace:*",
