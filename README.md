@@ -27,6 +27,12 @@ pnpm supabase:reset
 - 운영 가이드: `docs/operations/cloud-runbook.md`
 - 배포 가이드: `docs/operations/pwa-deploy.md`
 
+## Max CLI 통합 ✅ (2026-04-30)
+
+- routine + cli의 LLM 호출이 `claude --print` subprocess (Max 구독)로 전환됨 — Anthropic API 충전 사용량 0
+- 학습 가이드: `cadence backbone generate-guides --sprint <id>`로 한국어 가이드 생성, PWA detail 패널이 `study_guide` 우선 렌더
+- 운영: `docs/operations/max-cli-integration.md`
+
 ## 문서
 
 - 설계: `docs/superpowers/specs/2026-04-28-cadence-design.md`

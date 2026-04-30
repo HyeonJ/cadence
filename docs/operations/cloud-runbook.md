@@ -23,6 +23,14 @@
 - 폰에서 카드 생성 강제: 본인 PC 터미널에서 `pnpm --filter @cadence/routine start`
 - 특정 날짜: `pnpm cadence regen --date YYYY-MM-DD --user $COACH_USER_ID --force`
 
+## LLM 호출 — Max CLI
+
+routine + cli의 LLM 호출은 `claude --print` subprocess(Max 구독) 사용. Anthropic API 충전 사용량 0.
+
+- 현재 PC에 Claude Code 인증 필요. PC 꺼지면 routine 그날 누락 (기존 제약과 동일)
+- 새 sprint 시작 시 `cadence backbone generate-guides --sprint <id>` 1회 실행해 학습 가이드 채움
+- 자세히: `docs/operations/max-cli-integration.md`
+
 ## env 관리
 
 - **로컬 PC `.env`** (gitignored): production 자격 = Cloud Supabase URL/keys + Anthropic + GitHub PAT + Discord webhooks + COACH_USER_ID
